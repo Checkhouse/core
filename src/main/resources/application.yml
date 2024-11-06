@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: core
+  profiles:
+    active: dev
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  tomcat:
+    connection-timeout: 30s
+    threads:
+      max: 100
+      min-spare: 100
+    accesslog:
+      enabled: true
+      suffix: log
+      prefix: access_log
+      rename-on-rotate: true
+
+springdoc:
+  packages-to-scan: com.checkhouse.core
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+  swagger-ui:
+    path: /api-docs
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+  title: 'check house api'
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access:
+    expiration: 86400
+    header: authorization
+  refresh:
+    expiration: 864000
+    header: authorization-refresh
