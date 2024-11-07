@@ -7,12 +7,10 @@
 |inspector(검수자 어플)|https://github.com/Checkhouse/inspector-app-expo|
 
 ## Documents
-- Notion
+|[API](https://www.notion.so/API-1366bd8d4afe80ef82fffa87ca82d750)|[Figma](https://www.figma.com/design/Z0UrIEXjNobOnoYRNuULLj/%EC%BA%A1%EC%8A%A4%ED%86%A4?node-id=162-157&node-type=canvas&t=Ee6JcpVWmQYCX0HM-0)|[ERD](https://www.erdcloud.com/d/dWtm4NPf4hTjZW9Z9)|[보고서](https://docs.google.com/document/d/1GCXU40AfPEHMGzCJ7iDEaxSIp5GkeCaCfPaHkaDoiAo/edit?tab=t.0)|
+|---|---|---|---|
 
-|[API](https://www.notion.so/API-1366bd8d4afe80ef82fffa87ca82d750)|[ERD(test)](https://www.notion.so/ERD-e1f7625e6e5c4ac49f533e93e89b579f?pvs=21)|[Controller](https://www.notion.so/Controller-f94cd6814c8e421f9179a9fae9ce3c09?pvs=21)|
-|---|---|---|
-
-
+---
 
 
 # Domains
