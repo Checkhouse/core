@@ -35,7 +35,7 @@ public class User {
     private String provider;
 
     @Column(name="provider_id", nullable=true)
-    private Long providerID;
+    private String providerID;
 
 
     @Enumerated(EnumType.STRING)
@@ -53,7 +53,7 @@ public class User {
             String password,
             Role role,
             String provider,
-            Long providerID
+            String providerID
     ) {
         this.username = username;
         this.email = email;

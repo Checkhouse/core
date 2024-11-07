@@ -2,3 +2,42 @@ spring:
   config:
     activate:
       on-profile: dev
+  docker:
+    compose:
+      file: docker-compose.yml
+      lifecycle-management: start_and_stop
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      repositories:
+        enabled: false
+  elasticsearch:
+    uris: ${ES_URIS}
+    username: ${ES_USERNAME}
+    password: ${ES_PASSWORD}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_URL}
+    password: ${DB_PASSWORD}
+    username: ${DB_USER}
+    name: ${DB_NAME}
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        show_sql: true
+jwt:
+  secret-key: ${JWT_SECRET_KEY_DEV}
+  access:
+    expiration: 86400
+    header: authorization
+  refresh:
+    expiration: 864000
+    header: authorization-refresh

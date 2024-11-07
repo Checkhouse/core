@@ -73,9 +73,11 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers(antMatcher("/login/**" )).permitAll()          // 이메일 로그인
                                 .requestMatchers(antMatcher("/auth/**")).permitAll()            // oauth
-                                .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()      // api-docs
+                                .requestMatchers(antMatcher("swagger-ui/**")).permitAll()      // api-docs
                                 .requestMatchers(antMatcher("/swagger-ui.html")).permitAll()
+                                .requestMatchers(antMatcher("swagger-resources/**")).permitAll()
                                 .requestMatchers(antMatcher("/api-docs")).permitAll()
+                                .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
                                 .anyRequest().authenticated()
         );
 

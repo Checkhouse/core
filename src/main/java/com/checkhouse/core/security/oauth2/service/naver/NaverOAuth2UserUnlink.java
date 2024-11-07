@@ -19,10 +19,10 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class NaverOAuth2UserUnlink implements OAuth2UserUnlink {
 
-    @Value("${security.oauth2.client.registration.naver.client-id}")
+    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
     private String clientID;
 
-    @Value("${security.oauth2.client.registration.naver.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
     private String clientSecret;
     private static final String URL = "https://nid.naver.com/oauth2.0/token";
     private final RestTemplate restTemplate;

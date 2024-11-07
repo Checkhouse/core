@@ -79,6 +79,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             );
 
             String userEmail = principal.getUserInfo().getEmail();
+
+            // 여기서 사용자가 아닌 경우에 대해서 exception을 잡을 필요가 없음
             Optional<User> user = userRepository.findUserByEmail(userEmail);
 
             // todo 사용자가 아니라면?
@@ -91,6 +93,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                         User.builder()
                                 .username(principal.getUserInfo().getName())
                                 .email(principal.getUserInfo().getEmail())
+                                .provider(principal.getUserInfo().getProvider().toString())
+                                .providerID(principal.getUserInfo().getId())
                                 .role(Role.ROLE_USER)
                                 .build()
                 );
