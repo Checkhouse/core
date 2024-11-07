@@ -1,10 +1,21 @@
-[API](https://www.notion.so/1366bd8d4afe80dbaa84f8e66b530c4a?pvs=21)
+# Links
+## Git page
+|name|repo|
+|---|---|
+|core(서버, 백엔드)|https://github.com/Checkhouse/core|
+|client(사용자 어플)|https://github.com/Checkhouse/client-app-expo|
+|inspector(검수자 어플)|https://github.com/Checkhouse/inspector-app-expo|
 
-[ERD 정리](https://www.notion.so/ERD-e1f7625e6e5c4ac49f533e93e89b579f?pvs=21)
+## Documents
+- Notion
 
-[Controller](https://www.notion.so/Controller-f94cd6814c8e421f9179a9fae9ce3c09?pvs=21)
+|[API](https://www.notion.so/API-1366bd8d4afe80ef82fffa87ca82d750)|[ERD(test)](https://www.notion.so/ERD-e1f7625e6e5c4ac49f533e93e89b579f?pvs=21)|[Controller](https://www.notion.so/Controller-f94cd6814c8e421f9179a9fae9ce3c09?pvs=21)|
+|---|---|---|
 
 
+
+
+# Domains
 
 ## auth 인증
 
