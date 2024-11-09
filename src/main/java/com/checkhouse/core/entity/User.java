@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
@@ -36,7 +36,6 @@ public class User {
 
     @Column(name="provider_id", nullable=true)
     private String providerID;
-
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER;

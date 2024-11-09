@@ -1,5 +1,6 @@
 package com.checkhouse.core.security.oauth2.handler;
 
+import com.checkhouse.core.dto.Token;
 import com.checkhouse.core.entity.User;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.repository.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -7,6 +8,7 @@ import com.checkhouse.core.repository.mysql.UserRepository;
 import com.checkhouse.core.security.oauth2.service.OAuth2Provider;
 import com.checkhouse.core.security.oauth2.service.OAuth2UserPrincipal;
 import com.checkhouse.core.security.oauth2.service.OAuth2UserUnlinkManager;
+import com.checkhouse.core.service.RedisService;
 import com.checkhouse.core.util.CookieUtils;
 import com.checkhouse.core.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -32,7 +35,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final UserRepository userRepository;
+    private final RedisTemplate<String, String> redisTemplate;
     private final JwtUtil jwtUtil;
+    private final RedisService redisService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -79,16 +84,17 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             );
 
             String userEmail = principal.getUserInfo().getEmail();
-
             // 여기서 사용자가 아닌 경우에 대해서 exception을 잡을 필요가 없음
-            Optional<User> user = userRepository.findUserByEmail(userEmail);
+            Optional<User> optionalUser = userRepository.findUserByEmail(userEmail);
 
-            // todo 사용자가 아니라면?
-            if(user.isEmpty()) {
-                // 회원이 아닌 사용자
-                log.info("Not Service User. More information are need {}", userEmail);
+            Token token = redisService.saveTokens(userEmail);
 
-                // 회원이 아닌 사용자는 회원가입을 진행할 수 있도록 해야함
+            if(optionalUser.isPresent()) {
+
+                return UriComponentsBuilder.fromUriString(targetUrl)
+                        .queryParam("token", token.accessToken())
+                        .build().toUriString();
+            } else {
                 userRepository.save(
                         User.builder()
                                 .username(principal.getUserInfo().getName())
@@ -99,20 +105,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                 .build()
                 );
 
-                // 온보딩 요청
                 return UriComponentsBuilder.fromUriString(targetUrl)
+                        .queryParam("token", token.accessToken())
+                        .queryParam("onboarding", true)
                         .build().toUriString();
             }
-
-            String accessToken = jwtUtil.createAccessToken(userEmail);
-
-            // todo refresh token redis 저장 로직 추가
-
-            // 엑세스 토큰 반환
-            return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("token", accessToken)
-                    .build().toUriString();
-
 
         } else if ("unlink".equalsIgnoreCase(mode)) {
 

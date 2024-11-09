@@ -6,6 +6,7 @@ import com.checkhouse.core.security.JwtFilter;
 import com.checkhouse.core.security.oauth2.handler.OAuth2AuthenticationFailureHandler;
 import com.checkhouse.core.security.oauth2.handler.OAuth2AuthenticationSuccessHandler;
 import com.checkhouse.core.security.oauth2.service.CustomOAuth2UserService;
+import com.checkhouse.core.service.RedisService;
 import com.checkhouse.core.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ public class SecurityConfig {
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final CustomUserDetailsService customUserDetailsService;
+    private final RedisService redisService;
     private final JwtUtil jwtUtil;
 
     @Value("${cors.allowed-origins.${spring.profiles.active}}")
@@ -66,13 +68,15 @@ public class SecurityConfig {
                 sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(new JwtFilter(customUserDetailsService, jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(
+                new JwtFilter(customUserDetailsService, jwtUtil, redisService),
+                UsernamePasswordAuthenticationFilter.class
+        );
 
         http.authorizeHttpRequests(
                 (authorize) ->
                         authorize
-                                .requestMatchers(antMatcher("/login/**" )).permitAll()          // 이메일 로그인
-                                .requestMatchers(antMatcher("/auth/**")).permitAll()            // oauth
+                                .requestMatchers(antMatcher("/login/**" )).permitAll()         // oauth
                                 .requestMatchers(antMatcher("swagger-ui/**")).permitAll()      // api-docs
                                 .requestMatchers(antMatcher("/swagger-ui.html")).permitAll()
                                 .requestMatchers(antMatcher("swagger-resources/**")).permitAll()

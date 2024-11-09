@@ -36,21 +36,13 @@ public class JwtUtil {
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
-    // refreshToken 을 accessToken 에 종속적으로 만들 이유가 있나?
-    // 1. refreshToken 은 accessToken 을 재발급하기 위해 필요함
-    // 2. 재발급이 필요한 경우 accessToken 을 받아와서
     public String createAccessToken(String email) {
-
-        String accessToken = createToken(email, expireTime);
-
-        createRefreshToken(accessToken);
-
-        return accessToken;
+        return createToken(email, expireTime);
     }
-    public String createRefreshToken(String accessToken) {
-        return createToken(accessToken, refreshTime);
-    }
+    public String createRefreshToken(String email) {
+        return createToken(email, refreshTime);
 
+    }
     /**
      * TODO 유효한 RFT 로 ACT 재발급 시 RFT 재발행 로직 추가
      */
@@ -70,7 +62,7 @@ public class JwtUtil {
     }
     /**
      * JWT 생성
-     * @param email
+     * @param issuer
      * @param expireTime
      * @return JWT String
      */
