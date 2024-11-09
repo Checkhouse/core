@@ -2,3 +2,11 @@ spring:
   config:
     activate:
       on-profile: prod
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  access:
+    expiration: 86400
+    header: authorization
+  refresh:
+    expiration: 864000
+    header: authorization-refresh

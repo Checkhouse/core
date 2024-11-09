@@ -25,5 +25,5 @@ public class SwaggerConfig {
                 .title(title + " API DOC")
                 .description("For " + title + " service api document")
                 .version("1.0.0");
-    }
 }
+    }
