@@ -1,5 +1,5 @@
 package com.checkhouse.core.entity.enums;
 
 public enum Role {
-    ROLE_USER, ROLE_ADMIN, ROLE_INSPECTOR,
+    ROLE_USER, ROLE_ADMIN, ROLE_INSPECTOR, ROLE_STORE_MANAGER,
 }

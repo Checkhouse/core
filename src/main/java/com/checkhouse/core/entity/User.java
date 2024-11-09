@@ -37,6 +37,9 @@ public class User extends BaseTimeEntity {
     @Column(name="provider_id", nullable=true)
     private String providerID;
 
+    @Column(name="profile_image", nullable=true)
+    private String profileImageURL;
+
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER;
 
@@ -52,7 +55,8 @@ public class User extends BaseTimeEntity {
             String password,
             Role role,
             String provider,
-            String providerID
+            String providerID,
+            String profileImageURL
     ) {
         this.username = username;
         this.email = email;
@@ -61,6 +65,7 @@ public class User extends BaseTimeEntity {
         this.role = role;
         this.provider = provider;
         this.providerID = providerID;
+        this.profileImageURL = profileImageURL;
 
     }
 }
