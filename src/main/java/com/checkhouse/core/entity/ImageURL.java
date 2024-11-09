@@ -1,0 +1,35 @@
+package com.checkhouse.core.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Table(name = "image_url")
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ImageURL extends BaseTimeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name="image_id")
+    private UUID imageId;
+
+    @Column(name="image_url")
+    private String imageURL;
+
+    //----------------------------------------------------------------------------
+    // todo 관계 매핑 하는 곳
+    //----------------------------------------------------------------------------
+
+    @Builder
+    public ImageURL(
+            String imageURL
+    ) {
+        this.imageURL = imageURL;
+
+    }
+}
