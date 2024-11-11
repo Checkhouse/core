@@ -117,6 +117,7 @@ public class UserServiceTest {
      * 사용자 조회는 다음과 같을 때 실패함
      * 1. 사용자가 없는 경우
      */
+    @DisplayName("존재하지 않는 사용자의 경우 사용자 정보 조회 실패")
     @Test
     void FAIL_getUserInfo() {
         // given
@@ -134,6 +135,7 @@ public class UserServiceTest {
      * 1. 존재하지 않는 사용자
      * todo validation에서 타입 체크가 안되는 경우가 있나?
      */
+    @DisplayName("존재하지 않는 사용자의 경우 사용자 정보 수정 실패")
     @Test
     void FAIL_updateUserInfo() {}
 
@@ -141,6 +143,7 @@ public class UserServiceTest {
      * 사용자 목록 조회는 다음과 같을 떄 실패함
      * 1. 모든 사용자 조회가 실패하는 경우가 있나...?
      */
+    @DisplayName("모종의 이유로 실패")
     @Test
     void FAIL_getUsers() {}
 }
