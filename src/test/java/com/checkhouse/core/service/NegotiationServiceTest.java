@@ -37,6 +37,10 @@ public class NegotiationServiceTest {
     @Test
     void FAIL_addNegotiation_invalid_price() {}
 
+    @DisplayName("네고를 거부한 중고 상품에 대한 내고 생성은 실패")
+    @Test
+    void FAIL_addNegotiation_nego_is_not_allowed() {}
+
     @DisplayName("중고상품이 없는 경우 가격 제안 실패")
     @Test
     void FAIL_addNegotiation_no_used_product() {}
@@ -48,5 +52,7 @@ public class NegotiationServiceTest {
     @DisplayName("네고 취소 시 제안이 이미 승인된 경우 실패")
     @Test
     void FAIL_cancelNegotiation_already_approved() {}
+
+
 
 }

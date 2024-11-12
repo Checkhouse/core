@@ -17,6 +17,10 @@ public class UsedProductServiceTest {
     @Test
     void SUCCESS_addUsedProduct() {}
 
+    @DisplayName("중고 상품 네고 상태 변경")
+    @Test
+    void SUCCESS_updateUsedProductNegoState() {}
+
     @DisplayName("중고 상품 상태 변경")
     @Test
     void SUCCESS_updateUsedProductStatus() {}
@@ -44,6 +48,10 @@ public class UsedProductServiceTest {
     @DisplayName("중고 상품 등록 양식에 맞지 않을 때 등록 실패")
     @Test
     void FAIL_addUsedProduct_invalid_format_error() {} // 등록 양식 불일치 에러
+
+    @DisplayName("존재하지 않는 중고 상품에 대한 네고 상태 변경은 실패")
+    @Test
+    void FAIL_updateUsedProductNegoState_not_exist() {}
 
     @DisplayName("중고 상품이 존재하지 않을 때 상태 변경 실패")
     @Test
