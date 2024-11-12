@@ -40,7 +40,7 @@ public class UserServiceTest {
     void setup() {
         // naver 로그인 사용자
         mockkedUser = User.builder()
-                .userID(UUID.randomUUID())
+                .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
                 .nickname("test nickname")
@@ -52,7 +52,7 @@ public class UserServiceTest {
 
         // email 로그인 사용자
         mockkedUserWithEmail = User.builder()
-                .userID(UUID.randomUUID())
+                .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
                 .nickname("test nickname")
@@ -94,7 +94,7 @@ public class UserServiceTest {
         UserDTO result = userService.addUser(request);
 
         assertNotNull(result);
-        assertEquals(mockkedUser.getUserID(), result.userID());
+        assertEquals(mockkedUser.getUserId(), result.userId());
 
         // 사용자 찾기는 한 번만 이뤄져야함.
         verify(userRepository, times(1)).findUserByEmail( any() );
@@ -123,7 +123,7 @@ public class UserServiceTest {
 
         //then
         assertNotNull(result);
-        assertEquals(mockkedUserWithEmail.getUserID(), result.userID());
+        assertEquals(mockkedUserWithEmail.getUserId(), result.userId());
         assertNull(result.provider());
 
         // 사용자 찾기는 한 번만 이뤄져야함.

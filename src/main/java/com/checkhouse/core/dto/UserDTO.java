@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public record UserDTO(
-        UUID userID,
+        UUID userId,
         String username,
         String email,
 

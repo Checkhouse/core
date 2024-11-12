@@ -18,7 +18,7 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
-    private UUID userID;
+    private UUID userId;
 
     @Column(
             name="user_name",
@@ -66,7 +66,7 @@ public class User extends BaseTimeEntity {
 
     @Builder
     public User(
-            UUID userID,
+            UUID userId,
             String username,
             String email,
             String nickname,
@@ -77,7 +77,7 @@ public class User extends BaseTimeEntity {
             Boolean isActive,
             Role role
     ) {
-        this.userID = userID;
+        this.userId = userId;
         this.username = username;
         this.email = email;
         this.nickname = nickname;
@@ -92,7 +92,7 @@ public class User extends BaseTimeEntity {
 
     public UserDTO toDto() {
         return new UserDTO(
-                this.userID,
+                this.userId,
                 this.username,
                 this.email,
                 this.nickname,
