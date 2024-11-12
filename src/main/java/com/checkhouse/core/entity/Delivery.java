@@ -24,7 +24,7 @@ public class Delivery extends BaseTimeEntity {
     @Column(name="tracking_code", nullable=true)
     private String trackingCode;
 
-    @Column(name="state")
+    @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState;
 
 

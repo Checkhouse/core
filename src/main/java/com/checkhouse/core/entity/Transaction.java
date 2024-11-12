@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.util.UUID;
 
 @Table(name = "transaction")
@@ -21,7 +20,7 @@ public class Transaction extends BaseTimeEntity {
     private UUID transactionId;
 
 
-    @Column(name="state")
+    @Enumerated(EnumType.STRING)
     private TransactionState state;
 
 

@@ -31,7 +31,6 @@ public class OriginProduct extends BaseTimeEntity {
     @JoinColumn(name="category_id")
     private Category category;
 
-    //TODO: 이거면 되나? 더필요한내용은?
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

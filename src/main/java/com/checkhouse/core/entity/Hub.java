@@ -24,7 +24,7 @@ public class Hub extends BaseTimeEntity {
     private String name;
 
     @Column(name="clustered_id")
-    private UUID clusteredId; //TODO: UUID 맞는지?
+    private int clusteredId;
 
 
     //Foreign key
@@ -40,7 +40,7 @@ public class Hub extends BaseTimeEntity {
     public Hub(
             Address address,
             String name,
-            UUID clusteredId
+            int clusteredId
     ) {
         this.address = address;
         this.name = name;

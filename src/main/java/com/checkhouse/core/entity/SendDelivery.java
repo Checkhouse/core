@@ -20,7 +20,7 @@ public class SendDelivery extends BaseTimeEntity {
     private UUID sendDeliveryId;
 
 
-    @Column(name="state")
+    @Enumerated(EnumType.STRING)
     private DeliveryState state;
 
 

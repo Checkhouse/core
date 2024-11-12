@@ -20,9 +20,6 @@ public class UsedProduct extends BaseTimeEntity {
     private UUID usedProductId;
 
 
-    @Column(name="state")
-    private UsedProductState state;
-
     @Column(name="title")
     private String title;
 
@@ -35,6 +32,9 @@ public class UsedProduct extends BaseTimeEntity {
     @Column(name="is_nego_allow")
     private boolean isNegoAllow;
 
+    @Enumerated(EnumType.STRING)
+    private UsedProductState state;
+
 
     //Foreign key
     @ManyToOne
@@ -45,7 +45,6 @@ public class UsedProduct extends BaseTimeEntity {
     @JoinColumn(name="user_id")
     private User user;
 
-    //TODO: 이거면 되나? 더필요한내용은?
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

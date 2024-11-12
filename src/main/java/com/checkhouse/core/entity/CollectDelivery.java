@@ -1,6 +1,5 @@
 package com.checkhouse.core.entity;
 
-import com.checkhouse.core.entity.enums.DeliveryState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

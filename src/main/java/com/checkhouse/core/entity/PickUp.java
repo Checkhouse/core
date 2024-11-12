@@ -20,7 +20,7 @@ public class PickUp extends BaseTimeEntity {
     private UUID pickupId;
 
 
-    @Column(name="state")
+    @Enumerated(EnumType.STRING)
     private PickupState state;
 
 

@@ -21,15 +21,15 @@ public class Negotiation extends BaseTimeEntity {
     private UUID negotiationId;
 
 
-    @Column(name="state")
-    private NegotiationState state;
-
     @Column(name="price")
     private int price;
 
     //TODO: due_date mysql에서 관리할건지?
     @Column(name="due_date")
     private Date dueDate;
+
+    @Enumerated(EnumType.STRING)
+    private NegotiationState state;
 
 
     //Foreign key

@@ -28,16 +28,14 @@ public class Address extends BaseTimeEntity {
     @Column(name="address_detail", nullable = true)
     private String addressDetail;
 
-    //TODO: 경위도 사용할 패키지
     @Column(name="location")
     private Point location;
 
     @Column(name="zipcode")
     private int zipcode;
 
-    //TODO: PHONE number 관리 어케함?
     @Column(name="phone")
-    private int phone;
+    private String phone;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳
@@ -50,7 +48,7 @@ public class Address extends BaseTimeEntity {
             String addressDetail,
             Point location,
             int zipcode,
-            int phone
+            String phone
     ) {
         this.name = name;
         this.address = address;
