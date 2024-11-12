@@ -1,5 +1,11 @@
 package com.checkhouse.core.service;
 
+import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
+import com.checkhouse.core.apiPayload.exception.GeneralException;
+import com.checkhouse.core.dto.UserDTO;
+import com.checkhouse.core.dto.request.UserRequest;
+import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.repository.mysql.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +17,27 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
-    void addUser() {}
+    UserDTO addUser(UserRequest.AddUserRequest req) {
+        // 중복 검사
+        userRepository.findUserByEmail(req.getEmail()).ifPresent(
+                (a) -> {
+                    throw new GeneralException(ErrorStatus._USER_ALREADY_EXIST);
+                }
+        );
+        User savedUser = userRepository.save(
+                User.builder()
+                        .username(req.getUsername())
+                        .email(req.getEmail())
+                        .nickname(req.getNickname())
+                        .password(req.getPassword())
+                        .provider(req.getProvider())
+                        .providerID(req.getProviderID())
+                        .role(Role.valueOf(req.getRole()))
+                        .build()
+        );
+        // 중복되지 않는 사용자의 경우
+        return savedUser.toDto();
+    }
     void getUserInfo() {}
     void updateUserInfo() {}
     void updateUserState() {}

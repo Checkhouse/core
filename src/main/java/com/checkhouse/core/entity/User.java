@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.UserDTO;
 import com.checkhouse.core.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -87,5 +88,18 @@ public class User extends BaseTimeEntity {
         this.isActive = isActive;
         this.role = role;
 
+    }
+
+    public UserDTO toDto() {
+        return new UserDTO(
+                this.userID,
+                this.username,
+                this.email,
+                this.nickname,
+                this.password,
+                this.provider,
+                this.providerID,
+                this.role
+        );
     }
 }
