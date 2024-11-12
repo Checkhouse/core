@@ -20,6 +20,19 @@ public class Negotiation extends BaseTimeEntity {
     @Column(name="negotiation_id")
     private UUID negotiationId;
 
+
+    @Column(name="state")
+    private NegotiationState state;
+
+    @Column(name="price")
+    private int price;
+
+    //TODO: due_date mysql에서 관리할건지?
+    @Column(name="due_date")
+    private Date dueDate;
+
+
+    //Foreign key
     @ManyToOne
     @JoinColumn(name="used_product_id")
     private UsedProduct usedProduct;
@@ -31,16 +44,6 @@ public class Negotiation extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="buyer_id")
     private User buyer;
-
-    @Column(name="state")
-    private NegotiationState state;
-
-    @Column(name="price")
-    private int price;
-
-    //TODO: due_date mysql에서 관리할건지?
-    @Column(name="due_date")
-    private Date dueDate;
 
 
     //----------------------------------------------------------------------------

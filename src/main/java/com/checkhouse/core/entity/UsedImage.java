@@ -18,6 +18,8 @@ public class UsedImage extends BaseTimeEntity {
     @Column(name="used_image_id")
     private UUID usedImageId;
 
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="image_id")
     private ImageURL image;

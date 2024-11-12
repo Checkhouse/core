@@ -20,6 +20,12 @@ public class Transaction extends BaseTimeEntity {
     @Column(name="transaction_id")
     private UUID transactionId;
 
+
+    @Column(name="state")
+    private TransactionState state;
+
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="used_product_id")
     private UsedProduct usedProduct;
@@ -27,9 +33,6 @@ public class Transaction extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User buyer;
-
-    @Column(name="state")
-    private TransactionState state;
 
 
     //----------------------------------------------------------------------------

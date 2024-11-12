@@ -19,6 +19,8 @@ public class CollectDelivery extends BaseTimeEntity {
     @Column(name="collect_delivery_id")
     private UUID collectDeliveryId;
 
+
+    //Foreign Key
     @OneToOne
     @JoinColumn(name="used_product_id")
     private UsedProduct usedProduct;

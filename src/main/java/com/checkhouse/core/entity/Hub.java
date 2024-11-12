@@ -19,15 +19,18 @@ public class Hub extends BaseTimeEntity {
     @Column(name="hub_id")
     private UUID hubId;
 
-    @OneToOne
-    @JoinColumn(name="address_id")
-    private Address address;
 
     @Column(name="name")
     private String name;
 
     @Column(name="clustered_id")
     private UUID clusteredId; //TODO: UUID 맞는지?
+
+
+    //Foreign key
+    @OneToOne
+    @JoinColumn(name="address_id")
+    private Address address;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

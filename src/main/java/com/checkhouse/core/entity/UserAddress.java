@@ -18,6 +18,8 @@ public class UserAddress extends BaseTimeEntity {
     @Column(name="user_address_id")
     private UUID userAddressId;
 
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="address_id")
     private Address address;

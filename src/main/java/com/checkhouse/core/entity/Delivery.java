@@ -20,15 +20,18 @@ public class Delivery extends BaseTimeEntity {
     @Column(name="delivery_id")
     private UUID deliveryId;
 
-    @ManyToOne
-    @JoinColumn(name="address_id")
-    private Address address;
 
     @Column(name="tracking_code", nullable=true)
     private String trackingCode;
 
     @Column(name="state")
     private DeliveryState deliveryState;
+
+
+    //Foreign key
+    @ManyToOne
+    @JoinColumn(name="address_id")
+    private Address address;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

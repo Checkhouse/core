@@ -18,15 +18,18 @@ public class Store extends BaseTimeEntity {
     @Column(name="store_id")
     private UUID storeId;
 
-    @OneToOne
-    @JoinColumn(name="address_id")
-    private Address address;
 
     @Column(name="name")
     private String name;
 
     @Column(name="code")
     private String code;
+
+
+    //Foreign key
+    @OneToOne
+    @JoinColumn(name="address_id")
+    private Address address;
 
 
     //----------------------------------------------------------------------------

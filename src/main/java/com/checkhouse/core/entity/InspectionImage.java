@@ -18,17 +18,19 @@ public class InspectionImage extends BaseTimeEntity {
     @Column(name="inspection_image_id")
     private UUID inspectionImageId;
 
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="image_id")
     private ImageURL image;
 
-    @ManyToOne
-    @JoinColumn(name="inspection_id")
-    private Inspection inspection;
-
     @OneToOne
     @JoinColumn(name="used_image_id")
     private UsedImage usedImage;
+
+    @ManyToOne
+    @JoinColumn(name="inspection_id")
+    private Inspection inspection;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

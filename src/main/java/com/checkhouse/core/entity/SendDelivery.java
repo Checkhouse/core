@@ -19,6 +19,12 @@ public class SendDelivery extends BaseTimeEntity {
     @Column(name="send_delivery_id")
     private UUID sendDeliveryId;
 
+
+    @Column(name="state")
+    private DeliveryState state;
+
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="transaction_id")
     private Transaction transaction;
@@ -27,8 +33,6 @@ public class SendDelivery extends BaseTimeEntity {
     @JoinColumn(name="delivery_id")
     private Delivery delivery;
 
-    @Column(name="state")
-    private DeliveryState state;
 
 
     //----------------------------------------------------------------------------

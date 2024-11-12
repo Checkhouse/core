@@ -18,15 +18,18 @@ public class OriginProduct extends BaseTimeEntity {
     @Column(name="origin_product_id")
     private UUID originProductId;
 
-    @ManyToOne
-    @JoinColumn(name="category_id")
-    private Category category;
 
     @Column(name="name")
     private String name;
 
     @Column(name="company")
     private String company;
+
+
+    //Foreign Key
+    @ManyToOne
+    @JoinColumn(name="category_id")
+    private Category category;
 
     //TODO: 이거면 되나? 더필요한내용은?
 

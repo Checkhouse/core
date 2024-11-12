@@ -19,6 +19,8 @@ public class OriginImage extends BaseTimeEntity {
     @Column(name="origin_image_id")
     private UUID originImageId;
 
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="image_id")
     private ImageURL image;

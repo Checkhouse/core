@@ -18,6 +18,15 @@ public class Inspection extends BaseTimeEntity {
     @Column(name="inspection_id")
     private UUID inspectionId;
 
+
+    @Column(name="is_done")
+    private boolean isDone;
+
+    @Column(name="description")
+    private String description;
+
+
+    //Foreign key
     // TODO: 검수를 여러번 하는 경우가 존재하는가?
     @ManyToOne
     @JoinColumn(name="used_product_id")
@@ -26,12 +35,6 @@ public class Inspection extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user; //검수자
-
-    @Column(name="is_done")
-    private boolean isDone;
-
-    @Column(name="description")
-    private String description;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

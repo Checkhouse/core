@@ -18,6 +18,8 @@ public class FavoriteUsed extends BaseTimeEntity {
     @Column(name="favorite_used_id")
     private UUID favoriteUsedId;
 
+
+    //Foreign key
     @ManyToOne
     @JoinColumn(name="used_product_id")
     private UsedProduct usedProduct;

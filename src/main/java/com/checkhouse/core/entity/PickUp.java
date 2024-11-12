@@ -19,6 +19,12 @@ public class PickUp extends BaseTimeEntity {
     @Column(name="pickup_id")
     private UUID pickupId;
 
+
+    @Column(name="state")
+    private PickupState state;
+
+
+    //Foreign key
     @OneToOne
     @JoinColumn(name="transaction_id")
     private Transaction transaction;
@@ -26,9 +32,6 @@ public class PickUp extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="store_id")
     private Store store;
-
-    @Column(name="state")
-    private PickupState state;
 
 
     //----------------------------------------------------------------------------

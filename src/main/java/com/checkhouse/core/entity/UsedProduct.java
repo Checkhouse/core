@@ -19,13 +19,6 @@ public class UsedProduct extends BaseTimeEntity {
     @Column(name="used_product_id")
     private UUID usedProductId;
 
-    @ManyToOne
-    @JoinColumn(name="origin_product_id")
-    private OriginProduct originProduct;
-
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
 
     @Column(name="state")
     private UsedProductState state;
@@ -43,6 +36,14 @@ public class UsedProduct extends BaseTimeEntity {
     private boolean isNegoAllow;
 
 
+    //Foreign key
+    @ManyToOne
+    @JoinColumn(name="origin_product_id")
+    private OriginProduct originProduct;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     //TODO: 이거면 되나? 더필요한내용은?
 

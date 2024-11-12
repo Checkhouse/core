@@ -18,6 +18,7 @@ public class FavoriteOrigin extends BaseTimeEntity {
     @Column(name="favorite_origin_id")
     private UUID favoriteOriginId;
 
+    //Foreign key
     @ManyToOne
     @JoinColumn(name="origin_product_id")
     private OriginProduct originProduct;
