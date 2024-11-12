@@ -50,6 +50,9 @@ public class HubServiceTest {
 
         // when
     }
+    @DisplayName("허브 리스트 조회 성공")
+    @Test
+    void SUCCESS_getHubList() {}
 
     /**
      * 허브 저장이 실패하는 경우는 다음과 같음

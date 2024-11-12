@@ -1,6 +1,8 @@
 package com.checkhouse.core.service;
 
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -8,31 +10,30 @@ import org.junit.jupiter.api.BeforeEach;
  * 거래 생성 후 등록할 물건을 수거하러 갈 떄
  */
 public class DeliveryServiceTest {
-    @BeforeClass
+    @BeforeAll
     public static void onlyOnce() {}
 
     @BeforeEach
     void setup() {}
 
-    /**
-     * 거래 생성 시 배송 생성
-     */
+    @DisplayName("배송 등록 성공")
     @Test
-    void addDelivery() {}
+    void SUCCESS_addDelivery() {}
 
-    /**
-     * 배송 상태 업데이트
-     */
+    @DisplayName("배송 상태 업데이트")
     @Test
-    void updateDeliveryState() {}
+    void SUCCESS_updateDeliveryStatus() {}
 
-    /**
-     *
-     * 수거 시작 시 송장 번호 업데이트
-     */
+    @DisplayName("송장 번호 등록")
     @Test
-    void updateDeliveryCode() {}
+    void SUCCESS_registerTrackingNumber() {}
 
+    @DisplayName("존재하지 않는 배송지 ID일 경우 배송 등록 실패")
+    @Test
+    void FAIL_addDelivery_invalid_address() {}
 
+    @DisplayName("존재하지 않는 배송 상태로 변경시 업데이트 실패")
+    @Test
+    void FAIL_updateDeliveryStatus_invalid_status() {}
 
 }

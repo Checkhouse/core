@@ -11,4 +11,10 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
 
+    void addUser() {}
+    void getUserInfo() {}
+    void updateUserInfo() {}
+    void updateUserState() {}
+    void getUsers() {}
+
 }

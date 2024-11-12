@@ -67,8 +67,10 @@ public class UserServiceTest {
     /**
      * 혹시 몰라서 일단 추가해둠.
      */
-    @Ignore
-    void addUser() {
+
+    @DisplayName("사용자 저장")
+    @Test
+    void SUCCESS_addUser() {
         // 사용자 정보
         UUID userID = UUID.randomUUID();
         User user = User.builder()
@@ -82,7 +84,7 @@ public class UserServiceTest {
                 .providerID("random id naver")
                 .build();
     }
-
+    @DisplayName("사용자 정보 조회")
     @Test
     void SUCCESS_getUserInfo() {
         // given
@@ -94,7 +96,7 @@ public class UserServiceTest {
         // then
         // 저장된 사용자 정보 일치 확인
     }
-
+    @DisplayName("사용자 정보 수정")
     @Test
     void SUCCESS_updateUserInfo() {
         // 수정된 사용자 정보가 주어짐
@@ -104,6 +106,7 @@ public class UserServiceTest {
         // 저장된 사용자 정보 일치 확인
     }
 
+    @DisplayName("사용자 리스트 조회")
     @Test
     void SUCCESS_getUsers() {
         //
@@ -112,11 +115,10 @@ public class UserServiceTest {
 
         // 조회횐 사용자 정보 일치 확인
     }
+    @DisplayName("사용자 상태 수정")
+    @Test
+    void SUCCESS_updateUserState() {}
 
-    /**
-     * 사용자 조회는 다음과 같을 때 실패함
-     * 1. 사용자가 없는 경우
-     */
     @DisplayName("존재하지 않는 사용자의 경우 사용자 정보 조회 실패")
     @Test
     void FAIL_getUserInfo() {
@@ -130,20 +132,15 @@ public class UserServiceTest {
         // 저장된 사용자 정보 일치 확인
     }
 
-    /**
-     * 사용자 정보 수정은 다음과 같을 때 실패함
-     * 1. 존재하지 않는 사용자
-     * todo validation에서 타입 체크가 안되는 경우가 있나?
-     */
     @DisplayName("존재하지 않는 사용자의 경우 사용자 정보 수정 실패")
     @Test
     void FAIL_updateUserInfo() {}
 
-    /**
-     * 사용자 목록 조회는 다음과 같을 떄 실패함
-     * 1. 모든 사용자 조회가 실패하는 경우가 있나...?
-     */
-    @DisplayName("모종의 이유로 실패")
+    @DisplayName("존재하지 않는 사용자의 경우 사용자 상태 수정 실패")
     @Test
-    void FAIL_getUsers() {}
+    void FAIL_updateUserState_not_found() {}
+
+    @DisplayName("존재하지 않는 사용자 상태로 상태를 변경하려는 경우 실패")
+    @Test
+    void FAIL_updateUserState_invalid_state() {}
 }
