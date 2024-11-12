@@ -6,29 +6,37 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.awt.*;
 import java.util.UUID;
 
-@Table(name = "category")
+@Table(name = "origin_image")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category extends BaseTimeEntity {
+public class OriginImage extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="category_id")
-    private UUID categoryId;
+    @Column(name="origin_image_id")
+    private UUID originImageId;
 
-    @Column(name="name")
-    private String name;
+    @OneToOne
+    @JoinColumn(name="image_id")
+    private ImageURL image;
+
+    @ManyToOne
+    @JoinColumn(name="origin_product_id")
+    private OriginProduct originProduct;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳
     //----------------------------------------------------------------------------
 
     @Builder
-    public Category(
-            String name
+    public OriginImage(
+            ImageURL image,
+            OriginProduct originProduct
     ) {
-        this.name = name;
+        this.image = image;
+        this.originProduct = originProduct;
     }
 }

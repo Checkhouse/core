@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.geo.Point;
 
 import java.util.UUID;
 
@@ -24,9 +25,17 @@ public class Address extends BaseTimeEntity {
     @Column(name="address")
     private String address;
 
+    @Column(name="address_detail", nullable = true)
+    private String addressDetail;
+
+    //TODO: 경위도 사용할 패키지
+    @Column(name="location")
+    private Point location;
+
     @Column(name="zipcode")
     private int zipcode;
 
+    //TODO: PHONE number 관리 어케함?
     @Column(name="phone")
     private int phone;
 
@@ -38,11 +47,15 @@ public class Address extends BaseTimeEntity {
     public Address(
             String name,
             String address,
+            String addressDetail,
+            Point location,
             int zipcode,
             int phone
     ) {
         this.name = name;
         this.address = address;
+        this.addressDetail = addressDetail;
+        this.location = location;
         this.zipcode = zipcode;
         this.phone = phone;
     }

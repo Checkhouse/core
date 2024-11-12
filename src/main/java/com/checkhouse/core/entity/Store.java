@@ -8,27 +8,39 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Table(name = "category")
+@Table(name = "store")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category extends BaseTimeEntity {
+public class Store extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="category_id")
-    private UUID categoryId;
+    @Column(name="store_id")
+    private UUID storeId;
+
+    @OneToOne
+    @JoinColumn(name="address_id")
+    private Address address;
 
     @Column(name="name")
     private String name;
+
+    @Column(name="code")
+    private String code;
+
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳
     //----------------------------------------------------------------------------
 
     @Builder
-    public Category(
-            String name
+    public Store(
+            Address address,
+            String name,
+            String code
     ) {
+        this.address = address;
         this.name = name;
+        this.code = code;
     }
 }

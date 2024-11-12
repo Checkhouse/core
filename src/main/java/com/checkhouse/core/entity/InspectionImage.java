@@ -1,0 +1,47 @@
+package com.checkhouse.core.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Table(name = "inspection_image")
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class InspectionImage extends BaseTimeEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name="inspection_image_id")
+    private UUID inspectionImageId;
+
+    @OneToOne
+    @JoinColumn(name="image_id")
+    private ImageURL image;
+
+    @ManyToOne
+    @JoinColumn(name="inspection_id")
+    private Inspection inspection;
+
+    @OneToOne
+    @JoinColumn(name="used_image_id")
+    private UsedImage usedImage;
+
+    //----------------------------------------------------------------------------
+    // todo 관계 매핑 하는 곳
+    //----------------------------------------------------------------------------
+
+    @Builder
+    public InspectionImage(
+            ImageURL image,
+            Inspection inspection,
+            UsedImage usedImage
+    ) {
+        this.image = image;
+        this.inspection = inspection;
+        this.usedImage = usedImage;
+    }
+}

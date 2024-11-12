@@ -8,27 +8,34 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Table(name = "category")
+@Table(name = "used_image")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Category extends BaseTimeEntity {
+public class UsedImage extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="category_id")
-    private UUID categoryId;
+    @Column(name="used_image_id")
+    private UUID usedImageId;
 
-    @Column(name="name")
-    private String name;
+    @OneToOne
+    @JoinColumn(name="image_id")
+    private ImageURL image;
+
+    @ManyToOne
+    @JoinColumn(name="used_product_id")
+    private UsedProduct usedProduct;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳
     //----------------------------------------------------------------------------
 
     @Builder
-    public Category(
-            String name
+    public UsedImage(
+            ImageURL image,
+            UsedProduct usedProduct
     ) {
-        this.name = name;
+        this.image = image;
+        this.usedProduct = usedProduct;
     }
 }
