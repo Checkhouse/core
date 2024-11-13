@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.util.UUID;
 
 @Table(name = "negotiation")
@@ -21,28 +20,24 @@ public class Negotiation extends BaseTimeEntity {
     private UUID negotiationId;
 
 
-    @Column(name="price")
+    @Column(name="price", nullable = false)
     private int price;
 
-    //TODO: due_date mysql에서 관리할건지?
-    @Column(name="due_date")
-    private Date dueDate;
-
     @Enumerated(EnumType.STRING)
-    private NegotiationState state;
+    private NegotiationState state = NegotiationState.WAITING;
 
 
     //Foreign key
     @ManyToOne
-    @JoinColumn(name="used_product_id")
+    @JoinColumn(name="used_product_id", nullable = false)
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="seller_id")
+    @JoinColumn(name="seller_id", nullable = false)
     private User seller;
 
     @ManyToOne
-    @JoinColumn(name="buyer_id")
+    @JoinColumn(name="buyer_id", nullable = false)
     private User buyer;
 
 
@@ -56,14 +51,12 @@ public class Negotiation extends BaseTimeEntity {
             User seller,
             User buyer,
             NegotiationState state,
-            int price,
-            Date dueDate
+            int price
     ) {
         this.usedProduct = usedProduct;
         this.seller = seller;
         this.buyer = buyer;
         this.state = state;
         this.price = price;
-        this.dueDate = dueDate;
     }
 }

@@ -8,24 +8,24 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Table(name = "collect_delivery")
+@Table(name = "collect")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CollectDelivery extends BaseTimeEntity {
+public class Collect extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="collect_delivery_id")
-    private UUID collectDeliveryId;
+    @Column(name="collect_id")
+    private UUID collectId;
 
 
     //Foreign Key
     @OneToOne
-    @JoinColumn(name="used_product_id")
+    @JoinColumn(name="used_product_id", nullable=false)
     private UsedProduct usedProduct;
 
     @OneToOne
-    @JoinColumn(name="delivery_id")
+    @JoinColumn(name="delivery_id", nullable=false)
     private Delivery delivery;
 
 
@@ -34,7 +34,7 @@ public class CollectDelivery extends BaseTimeEntity {
     //----------------------------------------------------------------------------
 
     @Builder
-    public CollectDelivery(
+    public Collect(
             UsedProduct usedProduct,
             Delivery delivery
 

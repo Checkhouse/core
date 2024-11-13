@@ -19,16 +19,16 @@ public class OriginProduct extends BaseTimeEntity {
     private UUID originProductId;
 
 
-    @Column(name="name")
+    @Column(name="name", nullable = false, unique = true)
     private String name;
 
-    @Column(name="company")
+    @Column(name="company", nullable = false)
     private String company;
 
 
     //Foreign Key
     @ManyToOne
-    @JoinColumn(name="category_id")
+    @JoinColumn(name="category_id", nullable = false)
     private Category category;
 
 

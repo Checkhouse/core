@@ -1,6 +1,5 @@
 package com.checkhouse.core.entity;
 
-import com.checkhouse.core.entity.enums.TransactionState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,17 +19,17 @@ public class Transaction extends BaseTimeEntity {
     private UUID transactionId;
 
 
-    @Enumerated(EnumType.STRING)
-    private TransactionState state;
+    @Column(name="is_completed", nullable = false)
+    private Boolean isCompleted = false;
 
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="used_product_id")
+    @JoinColumn(name="used_product_id", nullable = false)
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", nullable = false)
     private User buyer;
 
 
@@ -42,10 +41,10 @@ public class Transaction extends BaseTimeEntity {
     public Transaction(
             UsedProduct usedProduct,
             User buyer,
-            TransactionState state
+            Boolean isCompleted
     ) {
         this.usedProduct = usedProduct;
         this.buyer = buyer;
-        this.state = state;
+        this.isCompleted = isCompleted;
     }
 }

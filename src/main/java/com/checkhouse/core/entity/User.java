@@ -19,10 +19,10 @@ public class User extends BaseTimeEntity {
     @Column(name="user_id")
     private UUID userId;
 
-    @Column(name="user_name")
+    @Column(name="user_name", nullable = false)
     private String username;
 
-    @Column(name="email")
+    @Column(name="email", nullable = false)
     private String email;
 
     @Column(name="nickname", nullable=true)
@@ -35,10 +35,13 @@ public class User extends BaseTimeEntity {
     private String provider;
 
     @Column(name="provider_id", nullable=true)
-    private String providerID;
+    private String providerId;
 
     @Column(name="profile_image", nullable=true)
     private String profileImageURL;
+
+    @Column(name="is_active", nullable=false)
+    private Boolean isActive = true;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER;
@@ -53,19 +56,21 @@ public class User extends BaseTimeEntity {
             String email,
             String nickname,
             String password,
-            Role role,
             String provider,
-            String providerID,
-            String profileImageURL
+            String providerId,
+            String profileImageURL,
+            Boolean isActive,
+            Role role
     ) {
         this.username = username;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.role = role;
         this.provider = provider;
-        this.providerID = providerID;
+        this.providerId = providerId;
         this.profileImageURL = profileImageURL;
+        this.isActive = isActive;
+        this.role = role;
 
     }
 }

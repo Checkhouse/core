@@ -18,7 +18,7 @@ public class ImageURL extends BaseTimeEntity {
     @Column(name="image_id")
     private UUID imageId;
 
-    @Column(name="image_url")
+    @Column(name="image_url", nullable = false)
     private String imageURL;
 
     //----------------------------------------------------------------------------

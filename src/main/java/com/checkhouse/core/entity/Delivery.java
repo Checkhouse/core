@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Table(name = "delivery")
@@ -30,7 +29,7 @@ public class Delivery extends BaseTimeEntity {
 
     //Foreign key
     @ManyToOne
-    @JoinColumn(name="address_id")
+    @JoinColumn(name="address_id", nullable=false)
     private Address address;
 
     //----------------------------------------------------------------------------

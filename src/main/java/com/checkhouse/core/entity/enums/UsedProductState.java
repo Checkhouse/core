@@ -1,6 +1,5 @@
 package com.checkhouse.core.entity.enums;
 
-// TODO: State관련 ENUM 정리
 public enum UsedProductState {
-    BEFORE_INSPECTION, INSPECTING, SELLING, FINISHED,
+    PRE_SALE, ON_SALE, POST_SALE
 }

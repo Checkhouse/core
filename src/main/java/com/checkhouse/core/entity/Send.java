@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Table(name = "send_delivery")
+@Table(name = "send")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SendDelivery extends BaseTimeEntity {
+public class Send extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name="send_delivery_id")
-    private UUID sendDeliveryId;
+    @Column(name="send_id")
+    private UUID sendId;
 
 
     @Enumerated(EnumType.STRING)
@@ -26,11 +26,11 @@ public class SendDelivery extends BaseTimeEntity {
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="transaction_id")
+    @JoinColumn(name="transaction_id", nullable=false)
     private Transaction transaction;
 
     @OneToOne
-    @JoinColumn(name="delivery_id")
+    @JoinColumn(name="delivery_id", nullable = false)
     private Delivery delivery;
 
 
@@ -40,7 +40,7 @@ public class SendDelivery extends BaseTimeEntity {
     //----------------------------------------------------------------------------
 
     @Builder
-    public SendDelivery(
+    public Send(
             Transaction transaction,
             Delivery delivery,
             DeliveryState state

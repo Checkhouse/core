@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Table(name = "origin_image")
@@ -22,11 +21,11 @@ public class OriginImage extends BaseTimeEntity {
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="image_id")
+    @JoinColumn(name="image_id", nullable=false)
     private ImageURL image;
 
     @ManyToOne
-    @JoinColumn(name="origin_product_id")
+    @JoinColumn(name="origin_product_id", nullable=false)
     private OriginProduct originProduct;
 
     //----------------------------------------------------------------------------

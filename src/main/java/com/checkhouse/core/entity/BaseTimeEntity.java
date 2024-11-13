@@ -22,4 +22,8 @@ public class BaseTimeEntity {
     @LastModifiedDate
     @Column(updatable = true, name = "updated_at")
     protected LocalDateTime lastModifiedDate; //수정시간
+
+    @LastModifiedDate
+    @Column(updatable = false, name = "deleted_at", nullable = true)
+    protected LocalDateTime deletedDate; //삭제 시간, Null일시 살아있음
 }

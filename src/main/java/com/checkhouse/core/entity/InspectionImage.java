@@ -21,15 +21,15 @@ public class InspectionImage extends BaseTimeEntity {
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="image_id")
+    @JoinColumn(name="image_id", nullable=false)
     private ImageURL image;
 
     @OneToOne
-    @JoinColumn(name="used_image_id")
+    @JoinColumn(name="used_image_id", nullable = false)
     private UsedImage usedImage;
 
     @ManyToOne
-    @JoinColumn(name="inspection_id")
+    @JoinColumn(name="inspection_id", nullable = false)
     private Inspection inspection;
 
     //----------------------------------------------------------------------------

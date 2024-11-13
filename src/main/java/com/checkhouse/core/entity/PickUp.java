@@ -1,6 +1,5 @@
 package com.checkhouse.core.entity;
 
-import com.checkhouse.core.entity.enums.PickupState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,17 +19,17 @@ public class PickUp extends BaseTimeEntity {
     private UUID pickupId;
 
 
-    @Enumerated(EnumType.STRING)
-    private PickupState state;
+    @Column(name="is_picked_up", nullable = false)
+    private Boolean isPicked_up = false;
 
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="transaction_id")
+    @JoinColumn(name="transaction_id", nullable = false)
     private Transaction transaction;
 
     @ManyToOne
-    @JoinColumn(name="store_id")
+    @JoinColumn(name="store_id", nullable = false)
     private Store store;
 
 
@@ -42,10 +41,10 @@ public class PickUp extends BaseTimeEntity {
     public PickUp(
             Transaction transaction,
             Store store,
-            PickupState state
+            Boolean isPicked_up
     ) {
         this.transaction = transaction;
         this.store = store;
-        this.state = state;
+        this.isPicked_up = isPicked_up;
     }
 }

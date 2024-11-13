@@ -21,14 +21,12 @@ public class FavoriteUsed extends BaseTimeEntity {
 
     //Foreign key
     @ManyToOne
-    @JoinColumn(name="used_product_id")
+    @JoinColumn(name="used_product_id", nullable = false)
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
-
-
 
 
     //----------------------------------------------------------------------------

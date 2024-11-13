@@ -20,20 +20,20 @@ public class UsedProduct extends BaseTimeEntity {
     private UUID usedProductId;
 
 
-    @Column(name="title")
+    @Column(name="title", nullable = false)
     private String title;
 
-    @Column(name="description")
+    @Column(name="description", nullable = false)
     private String description;
 
-    @Column(name="price")
+    @Column(name="price", nullable = false)
     private int price;
 
-    @Column(name="is_nego_allow")
-    private boolean isNegoAllow;
+    @Column(name="is_nego_allow", nullable = false)
+    private boolean isNegoAllow = true;
 
     @Enumerated(EnumType.STRING)
-    private UsedProductState state;
+    private UsedProductState state = UsedProductState.PRE_SALE;
 
 
     //Foreign key
@@ -42,7 +42,7 @@ public class UsedProduct extends BaseTimeEntity {
     private OriginProduct originProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", nullable = false)
     private User user;
 
 

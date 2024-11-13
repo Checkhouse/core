@@ -19,21 +19,20 @@ public class Inspection extends BaseTimeEntity {
     private UUID inspectionId;
 
 
-    @Column(name="is_done")
-    private boolean isDone;
+    @Column(name="is_done", nullable = false)
+    private boolean isDone = false;
 
-    @Column(name="description")
+    @Column(name="description", nullable = true)
     private String description;
 
 
     //Foreign key
-    // TODO: 검수를 여러번 하는 경우가 존재하는가?
-    @ManyToOne
-    @JoinColumn(name="used_product_id")
+    @OneToOne
+    @JoinColumn(name="used_product_id", nullable = false)
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", nullable = false)
     private User user; //검수자
 
     //----------------------------------------------------------------------------

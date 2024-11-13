@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.util.UUID;
 
 @Table(name = "hub")
@@ -20,16 +19,16 @@ public class Hub extends BaseTimeEntity {
     private UUID hubId;
 
 
-    @Column(name="name")
+    @Column(name="name", nullable = false)
     private String name;
 
-    @Column(name="clustered_id")
+    @Column(name="clustered_id", nullable = false)
     private int clusteredId;
 
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="address_id")
+    @JoinColumn(name="address_id", nullable = false)
     private Address address;
 
     //----------------------------------------------------------------------------
