@@ -20,6 +20,10 @@ public class DeliveryServiceTest {
     @Test
     void SUCCESS_addDelivery() {}
 
+    @DisplayName("배송 리스트 조회 성공")
+    @Test
+    void SUCCESS_getDeliveries() {}
+
     @DisplayName("배송 상태 업데이트")
     @Test
     void SUCCESS_updateDeliveryStatus() {}
@@ -35,5 +39,7 @@ public class DeliveryServiceTest {
     @DisplayName("존재하지 않는 배송 상태로 변경시 업데이트 실패")
     @Test
     void FAIL_updateDeliveryStatus_invalid_status() {}
+
+    // todo 필요한 테스트의 경우 담당자가 재량에 따라 추가
 
 }

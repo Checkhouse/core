@@ -25,7 +25,11 @@ public class FavoriteOriginServiceTest {
     @Test
     void SUCCESS_getUserFavoriteOriginList() {}
 
-    @DisplayName("모종의 이유로 실패")
+    @DisplayName("이미 좋아요에 등록한 중고 물품의 경우 좋아요 등록 실패")
     @Test
-    void FAIL_genericReason() {}
+    void FAIL_addToFavoriteList() {}
+
+    @DisplayName("이미 좋아요 삭제한 중고 물픔의 경우 좋아요 삭제 실패")
+    @Test
+    void FAIL_removeFromFavoriteList() {}
 }

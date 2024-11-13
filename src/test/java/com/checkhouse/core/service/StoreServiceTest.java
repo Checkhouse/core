@@ -29,6 +29,14 @@ public class StoreServiceTest {
     @Test
     void SUCCESS_deleteStore() {}
 
+    @DisplayName("스토어 정보 수정 성공")
+    @Test
+    void SUCCESS_updateStoreName(){}
+
+    @DisplayName("스토어 코드 수정 성공")
+    @Test
+    void SUCCESS_updateStoreCode(){}
+
     @DisplayName("스토어 코드 확인 성공")
     @Test
     void SUCCESS_verifyStoreCode() {}
@@ -36,6 +44,14 @@ public class StoreServiceTest {
     @DisplayName("잘못된 주소일 때 스토어 저장 실패")
     @Test
     void FAIL_addStore_invalid_address() {}
+
+    @DisplayName("잘못된 이름의 경우 스토어 수정 실패")
+    @Test
+    void FAIL_updateStore_name() {}
+
+    @DisplayName("잘못된 코드의 경우 스토어 수정 실패")
+    @Test
+    void FAIL_updateStore_code() {}
 
     @DisplayName("존재하지 않는 스토어의 경우 스토어 삭제 실패")
     @Test
@@ -48,5 +64,6 @@ public class StoreServiceTest {
     @DisplayName("스토어 코드와 입력된 코드가 일치하지 않는 경우 실패")
     @Test
     void FAIL_verifyStoreCode_mismatch() {}
+
 
 }

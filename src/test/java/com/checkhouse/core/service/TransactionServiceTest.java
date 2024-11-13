@@ -34,13 +34,17 @@ public class TransactionServiceTest {
     @Test
     void SUCCESS_getTransactionsForAdmin() {}
 
-    @DisplayName("존재하지 않눈 거래 정보 조회 실패")
+    @DisplayName("존재하지 않는 거래 정보 조회 실패")
     @Test
     void FAIL_getTransaction_not_found() {}
 
     @DisplayName("같은 중고 상품에 대해 거래가 이미 생성된 경우 실패")
     @Test
     void FAIL_addTransaction_already_exists_error() {}
+
+    @DisplayName("존재하지 않는 중고 물품에 대한 거래 등록은 실패")
+    @Test
+    void FAIL_addTransaction_not_found() {}
 
     @DisplayName("존재하지 않는 거래 상태는 변경 실패")
     @Test

@@ -37,6 +37,17 @@ public class NegotiationServiceTest {
     @Test
     void FAIL_addNegotiation_invalid_price() {}
 
+    @DisplayName("존재하지 않는 네고 승인은 실패")
+    @Test
+    void FAIL_approveNegotiation_not_found() {}
+    @DisplayName("이미 승인된 네고에 대한 승인은 실패")
+    @Test
+    void FAIL_approveNegotiation_already_approved() {}
+
+    @DisplayName("이미 거절된 네고에 대한 거절은 실패")
+    @Test
+    void FAIL_approveNegotiation_already_denied() {}
+
     @DisplayName("네고를 거부한 중고 상품에 대한 내고 생성은 실패")
     @Test
     void FAIL_addNegotiation_nego_is_not_allowed() {}

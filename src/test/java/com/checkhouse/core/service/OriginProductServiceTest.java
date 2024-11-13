@@ -42,7 +42,7 @@ public class OriginProductServiceTest {
     @Test
     void SUCCESS_searchOriginProduct() {}
 
-    @DisplayName("중복된 원본 상품일 경우 저장 실패")
+    @DisplayName("중복된 이름의 원본 상품일 경우 저장 실패")
     @Test
     void FAIL_addOriginProduct_already_exist() {
 
@@ -61,4 +61,8 @@ public class OriginProductServiceTest {
     @DisplayName("존재하지 않은 카테고리로 원본 상품 조회 실패")
     @Test
     void FAIL_getOriginProductsByCategory_not_found() {}
+
+    @DisplayName("존재하지 않는 원본 상품 삭제 실패")
+    @Test
+    void FAIL_deleteOriginProduct_not_found() {}
 }

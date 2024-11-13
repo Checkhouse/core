@@ -13,6 +13,10 @@ public class PickupServiceTest {
     @BeforeEach
     void setup() {}
 
+    @DisplayName("픽업 생성")
+    @Test
+    void SUCCESS_addUserPickupList() {}
+
     @DisplayName("사용자의 픽업 리스트 조회 성공")
     @Test
     void SUCCESS_getUserPickupList() {}
@@ -36,7 +40,12 @@ public class PickupServiceTest {
     @DisplayName("특정 스토어의 픽업 리스트 조회 성공")
     @Test
     void SUCCESS_getStorePickupListForAdmin() {}
-
+    @DisplayName("존재하지 않는 거래에 대한 픽업 생성 실패")
+    @Test
+    void FAIL_addUserPickupList_transaction_not_found() {}
+    @DisplayName("존재하지 않는 스토어에 대한 픽업 생성 실패")
+    @Test
+    void FAIL_addUserPickupList_store_not_found() {}
     @DisplayName("존재하지 않는 사용자의 경우 픽업 리스트 조회 실패")
     @Test
     void FAIL_getUserPickupList_user_not_found() {}

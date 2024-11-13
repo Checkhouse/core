@@ -24,10 +24,13 @@ public class UsedProductServiceTest {
     @DisplayName("중고 상품 상태 변경")
     @Test
     void SUCCESS_updateUsedProductStatus() {}
-
+    @DisplayName("중고 상품 정보 수정")
+    @Test
+    void SUCCESS_updateUsedProductInfo() {}
     @DisplayName("중고 상품 정보 조회")
     @Test
     void SUCCESS_getUsedProductDetails() {}
+
 
     @DisplayName("중고 상품 등록 취소")
     @Test
@@ -56,6 +59,9 @@ public class UsedProductServiceTest {
     @DisplayName("중고 상품이 존재하지 않을 때 상태 변경 실패")
     @Test
     void FAIL_updateUsedProductStatus_not_found() {} // 존재하지 않는 상품 상태 변경 에러
+    @DisplayName("중고 상품이 존재하지 않을 때 정보 수정 실패")
+    @Test
+    void FAIL_updateUsedProduct_not_found() {} // 존재하지 않는 상품 상태 변경 에러
 
     @DisplayName("중고 상품이 존재하지 않을 때 조회 실패")
     @Test

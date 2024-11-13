@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class SendService {
+public class SendServiceTest {
     @BeforeAll
     public static void onlyOnce() {}
 

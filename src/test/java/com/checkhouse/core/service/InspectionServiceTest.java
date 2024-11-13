@@ -29,11 +29,6 @@ public class InspectionServiceTest {
     @Test
     void SUCCESS_getInspectionListForAdmin() {}
 
-    // todo?
-    @DisplayName("판매로 등록된 상품과 검수 상품이 다를 때 실패")
-    @Test
-    void FAIL_addInspectionItem_mismatched_product() {}
-
     @DisplayName("판매 등록이 안된 상품일 때 실패")
     @Test
     void FAIL_addInspectionItem_not_registered_for_sale() {}
@@ -41,4 +36,12 @@ public class InspectionServiceTest {
     @DisplayName("존재하지 않는 검수자가 검수했을 때 실패")
     @Test
     void FAIL_inspectItem_not_found_inspector() {}
+
+    @DisplayName("이미 완료된 검수의 경우 검수 등록 실패")
+    @Test
+    void FAIL_addInspectionItem_already_done() {}
+
+    @DisplayName("이미 완료된 검수의 경우 검수 상태 변경 실패")
+    @Test
+    void FAIL_updateInspectionStatus_already_done() {}
 }

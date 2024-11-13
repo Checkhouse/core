@@ -25,7 +25,11 @@ public class FavoriteUsedServiceTest {
     @Test
     void SUCCESS_getUsedProductLikeList() {}
 
-    @DisplayName("모종의 이유로 실패")
+    @DisplayName("이미 좋아요를 추가한 경우 실패")
     @Test
-    void FAIL_genericReason() {}
+    void FAIL_addUsedProductLike_conflict() {}
+
+    @DisplayName("이미 중고 상품 좋아요 삭제를 한 경우 삭제 실패")
+    @Test
+    void FAIL_deleteUsedProductLike() {}
 }
