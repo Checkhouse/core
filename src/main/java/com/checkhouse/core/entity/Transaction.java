@@ -19,17 +19,26 @@ public class Transaction extends BaseTimeEntity {
     private UUID transactionId;
 
 
-    @Column(name="is_completed", nullable = false)
+    @Column(
+            name="is_completed",
+            nullable = false
+    )
     private Boolean isCompleted = false;
 
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="used_product_id", nullable = false)
+    @JoinColumn(
+            name="used_product_id",
+            nullable = false
+    )
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(
+            name="user_id",
+            nullable = false
+    )
     private User buyer;
 
 

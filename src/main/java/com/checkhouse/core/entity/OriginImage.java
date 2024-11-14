@@ -21,11 +21,17 @@ public class OriginImage extends BaseTimeEntity {
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="image_id", nullable=false)
+    @JoinColumn(
+            name="image_id",
+            nullable=false
+    )
     private ImageURL image;
 
     @ManyToOne
-    @JoinColumn(name="origin_product_id", nullable=false)
+    @JoinColumn(
+            name="origin_product_id",
+            nullable=false
+    )
     private OriginProduct originProduct;
 
     //----------------------------------------------------------------------------

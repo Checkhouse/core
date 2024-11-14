@@ -18,7 +18,10 @@ public class Category extends BaseTimeEntity {
     @Column(name="category_id")
     private UUID categoryId;
 
-    @Column(name="name", nullable = false)
+    @Column(
+            name="name",
+            nullable = false
+    )
     private String name;
 
     //----------------------------------------------------------------------------

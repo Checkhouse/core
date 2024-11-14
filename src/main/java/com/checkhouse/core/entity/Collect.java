@@ -21,11 +21,17 @@ public class Collect extends BaseTimeEntity {
 
     //Foreign Key
     @OneToOne
-    @JoinColumn(name="used_product_id", nullable=false)
+    @JoinColumn(
+            name="used_product_id",
+            nullable=false
+    )
     private UsedProduct usedProduct;
 
     @OneToOne
-    @JoinColumn(name="delivery_id", nullable=false)
+    @JoinColumn(
+            name="delivery_id",
+            nullable=false
+    )
     private Delivery delivery;
 
 

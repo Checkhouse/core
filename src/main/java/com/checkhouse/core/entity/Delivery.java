@@ -20,16 +20,20 @@ public class Delivery extends BaseTimeEntity {
     private UUID deliveryId;
 
 
-    @Column(name="tracking_code", nullable=true)
+    @Column(name="tracking_code")
     private String trackingCode;
 
+    @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private DeliveryState deliveryState;
+    private DeliveryState deliveryState = DeliveryState.PRE_DELIVERY;
 
 
     //Foreign key
     @ManyToOne
-    @JoinColumn(name="address_id", nullable=false)
+    @JoinColumn(
+            name="address_id",
+            nullable=false
+    )
     private Address address;
 
     //----------------------------------------------------------------------------

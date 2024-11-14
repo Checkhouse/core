@@ -21,11 +21,17 @@ public class UsedImage extends BaseTimeEntity {
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="image_id", nullable=false)
+    @JoinColumn(
+            name="image_id",
+            nullable=false
+    )
     private ImageURL image;
 
     @ManyToOne
-    @JoinColumn(name="used_product_id", nullable=false)
+    @JoinColumn(
+            name="used_product_id",
+            nullable=false
+    )
     private UsedProduct usedProduct;
 
     //----------------------------------------------------------------------------

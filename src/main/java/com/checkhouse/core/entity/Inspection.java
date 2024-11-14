@@ -19,20 +19,29 @@ public class Inspection extends BaseTimeEntity {
     private UUID inspectionId;
 
 
-    @Column(name="is_done", nullable = false)
+    @Column(
+            name="is_done",
+            nullable = false
+    )
     private boolean isDone = false;
 
-    @Column(name="description", nullable = true)
+    @Column(name="description")
     private String description;
 
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="used_product_id", nullable = false)
+    @JoinColumn(
+            name="used_product_id",
+            nullable = false
+    )
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(
+            name="user_id",
+            nullable = false
+    )
     private User user; //검수자
 
     //----------------------------------------------------------------------------

@@ -19,17 +19,26 @@ public class PickUp extends BaseTimeEntity {
     private UUID pickupId;
 
 
-    @Column(name="is_picked_up", nullable = false)
+    @Column(
+            name="is_picked_up",
+            nullable = false
+    )
     private Boolean isPicked_up = false;
 
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="transaction_id", nullable = false)
+    @JoinColumn(
+            name="transaction_id",
+            nullable = false
+    )
     private Transaction transaction;
 
     @ManyToOne
-    @JoinColumn(name="store_id", nullable = false)
+    @JoinColumn(
+            name="store_id",
+            nullable = false
+    )
     private Store store;
 
 

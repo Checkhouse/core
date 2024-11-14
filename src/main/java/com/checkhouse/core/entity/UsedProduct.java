@@ -20,18 +20,34 @@ public class UsedProduct extends BaseTimeEntity {
     private UUID usedProductId;
 
 
-    @Column(name="title", nullable = false)
+    @Column(
+            name="title",
+            nullable = false
+    )
     private String title;
 
-    @Column(name="description", nullable = false)
+    @Column(
+            name="description",
+            nullable = false
+    )
     private String description;
 
-    @Column(name="price", nullable = false)
+    @Column(
+            name="price",
+            nullable = false
+    )
     private int price;
 
-    @Column(name="is_nego_allow", nullable = false)
+    @Column(
+            name="is_nego_allow",
+            nullable = false
+    )
     private boolean isNegoAllow = true;
 
+    @Column(
+            name = "state",
+            nullable = false
+    )
     @Enumerated(EnumType.STRING)
     private UsedProductState state = UsedProductState.PRE_SALE;
 

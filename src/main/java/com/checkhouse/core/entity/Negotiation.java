@@ -20,24 +20,40 @@ public class Negotiation extends BaseTimeEntity {
     private UUID negotiationId;
 
 
-    @Column(name="price", nullable = false)
+    @Column(
+            name="price",
+            nullable = false
+    )
     private int price;
 
+    @Column(
+            name = "state",
+            nullable = false
+    )
     @Enumerated(EnumType.STRING)
     private NegotiationState state = NegotiationState.WAITING;
 
 
     //Foreign key
     @ManyToOne
-    @JoinColumn(name="used_product_id", nullable = false)
+    @JoinColumn(
+            name="used_product_id",
+            nullable = false
+    )
     private UsedProduct usedProduct;
 
     @ManyToOne
-    @JoinColumn(name="seller_id", nullable = false)
+    @JoinColumn(
+            name="seller_id",
+            nullable = false
+    )
     private User seller;
 
     @ManyToOne
-    @JoinColumn(name="buyer_id", nullable = false)
+    @JoinColumn(
+            name="buyer_id",
+            nullable = false
+    )
     private User buyer;
 
 

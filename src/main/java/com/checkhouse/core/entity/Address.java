@@ -19,22 +19,37 @@ public class Address extends BaseTimeEntity {
     @Column(name="address_id")
     private UUID addressId;
 
-    @Column(name="name", nullable = false)
+    @Column(
+            name="name",
+            nullable = false
+    )
     private String name;
 
-    @Column(name="address", nullable = false)
+    @Column(
+            name="address",
+            nullable = false
+    )
     private String address;
 
-    @Column(name="address_detail", nullable = true)
+    @Column(name="address_detail")
     private String addressDetail;
 
-    @Column(name="location", nullable = false)
+    @Column(
+            name="location",
+            nullable = false
+    )
     private Point location;
 
-    @Column(name="zipcode", nullable = false)
+    @Column(
+            name="zipcode",
+            nullable = false
+    )
     private int zipcode;
 
-    @Column(name="phone", nullable = false)
+    @Column(
+            name="phone",
+            nullable = false
+    )
     private String phone;
 
     //----------------------------------------------------------------------------

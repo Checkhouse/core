@@ -19,30 +19,43 @@ public class User extends BaseTimeEntity {
     @Column(name="user_id")
     private UUID userId;
 
-    @Column(name="user_name", nullable = false)
+    @Column(
+            name="user_name",
+            nullable = false
+    )
     private String username;
 
-    @Column(name="email", nullable = false)
+    @Column(
+            name="email",
+            nullable = false
+    )
     private String email;
 
-    @Column(name="nickname", nullable=true)
+    @Column(name="nickname")
     private String nickname = null;
 
-    @Column(name="password", nullable=true)
+    @Column(name="password")
     private String password = null;
 
-    @Column(name="provider", nullable=true)
+    @Column(name="provider")
     private String provider;
 
-    @Column(name="provider_id", nullable=true)
+    @Column(name="provider_id")
     private String providerId;
 
-    @Column(name="profile_image", nullable=true)
+    @Column(name="profile_image")
     private String profileImageURL;
 
-    @Column(name="is_active", nullable=false)
+    @Column(
+            name="is_active",
+            nullable=false
+    )
     private Boolean isActive = true;
 
+    @Column(
+            name="role",
+            nullable = false
+    )
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_USER;
 

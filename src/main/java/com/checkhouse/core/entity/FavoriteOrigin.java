@@ -20,11 +20,17 @@ public class FavoriteOrigin extends BaseTimeEntity {
 
     //Foreign key
     @ManyToOne
-    @JoinColumn(name="origin_product_id", nullable = false)
+    @JoinColumn(
+            name="origin_product_id",
+            nullable = false
+    )
     private OriginProduct originProduct;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(
+            name="user_id",
+            nullable = false
+    )
     private User user;
 
 

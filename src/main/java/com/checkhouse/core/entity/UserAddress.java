@@ -21,15 +21,24 @@ public class UserAddress extends BaseTimeEntity {
 
     //Foreign key
     @OneToOne
-    @JoinColumn(name="address_id", nullable=false)
+    @JoinColumn(
+            name="address_id",
+            nullable=false
+    )
     private Address address;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(
+            name="user_id",
+            nullable=false
+    )
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="hub_id", nullable = false)
+    @JoinColumn(
+            name="hub_id",
+            nullable = false
+    )
     private Hub hub;
 
 
