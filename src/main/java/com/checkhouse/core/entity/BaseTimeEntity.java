@@ -16,10 +16,20 @@ import java.time.LocalDateTime;
 @Getter
 public class BaseTimeEntity {
     @CreatedDate
-    @Column(updatable = false, name = "created_at")
+    @Column(
+            name = "created_at",
+            updatable = false
+    )
     private LocalDateTime createdDate; //생성시간
 
     @LastModifiedDate
-    @Column(updatable = true, name = "updated_at")
+    @Column(name = "updated_at")
     protected LocalDateTime lastModifiedDate; //수정시간
+
+    @LastModifiedDate
+    @Column(
+            name = "deleted_at",
+            updatable = false
+    )
+    protected LocalDateTime deletedDate = null; //삭제 시간, Null일시 살아있음
 }
