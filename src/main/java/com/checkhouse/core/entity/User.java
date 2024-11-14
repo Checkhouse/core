@@ -17,7 +17,7 @@ public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
-    private UUID userId;
+    private UUID userID;
 
     @Column(
             name="user_name",
@@ -38,10 +38,10 @@ public class User extends BaseTimeEntity {
     private String password = null;
 
     @Column(name="provider")
-    private String provider;
+    private String provider = null;
 
     @Column(name="provider_id")
-    private String providerId;
+    private String providerId = null;
 
     @Column(name="profile_image")
     private String profileImageURL;
@@ -65,6 +65,7 @@ public class User extends BaseTimeEntity {
 
     @Builder
     public User(
+            UUID userID,
             String username,
             String email,
             String nickname,
@@ -75,6 +76,7 @@ public class User extends BaseTimeEntity {
             Boolean isActive,
             Role role
     ) {
+        this.userID = userID;
         this.username = username;
         this.email = email;
         this.nickname = nickname;
