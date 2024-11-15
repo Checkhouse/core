@@ -98,8 +98,21 @@ public class User extends BaseTimeEntity {
                 this.nickname,
                 this.password,
                 this.provider,
-                this.providerID,
+                this.providerId,
+                this.isActive,
                 this.role
         );
+    }
+
+    public void updateUserState(Boolean state) {
+        this.isActive = state;
+    }
+
+    public void updateUserInfo(
+            String name,
+            String nickname
+    ) {
+        this.username = name;
+        this.nickname = nickname;
     }
 }

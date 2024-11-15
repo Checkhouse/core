@@ -17,6 +17,9 @@ public record UserDTO(
 
         String provider,
         String providerID,
+
+        Boolean isActive,
+
         Role role
 
 ) {}

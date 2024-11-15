@@ -30,4 +30,25 @@ public class UserRequest {
         @NotNull
         String role;
     }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateUserInfo {
+        String username;
+        // nullable
+        String nickname;
+        String email;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateUserState {
+        String email;
+        // nullable
+        Boolean state;
+    }
+
 }
