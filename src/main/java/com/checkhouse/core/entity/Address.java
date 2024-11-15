@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.AddressDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,6 +59,7 @@ public class Address extends BaseTimeEntity {
 
     @Builder
     public Address(
+            UUID addressId,
             String name,
             String address,
             String addressDetail,
@@ -65,11 +67,24 @@ public class Address extends BaseTimeEntity {
             int zipcode,
             String phone
     ) {
+        this.addressId = addressId;
         this.name = name;
         this.address = address;
         this.addressDetail = addressDetail;
         this.location = location;
         this.zipcode = zipcode;
         this.phone = phone;
+    }
+
+    public AddressDTO toDTO() {
+        return new AddressDTO(
+                this.addressId,
+                this.name,
+                this.address,
+                this.zipcode,
+                this.phone,
+                this.addressDetail,
+                this.location
+        );
     }
 }
