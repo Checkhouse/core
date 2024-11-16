@@ -34,7 +34,11 @@ public class CategoryService {
         return savedCategory.toDTO();
     }
 
-    CategoryDTO getCategory(UUID categoryId) {}
+    CategoryDTO getCategory(UUID categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
+        return category.toDTO();
+    }
 
     CategoryDTO updateCategoryById(CategoryRequest.UpdateCategoryByIdRequest req) {
         //ID가 존재하는지 확인
@@ -49,7 +53,18 @@ public class CategoryService {
     }
 
 
-    void deleteCategory(CategoryRequest.DeleteCategoryRequest req) {}
+    void deleteCategory(CategoryRequest.DeleteCategoryRequest req) {
+        //ID가 존재하는지 확인
+        Category category = categoryRepository.findById(req.getCategoryId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
 
-    List<CategoryDTO> getCategories() {}
+        category.setDeleted();
+    }
+
+    List<CategoryDTO> getCategories() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(Category::toDTO)
+                .toList();
+    }
 }
