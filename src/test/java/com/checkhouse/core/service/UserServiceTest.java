@@ -32,29 +32,7 @@ public class UserServiceTest {
     }
 
     @BeforeEach
-    void setup() {
-        // naver 로그인 사용자
-        mockkedUser = User.builder()
-                .userID(UUID.randomUUID())
-                .username("test user")
-                .email("test@test.com")
-                .nickname("test nickname")
-                .password(null)
-                .role(Role.ROLE_USER)
-                .provider("naver")
-                .providerID("random id naver")
-                .build();
-
-        // email 로그인 사용자
-        mockkedUser = User.builder()
-                .userID(UUID.randomUUID())
-                .username("test user")
-                .email("test@test.com")
-                .nickname("test nickname")
-                .password("test password")
-                .role(Role.ROLE_USER)
-                .build();
-    }
+    void setup() { }
 
     @AfterEach
     void cleanEach() {}
@@ -70,20 +48,7 @@ public class UserServiceTest {
 
     @DisplayName("사용자 저장")
     @Test
-    void SUCCESS_addUser() {
-        // 사용자 정보
-        UUID userID = UUID.randomUUID();
-        User user = User.builder()
-                .userID(userID)
-                .username("test user")
-                .email("test@test.com")
-                .nickname("test nickname")
-                .password(null)
-                .role(Role.ROLE_USER)
-                .provider("naver")
-                .providerID("random id naver")
-                .build();
-    }
+    void SUCCESS_addUser() { }
     @DisplayName("사용자 정보 조회")
     @Test
     void SUCCESS_getUserInfo() {

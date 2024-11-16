@@ -15,7 +15,8 @@ public class AddressRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddAddressRequest {
-        private UUID addressId = UUID.randomUUID();
+        @NotNull
+        UUID addressId;
 
         @NotNull
         String name;
@@ -27,6 +28,19 @@ public class AddressRequest {
         String phone;
 
         String AddressDetail;
+    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateAddressRequest {
+        //UUID는 따로 받기
+        String name;
+        String address;
+        int zipcode;
+        String phone;
+
+        String addressDetail;
     }
 
 }

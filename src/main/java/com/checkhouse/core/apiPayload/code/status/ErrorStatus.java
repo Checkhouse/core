@@ -20,7 +20,15 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // token
     _INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN401", "잘못된 코드입니다."),
+
+
+    // address
+    // FIXME: Id관련 오류는 통합해도 되지 않을까? (존재하지 않는 Uuid)
+    _ADDRESS_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRID404", "UUID를 찾을 수 없습니다."),
+
+
     ;
+
 
     private final HttpStatus httpStatus;
     private final String code;

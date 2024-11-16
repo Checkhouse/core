@@ -2,18 +2,18 @@ package com.checkhouse.core.entity;
 
 import com.checkhouse.core.dto.AddressDTO;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.geo.Point;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table(name = "address")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
 public class Address extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -75,6 +75,22 @@ public class Address extends BaseTimeEntity {
         this.zipcode = zipcode;
         this.phone = phone;
     }
+    public void update(
+            String name,
+            String address,
+            String addressDetail,
+            int zipcode,
+            Point location,
+            String phone
+    ) {
+        this.name = name;
+        this.address = address;
+        this.addressDetail = addressDetail;
+        this.zipcode = zipcode;
+        this.location = location;
+        this.phone = phone;
+    }
+
 
     public AddressDTO toDTO() {
         return new AddressDTO(

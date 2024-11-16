@@ -32,4 +32,7 @@ public class BaseTimeEntity {
             updatable = false
     )
     protected LocalDateTime deletedDate = null; //삭제 시간, Null일시 살아있음
+
+    //soft delete 코드 추가
+    public void setDeleted() {this.deletedDate = LocalDateTime.now();}
 }

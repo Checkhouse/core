@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.CategoryDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,8 +31,17 @@ public class Category extends BaseTimeEntity {
 
     @Builder
     public Category(
+            UUID categoryId,
             String name
     ) {
+        this.categoryId = categoryId;
         this.name = name;
+    }
+
+    public CategoryDTO toDTO() {
+        return new CategoryDTO(
+                this.categoryId,
+                this.name
+        );
     }
 }
