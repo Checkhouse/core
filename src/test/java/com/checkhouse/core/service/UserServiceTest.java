@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 
     private User mockkedUser;
-    private User mockkedUserWithEmail;
+    private User mockedUserWithEmail;
     @BeforeAll
     public static void beforeAll() {
         System.out.println("Before all");
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.*;
                 .build();
 
         // email 로그인 사용자
-        mockkedUserWithEmail = User.builder()
+        mockedUserWithEmail = User.builder()
                 .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
@@ -116,14 +116,14 @@ import static org.mockito.Mockito.*;
 
         // mocking
         when(userRepository.findUserByEmail( any() )).thenReturn(Optional.empty());
-        when(userRepository.save( any() )).thenReturn(mockkedUserWithEmail);
+        when(userRepository.save( any() )).thenReturn(mockedUserWithEmail);
 
         //when
         UserDTO result = userService.addUser(request);
 
         //then
         assertNotNull(result);
-        assertEquals(mockkedUserWithEmail.getUserId(), result.userId());
+        assertEquals(mockedUserWithEmail.getUserId(), result.userId());
         assertNull(result.provider());
 
         // 사용자 찾기는 한 번만 이뤄져야함.
@@ -186,7 +186,7 @@ import static org.mockito.Mockito.*;
     @Test
     void SUCCESS_getUsers() {
         // 사용자 조회
-        when(userRepository.findAll( )).thenReturn(List.of(mockkedUser, mockkedUserWithEmail));
+        when(userRepository.findAll( )).thenReturn(List.of(mockkedUser, mockedUserWithEmail));
         // todo 더 깔끔한 방법은 없을까?
 
         List<UserDTO> result = userService.getUsers();

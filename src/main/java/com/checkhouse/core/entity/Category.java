@@ -30,8 +30,10 @@ public class Category extends BaseTimeEntity {
 
     @Builder
     public Category(
+            UUID id,
             String name
     ) {
+        this.categoryId = id;
         this.name = name;
     }
 }
