@@ -24,8 +24,12 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // address
     // FIXME: Id관련 오류는 통합해도 되지 않을까? (존재하지 않는 Uuid)
-    _ADDRESS_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDRID404", "UUID를 찾을 수 없습니다."),
+    _ADDRESS_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "ADDR4041", "Address ID를 찾을 수 없습니다."),
 
+    // category
+    _CATEGORY_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4041", "Category ID를 찾을 수 없습니다."),
+    _CATEGORY_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4042", "카테고리를 찾을 수 없습니다."),
+    _CATEGORY_ALREADY_EXIST(HttpStatus.CONFLICT, "CATEGORY409", "이미 존재하는 카테고리 입니다.")
 
     ;
 

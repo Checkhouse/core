@@ -263,6 +263,7 @@ public class AddressServiceTest {
         verify(addressRepository, times(1)).findById(invalidUUID);
     }
 
+    //TODO: soft delete testcode
     @DisplayName("삭제된 주소의 경우 조회 실패")
     @Test
     void FAIL_getAddress_deleted_address() {

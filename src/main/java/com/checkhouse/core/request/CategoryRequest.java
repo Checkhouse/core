@@ -17,10 +17,29 @@ public class CategoryRequest {
     public static class AddCategoryRequest {
 
         @NotNull
+        String name;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateCategoryByIdRequest {
+        @NotNull
         UUID categoryId;
 
         @NotNull
         String name;
+    }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteCategoryRequest {
+        @NotNull
+        UUID categoryId;
     }
 
 }
