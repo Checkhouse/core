@@ -30,8 +30,10 @@ public class ImageURL extends BaseTimeEntity {
 
     @Builder
     public ImageURL(
+            UUID imageId,
             String imageURL
     ) {
+        this.imageId = imageId;
         this.imageURL = imageURL;
 
     }

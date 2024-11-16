@@ -29,7 +29,11 @@ public enum ErrorStatus implements BaseErrorCode {
     // category
     _CATEGORY_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4041", "Category ID를 찾을 수 없습니다."),
     _CATEGORY_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "CATEGORY4042", "카테고리를 찾을 수 없습니다."),
-    _CATEGORY_ALREADY_EXIST(HttpStatus.CONFLICT, "CATEGORY409", "이미 존재하는 카테고리 입니다.")
+    _CATEGORY_ALREADY_EXIST(HttpStatus.CONFLICT, "CATEGORY409", "이미 존재하는 카테고리 입니다."),
+
+    // image
+    _IMAGE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE404", "Image ID를 찾을 수 없습니다."),
+    _IMAGE_URL_NOT_EXIST(HttpStatus.NOT_FOUND, "IMAGE4041", "유효하지 않는 URL입니다.")
 
     ;
 
