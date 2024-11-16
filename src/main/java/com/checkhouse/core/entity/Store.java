@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.StoreDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,12 +48,23 @@ public class Store extends BaseTimeEntity {
 
     @Builder
     public Store(
+            UUID storeId,
             Address address,
             String name,
             String code
     ) {
+        this.storeId = storeId;
         this.address = address;
         this.name = name;
         this.code = code;
+    }
+
+    public StoreDTO toDTO() {
+        return new StoreDTO(
+                this.storeId,
+                this.name,
+                this.code,
+                this.address.toDTO()
+        );
     }
 }
