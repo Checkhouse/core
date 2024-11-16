@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -84,6 +85,11 @@ public class UserService {
         } catch(RuntimeException e) {
             throw new RuntimeException("사용자 리스트 조회 에러");
         }
+    }
+    User findUser(UUID userId){
+        return userRepository.findById(userId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
+        );
     }
 
 }

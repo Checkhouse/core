@@ -105,5 +105,10 @@ public class OriginProductService {
 
         );
     }
+    public OriginProduct findOriginProduct(UUID originProductId) {
+        return originProductRepository.findById(originProductId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND)
+        );
+    }
 
 }

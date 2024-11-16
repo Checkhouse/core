@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.UsedProductDTO;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -68,6 +69,7 @@ public class UsedProduct extends BaseTimeEntity {
 
     @Builder
     public UsedProduct(
+            UUID usedProductId,
             OriginProduct originProduct,
             User user,
             UsedProductState state,
@@ -76,6 +78,7 @@ public class UsedProduct extends BaseTimeEntity {
             int price,
             boolean isNegoAllow
     ) {
+        this.usedProductId = usedProductId;
         this.originProduct = originProduct;
         this.user = user;
         this.state = state;
@@ -83,5 +86,36 @@ public class UsedProduct extends BaseTimeEntity {
         this.description = description;
         this.price = price;
         this.isNegoAllow = isNegoAllow;
+    }
+    public UsedProductDTO toDto() {
+        return new UsedProductDTO(
+                this.usedProductId,
+                this.title,
+                this.description,
+                this.price,
+                this.state,
+                this.isNegoAllow,
+                this.user.getUserId(),
+                this.originProduct.getOriginProductId()
+        );
+    }
+
+    public void updateUsedProductInfo(
+            String title,
+            String description,
+            int price
+    ) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+    }
+
+    public void updateUsedProductNegoAllow(boolean state) {
+        this.isNegoAllow = state;
+    }
+
+    public void updateUsedProductOriginProduct() {}
+    public void updateUsedProductState(UsedProductState status) {
+        this.state = status;
     }
 }

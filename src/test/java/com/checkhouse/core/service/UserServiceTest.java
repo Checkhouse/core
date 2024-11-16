@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
     private UserService userService;
 
 
-    private User mockkedUser;
+    private User mockedUser;
     private User mockedUserWithEmail;
     @BeforeAll
     public static void beforeAll() {
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.*;
     @BeforeEach
     void setup() {
         // naver 로그인 사용자
-        mockkedUser = User.builder()
+        mockedUser = User.builder()
                 .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
@@ -90,12 +90,12 @@ import static org.mockito.Mockito.*;
 
         // mocking
         when(userRepository.findUserByEmail( any() )).thenReturn(Optional.empty());
-        when(userRepository.save( any() )).thenReturn(mockkedUser);
+        when(userRepository.save( any() )).thenReturn(mockedUser);
         //when
         UserDTO result = userService.addUser(request);
 
         assertNotNull(result);
-        assertEquals(mockkedUser.getUserId(), result.userId());
+        assertEquals(mockedUser.getUserId(), result.userId());
 
         // 사용자 찾기는 한 번만 이뤄져야함.
         verify(userRepository, times(1)).findUserByEmail( any() );
@@ -138,11 +138,11 @@ import static org.mockito.Mockito.*;
         String userId = "test@test.com";
         // when
         // 사용자 정보를 저장
-        when(userRepository.findUserByEmail( any() )).thenReturn(Optional.of(mockkedUser));
+        when(userRepository.findUserByEmail( any() )).thenReturn(Optional.of(mockedUser));
 
         UserDTO result = userService.getUserInfo(userId);
 
-        assertEquals(mockkedUser.getEmail(), result.email());
+        assertEquals(mockedUser.getEmail(), result.email());
         // then
         // 저장된 사용자 정보 일치 확인
 
@@ -158,17 +158,17 @@ import static org.mockito.Mockito.*;
                 .build();
 
 
-        when(userRepository.findUserByEmail( any() )).thenReturn(Optional.of(mockkedUser));
+        when(userRepository.findUserByEmail( any() )).thenReturn(Optional.of(mockedUser));
         // todo 더 깔끔한 방법은 없을까?
         when(userRepository.save( any() )).thenReturn(
                 User.builder()
-                        .userId(mockkedUser.getUserId())
+                        .userId(mockedUser.getUserId())
                         .nickname(request.getNickname())
                         .username(request.getUsername())
-                        .role(mockkedUser.getRole())
-                        .isActive(mockkedUser.getIsActive())
-                        .provider(mockkedUser.getProvider())
-                        .providerId(mockkedUser.getProviderId())
+                        .role(mockedUser.getRole())
+                        .isActive(mockedUser.getIsActive())
+                        .provider(mockedUser.getProvider())
+                        .providerId(mockedUser.getProviderId())
                         .build()
         );
 
@@ -177,7 +177,7 @@ import static org.mockito.Mockito.*;
 
 
         // 저장된 사용자 정보 일치 확인
-        assertEquals(mockkedUser.getNickname(), result.nickname());
+        assertEquals(mockedUser.getNickname(), result.nickname());
 
         verify(userRepository, times(1)).findUserByEmail( any() );
     }
@@ -186,7 +186,7 @@ import static org.mockito.Mockito.*;
     @Test
     void SUCCESS_getUsers() {
         // 사용자 조회
-        when(userRepository.findAll( )).thenReturn(List.of(mockkedUser, mockedUserWithEmail));
+        when(userRepository.findAll( )).thenReturn(List.of(mockedUser, mockedUserWithEmail));
         // todo 더 깔끔한 방법은 없을까?
 
         List<UserDTO> result = userService.getUsers();
@@ -203,16 +203,16 @@ import static org.mockito.Mockito.*;
                 .state(false)
                 .build();
 
-        when(userRepository.findUserByEmail(any())).thenReturn(Optional.of(mockkedUser));
+        when(userRepository.findUserByEmail(any())).thenReturn(Optional.of(mockedUser));
         when(userRepository.save( any() )).thenReturn(
                 User.builder()
-                        .userId(mockkedUser.getUserId())
-                        .nickname(mockkedUser.getNickname())
-                        .username(mockkedUser.getUsername())
-                        .role(mockkedUser.getRole())
+                        .userId(mockedUser.getUserId())
+                        .nickname(mockedUser.getNickname())
+                        .username(mockedUser.getUsername())
+                        .role(mockedUser.getRole())
                         .isActive(request.getState())
-                        .provider(mockkedUser.getProvider())
-                        .providerId(mockkedUser.getProviderId())
+                        .provider(mockedUser.getProvider())
+                        .providerId(mockedUser.getProviderId())
                         .build()
         );
 
@@ -240,7 +240,7 @@ import static org.mockito.Mockito.*;
                 .build();
 
         // mocking
-        when(userRepository.findUserByEmail( any() )).thenReturn(Optional.of(mockkedUser));
+        when(userRepository.findUserByEmail( any() )).thenReturn(Optional.of(mockedUser));
         //when
         assertThrows(GeneralException.class, () -> {
             userService.addUser(request);
