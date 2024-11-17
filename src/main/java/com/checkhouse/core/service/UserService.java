@@ -22,20 +22,20 @@ public class UserService {
 
     UserDTO addUser(UserRequest.AddUserRequest req) {
         // 중복 검사
-        userRepository.findUserByEmail(req.getEmail()).ifPresent(
+        userRepository.findUserByEmail(req.email()).ifPresent(
                 (a) -> {
                     throw new GeneralException(ErrorStatus._USER_ALREADY_EXIST);
                 }
         );
         User savedUser = userRepository.save(
                 User.builder()
-                        .username(req.getUsername())
-                        .email(req.getEmail())
-                        .nickname(req.getNickname())
-                        .password(req.getPassword())
-                        .provider(req.getProvider())
-                        .providerId(req.getProviderID())
-                        .role(Role.valueOf(req.getRole()))
+                        .username(req.username())
+                        .email(req.email())
+                        .nickname(req.nickname())
+                        .password(req.password())
+                        .provider(req.provider())
+                        .providerId(req.providerId())
+                        .role(Role.valueOf(req.role()))
                         .build()
         );
         // 중복되지 않는 사용자의 경우
@@ -49,11 +49,11 @@ public class UserService {
         return user.toDto();
     }
     UserDTO updateUserInfo(UserRequest.UpdateUserInfo req) {
-        User user = userRepository.findUserByEmail(req.getEmail()).orElseThrow(
+        User user = userRepository.findUserByEmail(req.email()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );
 
-        user.updateUserInfo(req.getUsername(), req.getNickname());
+        user.updateUserInfo(req.username(), req.nickname());
 
         try {
             userRepository.save(user);
@@ -64,11 +64,11 @@ public class UserService {
         return user.toDto();
     }
     UserDTO updateUserState(UserRequest.UpdateUserState req) {
-        User user = userRepository.findUserByEmail(req.getEmail()).orElseThrow(
+        User user = userRepository.findUserByEmail(req.email()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );
 
-        user.updateUserState(req.getState());
+        user.updateUserState(req.state());
 
         try {
             userRepository.save(user);
@@ -86,6 +86,8 @@ public class UserService {
             throw new RuntimeException("사용자 리스트 조회 에러");
         }
     }
+
+    // 내부 로직용
     User findUser(UUID userId){
         return userRepository.findById(userId).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)

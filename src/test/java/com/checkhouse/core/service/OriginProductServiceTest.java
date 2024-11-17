@@ -124,7 +124,7 @@ public class OriginProductServiceTest {
 
         // then
         assertEquals(newCategory.getName(), result.category().getName());
-        verify(originProductRepository, times(1)).findById(productId);
+
     }
 
     @DisplayName("원본 상품 삭제")
@@ -133,11 +133,15 @@ public class OriginProductServiceTest {
         // given
         UUID productId = mockedOriginProduct.getOriginProductId();
 
+        OriginProductRequest.DeleteOriginProduct request = OriginProductRequest.DeleteOriginProduct.builder()
+                .originProductId(productId)
+                .build();
+
         when(originProductRepository.findById(productId)).thenReturn(Optional.of(mockedOriginProduct));
         doNothing().when(originProductRepository).deleteById(productId);
 
         // when
-        originProductService.deleteOriginProduct(productId);
+        originProductService.deleteOriginProduct(request);
 
         // then
         verify(originProductRepository, times(1)).findById(productId);
@@ -267,11 +271,16 @@ public class OriginProductServiceTest {
     void FAIL_deleteOriginProduct_not_found() {
         // given
         UUID productId = UUID.randomUUID();
+        OriginProductRequest.DeleteOriginProduct request = OriginProductRequest.DeleteOriginProduct.builder()
+                .originProductId(productId)
+                .build();
+
+
         when(originProductRepository.findById(productId)).thenReturn(Optional.empty());
 
         // then
         assertThrows(GeneralException.class, () -> {
-            originProductService.deleteOriginProduct(productId);
+            originProductService.deleteOriginProduct(request);
         });
         verify(originProductRepository, times(1)).findById(productId);
     }

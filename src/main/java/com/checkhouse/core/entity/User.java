@@ -7,6 +7,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
@@ -14,6 +17,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "update user us set us.deleted_at = now() where us.user_id = :userId")
+@SQLRestriction("deleted_at is null")
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

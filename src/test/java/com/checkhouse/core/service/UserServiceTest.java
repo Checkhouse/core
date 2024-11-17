@@ -85,7 +85,7 @@ import static org.mockito.Mockito.*;
                 .password(null)
                 .role(Role.ROLE_USER.name())
                 .provider("naver")
-                .providerID("random id naver")
+                .providerId("random id naver")
                 .build();
 
         // mocking
@@ -163,8 +163,8 @@ import static org.mockito.Mockito.*;
         when(userRepository.save( any() )).thenReturn(
                 User.builder()
                         .userId(mockedUser.getUserId())
-                        .nickname(request.getNickname())
-                        .username(request.getUsername())
+                        .nickname(request.nickname())
+                        .username(request.username())
                         .role(mockedUser.getRole())
                         .isActive(mockedUser.getIsActive())
                         .provider(mockedUser.getProvider())
@@ -210,7 +210,7 @@ import static org.mockito.Mockito.*;
                         .nickname(mockedUser.getNickname())
                         .username(mockedUser.getUsername())
                         .role(mockedUser.getRole())
-                        .isActive(request.getState())
+                        .isActive(request.state())
                         .provider(mockedUser.getProvider())
                         .providerId(mockedUser.getProviderId())
                         .build()
@@ -236,7 +236,7 @@ import static org.mockito.Mockito.*;
                 .password(null)
                 .role(Role.ROLE_USER.name())
                 .provider("naver")
-                .providerID("random id naver")
+                .providerId("random id naver")
                 .build();
 
         // mocking

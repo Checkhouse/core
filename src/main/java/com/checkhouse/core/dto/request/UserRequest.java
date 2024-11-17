@@ -2,53 +2,49 @@ package com.checkhouse.core.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.UUID;
 public class UserRequest {
 
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AddUserRequest {
-        @NotNull
-        String username;
+    public record AddUserRequest (
+            @NotNull
+            String username,
 
-        @NotNull
-        @Email
-        String email;
-
-        // nullable
-        String nickname = null;
-        String password = null;
-        String provider = null;
-        String providerID = null;
-
-        @NotNull
-        String role;
-    }
+            @NotNull
+            @Email
+            String email,
+            // nullable
+            String nickname,
+            String password,
+            String provider,
+            String providerId,
+            @NotNull
+            String role
+    ) {}
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateUserInfo {
-        String username;
-        // nullable
-        String nickname;
-        String email;
-    }
+
+    public record UpdateUserInfo(
+            @NotNull
+            UUID userId,
+            String username,
+            // nullable
+            String nickname,
+            String email
+    ){}
 
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateUserState {
-        String email;
-        // nullable
-        Boolean state;
-    }
+    public record UpdateUserState (
+            @NotNull
+            UUID userId,
+            String email,
+            // nullable
+            Boolean state
+    ) {}
 
+    public record FindUser (
+            @NotNull
+            UUID userId
+    ) {}
 }

@@ -14,6 +14,8 @@ public interface FavoriteUsedRepository extends JpaRepository<FavoriteUsed, UUID
 
     Boolean existsByUsedProductUsedProductIdAndUserUserId(UUID originId, UUID userId);
 
+
+    int countByUsedProductUsedProductId(UUID usedProductId);
     void deleteByUsedProductUsedProductIdAndUserUserId(UUID originId, UUID userId);
 }
 

@@ -96,9 +96,9 @@ public class OriginProductService {
         return List.of();
 
     }
-    public void deleteOriginProduct( UUID originProductId ) {
-        originProductRepository.findById(originProductId).ifPresentOrElse(
-                (og) -> originProductRepository.deleteById(originProductId),
+    public void deleteOriginProduct( OriginProductRequest.DeleteOriginProduct request ) {
+        originProductRepository.findById(request.originProductId()).ifPresentOrElse(
+                (og) -> originProductRepository.deleteById(request.originProductId()),
                 () -> {
                     throw new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND);
                 }

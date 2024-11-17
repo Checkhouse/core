@@ -31,11 +31,6 @@ import static org.mockito.Mockito.*;
 public class UsedProductServiceTest {
     @Mock
     private UsedProductRepository usedProductRepository;
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private OriginProductRepository originProductRepository;
 
     @Mock
     private UserService userService;

@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -71,6 +71,12 @@ public class FavoriteService {
                 )).toList();
     }
 
+    int getOriginProductFavoriteCount(UUID originProductId) {
+        originProductService.findOriginProduct(originProductId);
+
+        return favoriteOriginRepository.countByOriginProductOriginProductId(originProductId);
+    }
+
     FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
         UsedProduct usedProduct = usedProductService.findUsedProduct(request.usedProductId());
         User user = userService.findUser(request.userId());
@@ -116,5 +122,11 @@ public class FavoriteService {
                         f.getUser().getUserId(),
                         "used"
                 )).toList();
+    }
+
+    int getUsedProductFavoriteCount(UUID usedId) {
+        usedProductService.findUsedProduct(usedId);
+
+        return favoriteUsedRepository.countByUsedProductUsedProductId(usedId);
     }
 }
