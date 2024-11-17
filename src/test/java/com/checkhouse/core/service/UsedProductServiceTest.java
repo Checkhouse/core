@@ -26,6 +26,7 @@ import java.util.UUID;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class UsedProductServiceTest {
     @Mock

@@ -26,8 +26,11 @@ public enum ErrorStatus implements BaseErrorCode {
     _ORIGIN_PRODUCT_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "OG400", "원본 상품 정보 업데이트에 실패하였습니다."),
     _DELETE_ORIGIN_PRODUCT_FAILED(HttpStatus.BAD_REQUEST, "OG400", "원본 상품 삭제에 실패하였습니다."),
 
+    // used product
     _USED_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "UP404", "중고 상품이 존재하지 않습니다."),
 
+    //favorite
+    _FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND, "FAV404", "찾을 수 없습니다."),
     // token
     _INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN401", "잘못된 코드입니다."),
     ;

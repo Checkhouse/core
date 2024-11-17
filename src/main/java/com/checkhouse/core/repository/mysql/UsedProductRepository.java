@@ -1,5 +1,6 @@
 package com.checkhouse.core.repository.mysql;
 
+import com.checkhouse.core.entity.FavoriteOrigin;
 import com.checkhouse.core.entity.UsedProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
