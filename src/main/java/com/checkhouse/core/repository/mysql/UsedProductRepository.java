@@ -10,10 +10,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UsedProductRepository extends JpaRepository<UsedProduct, UUID> {
-    @Query("select up from UsedProduct up where up.state = :state")
+    @Query("select up from UsedProduct up where up.state = :state and up.deletedDate is null")
     List<UsedProduct> findAllByState(String state);
 
-    @Query("select up from UsedProduct up where up.user.userId = :userId")
+    @Query("select up from UsedProduct up where up.user.userId = :userId and up.deletedDate is null")
     List<UsedProduct> findAllByUserId(UUID userId);
 
 }
