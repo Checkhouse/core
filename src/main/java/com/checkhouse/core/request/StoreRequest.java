@@ -11,53 +11,37 @@ import java.util.UUID;
 
 public class StoreRequest {
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AddStoreRequest {
-        @NotNull
-        UUID storeId;
+    // Store 추가 파라미터
+    // Id, address, name, code
+    public record AddStoreRequest (
+            UUID storeId,
+            Address address,
+            String name,
+            String code
+    ){ }
 
-        @NotNull
-        Address address;
+    public record UpdateStoreRequest (
+            UUID storeId,
+            Address address,
+            String name
+    ) { }
+    public record GetStoreRequest (
+            UUID storeId
+    ) { }
 
-        @NotNull
-        String name;
+    public record UpdateStoreCodeRequest (
+            UUID storeId,
+            String code
+    ) { }
 
-        @NotNull
-        String code;
-    }
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateStoreRequest {
-        @NotNull
-        UUID storeId;
+    public record DeleteStoreRequest (
+            UUID storeId
+    ) { }
 
-        @NotNull
-        Address address;
-
-        @NotNull
-        String name;
-
-        @NotNull
-        String code;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class VerifyCodeRequest {
-        @NotNull
-        UUID storeId;
-
-        @NotNull
-        String code;
-    }
-
+    public record VerifyCodeRequest (
+            UUID storeId,
+            String code
+    ) { }
 
 
 }

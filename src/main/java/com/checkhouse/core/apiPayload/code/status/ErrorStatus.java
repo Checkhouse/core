@@ -33,8 +33,11 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // image
     _IMAGE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE404", "Image ID를 찾을 수 없습니다."),
-    _IMAGE_URL_NOT_EXIST(HttpStatus.NOT_FOUND, "IMAGE4041", "유효하지 않는 URL입니다.")
+    _IMAGE_URL_NOT_EXIST(HttpStatus.NOT_FOUND, "IMAGE4041", "유효하지 않는 URL입니다."),
 
+    // store
+    _STORE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE404", "Store ID를 찾을 수 없습니다."),
+    _STORE_ALREADY_EXISTS(HttpStatus.CONFLICT, "STORE409", "중복된 스토어 이름이 존재합니다."),
     ;
 
 
