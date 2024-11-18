@@ -21,44 +21,44 @@ public class CategoryService {
 
     CategoryDTO addCategory(CategoryRequest.AddCategoryRequest req) {
         //이미 존재하는 카테고리 확인
-        categoryRepository.findCategoryByName(req.getName()).ifPresent(category -> {
+        categoryRepository.findCategoryByName(req.name()).ifPresent(category -> {
             throw new GeneralException(ErrorStatus._CATEGORY_ALREADY_EXIST);
         });
         Category savedCategory = categoryRepository.save(
                 Category.builder()
                         .categoryId(UUID.randomUUID())
-                        .name(req.getName())
+                        .name(req.name())
                         .build()
         );
 
         return savedCategory.toDTO();
     }
 
-    CategoryDTO getCategory(UUID categoryId) {
-        Category category = categoryRepository.findById(categoryId)
+    CategoryDTO getCategory(CategoryRequest.GetCategoryByIdRequest req) {
+        Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
         return category.toDTO();
     }
 
     CategoryDTO updateCategoryById(CategoryRequest.UpdateCategoryByIdRequest req) {
         //ID가 존재하는지 확인
-        Category category = categoryRepository.findById(req.getCategoryId())
+        Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
         //이미 존재하는 카테고리 확인
-        categoryRepository.findCategoryByName(req.getName()).ifPresent((a) -> {
+        categoryRepository.findCategoryByName(req.name()).ifPresent((a) -> {
             throw new GeneralException(ErrorStatus._CATEGORY_ALREADY_EXIST);
         });
-        category.updateName(req.getName());
+        category.updateName(req.name());
         return category.toDTO();
     }
 
 
     void deleteCategory(CategoryRequest.DeleteCategoryRequest req) {
         //ID가 존재하는지 확인
-        Category category = categoryRepository.findById(req.getCategoryId())
+        Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
 
-        category.setDeleted();
+        categoryRepository.delete(category);
     }
 
     List<CategoryDTO> getCategories() {

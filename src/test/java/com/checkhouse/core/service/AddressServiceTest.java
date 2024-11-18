@@ -99,12 +99,13 @@ public class AddressServiceTest {
         //이름이랑 전화번호만 바꾸기
         AddressRequest.UpdateAddressRequest req =
                 AddressRequest.UpdateAddressRequest.builder()
+                        .addressId(addressId)
                         .name("홍길동")
                         .phone("01012345678")
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.updateAddress(addressId, req);
+        AddressDTO result = addressService.updateAddress(req);
 
         assertNotNull(result);
         assertEquals(commonAddress.getAddressId(), result.addressId());
@@ -125,6 +126,7 @@ public class AddressServiceTest {
         //이름이랑 전화번호만 바꾸기
         AddressRequest.UpdateAddressRequest req =
                 AddressRequest.UpdateAddressRequest.builder()
+                        .addressId(addressId)
                         .name("홍길동")
                         .phone("01012345678")
                         .address("서울특별시 동작구 상도로 45길")
@@ -134,7 +136,7 @@ public class AddressServiceTest {
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.updateAddress(addressId, req);
+        AddressDTO result = addressService.updateAddress(req);
 
         assertNotNull(result);
         assertEquals(commonAddress.getAddressId(), result.addressId());
@@ -156,7 +158,8 @@ public class AddressServiceTest {
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(commonAddress));
 
         //when
-        addressService.deleteAddress(addressId);
+        AddressRequest.DeleteAddressRequest req = AddressRequest.DeleteAddressRequest.builder().addressId(addressId).build();
+        addressService.deleteAddress(req);
 
         assertNotNull(commonAddress.getDeletedDate());
         verify(addressRepository, times(1)).findById(addressId);
@@ -168,7 +171,8 @@ public class AddressServiceTest {
         UUID addressId = commonAddress.getAddressId();
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.getAddressById(addressId);
+        AddressRequest.GetAddressByIdRequest req = AddressRequest.GetAddressByIdRequest.builder().addressId(addressId).build();
+        AddressDTO result = addressService.getAddressById(req);
 
         assertNotNull(result);
         assertEquals(commonAddress.getAddressId(), result.addressId());
@@ -216,10 +220,11 @@ public class AddressServiceTest {
         //존재하지 않는 id
         UUID invalidUUID = UUID.randomUUID();
         when(addressRepository.findById(invalidUUID)).thenReturn(Optional.empty());
+        AddressRequest.GetAddressByIdRequest req = AddressRequest.GetAddressByIdRequest.builder().addressId(invalidUUID).build();
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.getAddressById(invalidUUID);
+            addressService.getAddressById(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -232,6 +237,7 @@ public class AddressServiceTest {
         // 존재하지 않는 id
         UUID invalidUUID = UUID.randomUUID();
         AddressRequest.UpdateAddressRequest req = AddressRequest.UpdateAddressRequest.builder()
+                .addressId(invalidUUID)
                 .name("수정이름")
                 .address("수정주소")
                 .build();
@@ -240,7 +246,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.updateAddress(invalidUUID, req);
+            addressService.updateAddress(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -253,10 +259,11 @@ public class AddressServiceTest {
         // 존재하지 않는 id
         UUID invalidUUID = UUID.randomUUID();
         when(addressRepository.findById(invalidUUID)).thenReturn(Optional.empty());
+        AddressRequest.DeleteAddressRequest req = AddressRequest.DeleteAddressRequest.builder().addressId(invalidUUID).build();
 
         // When, Then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.deleteAddress(invalidUUID);
+            addressService.deleteAddress(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());

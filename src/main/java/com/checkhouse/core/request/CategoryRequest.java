@@ -11,35 +11,15 @@ import java.util.UUID;
 public class CategoryRequest {
 
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AddCategoryRequest {
-
-        @NotNull
-        String name;
-    }
+    public record AddCategoryRequest(String name){}
 
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateCategoryByIdRequest {
-        @NotNull
-        UUID categoryId;
-
-        @NotNull
-        String name;
-    }
-
+    public record UpdateCategoryByIdRequest (UUID categoryId, String name){ }
 
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeleteCategoryRequest {
-        @NotNull
-        UUID categoryId;
-    }
+    public record DeleteCategoryRequest (UUID categoryId) {}
+
+    @Builder
+    public record GetCategoryByIdRequest (UUID categoryId) {}
 
 }

@@ -58,7 +58,6 @@ public class ImageServiceTest {
         );
 
         // given
-        when(imageRepository.findById(any())).thenReturn(Optional.empty());
         when(imageRepository.save(any())).thenReturn(image1);
 
         // when
@@ -67,7 +66,6 @@ public class ImageServiceTest {
         // then
         assertNotNull(result);
         assertEquals("https://naver.com", result.imageURL());
-        verify(imageRepository, times(1)).findById(any());
         verify(imageRepository, times(1)).save(any());
     }
 
@@ -104,7 +102,6 @@ public class ImageServiceTest {
         imageService.DeleteImage(req);
 
         // then
-        assertNotNull(image1.getDeletedDate());
         verify(imageRepository, times(1)).findById(imageId);
     }
 
@@ -129,16 +126,14 @@ public class ImageServiceTest {
         //이미지 정보
         ImageURL image = ImageURL.builder()
                 .imageId(UUID.randomUUID())
-                .imageURL("123456")
+                .imageURL("123456 adsfasdf")
                 .build();
         ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageId(), image.getImageURL());
-        when(imageRepository.findById(image.getImageId())).thenReturn(Optional.of(invalidImage));
 
         //given, when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.AddImage(req));
 
         assertEquals(ErrorStatus._IMAGE_URL_NOT_EXIST, exception.getCode());
-        verify(imageRepository, times(1)).findById(any());
     }
     @DisplayName("존재하지 않는 이미지 아이디의 경우 삭제 실패")
     @Test

@@ -97,7 +97,7 @@ public class CategoryServiceTest {
         assertNotNull(result);
         assertEquals("smartphone", result.name());
         verify(categoryRepository, times(1)).findById(categoryId);
-        verify(categoryRepository, times(1)).findCategoryByName(req.getName());
+        verify(categoryRepository, times(1)).findCategoryByName(req.name());
         verify(categoryRepository, never()).save(any(Category.class));
     }
 
@@ -116,7 +116,6 @@ public class CategoryServiceTest {
         categoryService.deleteCategory(req);
 
         // then
-        assertNotNull(phone.getDeletedDate());
         verify(categoryRepository, times(1)).findById(categoryId);
     }
 
@@ -187,9 +186,10 @@ public class CategoryServiceTest {
         //카테고리 정보
         UUID categoryId = UUID.randomUUID();
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+        CategoryRequest.GetCategoryByIdRequest req = new CategoryRequest.GetCategoryByIdRequest(categoryId);
 
         // given, when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.getCategory(categoryId));
+        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.getCategory(req));
 
         assertEquals(ErrorStatus._CATEGORY_ID_NOT_FOUND, exception.getCode());
         verify(categoryRepository, times(1)).findById(categoryId);

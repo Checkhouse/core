@@ -1,46 +1,32 @@
 package com.checkhouse.core.request;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 public class AddressRequest {
 
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AddAddressRequest {
-        @NotNull
-        UUID addressId;
-
-        @NotNull
-        String name;
-        @NotNull
-        String address;
-        @NotNull
-        int zipcode;
-        @NotNull
-        String phone;
-
-        String AddressDetail;
-    }
+    public record AddAddressRequest (
+            UUID addressId,
+            String name,
+            String address,
+            int zipcode,
+            String phone,
+            String addressDetail
+    ) {}
     @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateAddressRequest {
-        //UUID는 따로 받기
-        String name;
-        String address;
-        int zipcode;
-        String phone;
-
-        String addressDetail;
-    }
+    public record UpdateAddressRequest (
+            UUID addressId,
+            String name,
+            String address,
+            int zipcode,
+            String phone,
+            String addressDetail
+    ) {}
+    @Builder
+    public record GetAddressByIdRequest (UUID addressId) {}
+    @Builder
+    public record DeleteAddressRequest (UUID addressId) {}
 
 }

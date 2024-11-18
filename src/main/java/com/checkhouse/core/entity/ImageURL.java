@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,5 +37,9 @@ public class ImageURL extends BaseTimeEntity {
         this.imageId = imageId;
         this.imageURL = imageURL;
 
+    }
+
+    public ImageDTO toDTO() {
+        return new ImageDTO(imageId, imageURL);
     }
 }
