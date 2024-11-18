@@ -12,8 +12,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.util.List;
@@ -24,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class HubServiceTest {
     @Mock
     private HubRepository hubRepository;
@@ -89,6 +92,8 @@ public class HubServiceTest {
         // Given
         when(hubRepository.findHubByName("허브1")).thenReturn(Optional.empty());
         when(hubRepository.findHubByClusteredId(1)).thenReturn(Optional.empty());
+        when(hubRepository.save(any(Hub.class))).thenReturn(hub1);
+        when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.of(hub1addr));
 
         // When
         HubDTO result = hubService.AddHub(req);
@@ -98,7 +103,7 @@ public class HubServiceTest {
         assertEquals(result.name(), "허브1");
         assertEquals(result.clusteredId(), 1);
         verify(hubRepository, times(1)).findHubByName(any());
-        verify(hubRepository, times(1)).findHubByClusteredId(any());
+        verify(hubRepository, times(1)).findHubByClusteredId(1);
         verify(hubRepository, times(1)).save(any(Hub.class));
     }
 
@@ -115,8 +120,9 @@ public class HubServiceTest {
 
         // Given
         when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
-        when(hubRepository.findHubByName("허브1")).thenReturn(Optional.empty());
-        when(hubRepository.findHubByClusteredId(1)).thenReturn(Optional.empty());
+        when(hubRepository.findHubByName("허브1234")).thenReturn(Optional.empty());
+        when(hubRepository.findHubByClusteredId(5)).thenReturn(Optional.empty());
+        when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.of(hub1addr));
 
         // When
         HubDTO result = hubService.UpdateHub(req);
@@ -127,8 +133,8 @@ public class HubServiceTest {
         assertEquals(result.clusteredId(), 5);
         verify(hubRepository, times(1)).findById(hub1.getHubId());
         verify(hubRepository, times(1)).findHubByName(any());
-        verify(hubRepository, times(1)).findHubByClusteredId(any());
-        verify(hubRepository, times(1)).save(any(Hub.class));
+        verify(hubRepository, times(1)).findHubByClusteredId(5);
+        verify(hubRepository, never()).save(any(Hub.class));
     }
 
     @Test
@@ -194,15 +200,14 @@ public class HubServiceTest {
     void FAIL_addHub_already_exist() {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
-                UUID.randomUUID(),
+                hub1.getHubId(),
                 hub1addr,
-                "허브1",
+                "허브2",
                 1
         );
 
         // Given
-        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
-        when(hubRepository.findHubByClusteredId(1)).thenReturn(Optional.of(hub1));
+        when(hubRepository.findHubByName("허브2")).thenReturn(Optional.of(hub2));
 
         // When
         GeneralException exception = assertThrows(GeneralException.class, () -> hubService.AddHub(req));
@@ -224,7 +229,7 @@ public class HubServiceTest {
         );
 
         // Given
-        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.empty());
+        when(hubRepository.findHubByName(hub1.getName())).thenReturn(Optional.empty());
         when(hubRepository.findHubByClusteredId(1)).thenReturn(Optional.empty());
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.empty());
 

@@ -10,23 +10,16 @@ import java.util.UUID;
 
 public class ImageRequest {
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class AddImageRequest {
+    public record AddImageRequest (
+            UUID imageId,
+            String imageURL
+    ) {}
 
-        @NotNull
-        String imageURL;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeleteImageRequest {
-        @NotNull
-        UUID imageID;
-    }
+    public record GetImageRequest (
+        UUID imageId
+    ) {}
+    public record DeleteImageRequest (
+            UUID imageId
+    ) {}
 
 }

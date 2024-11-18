@@ -21,9 +21,9 @@ public class ImageService {
 
     void checkURL(String URL) {}
 
-    ImageDTO addImage(ImageRequest.AddImageRequest req) {return null;}
-    ImageDTO getImage(UUID uuid) {return null;}
-    ImageDTO deleteImage(ImageRequest.DeleteImageRequest req) {return null;}
+    ImageDTO AddImage(ImageRequest.AddImageRequest req) {return null;}
+    ImageDTO GetImage(ImageRequest.GetImageRequest req) {return null;}
+    ImageDTO DeleteImage(ImageRequest.DeleteImageRequest req) {return null;}
 
     //TODO: 원본이미지, 중고이미지, 검수이미지 추가
 

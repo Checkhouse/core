@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.HubDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -55,5 +56,13 @@ public class Hub extends BaseTimeEntity {
         this.address = address;
         this.name = name;
         this.clusteredId = clusteredId;
+    }
+
+    public void UpdateAddress(Address address) {this.address = address;}
+    public void UpdateName(String name) {this.name = name;}
+    public void UpdateClusteredId(int clusteredId) {this.clusteredId = clusteredId;}
+
+    public HubDTO toDTO() {
+        return new HubDTO(hubId, name, clusteredId, address.toDTO());
     }
 }

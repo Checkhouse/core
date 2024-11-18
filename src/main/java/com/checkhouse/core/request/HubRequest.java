@@ -14,13 +14,13 @@ public class HubRequest {
             UUID hubId,
             Address address,
             String name,
-            int clustredId
+            int clusteredId
     ) {}
     public record UpdateHubRequest(
             UUID hubId,
             Address address,
             String name,
-            int clustredId
+            int clusteredId
     ) {}
     public record DeleteHubRequest(
             UUID hubId

@@ -12,8 +12,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class StoreServiceTest {
     @Mock
     private StoreRepository storeRepository;
@@ -88,6 +91,8 @@ public class StoreServiceTest {
 
         // given
         when(storeRepository.save(any(Store.class))).thenReturn(store1);
+        when(storeRepository.findStoreByName(store1.getName())).thenReturn(Optional.empty());
+        when(addressRepository.findById(store1addr.getAddressId())).thenReturn(Optional.of(store1addr));
 
         // when
         StoreDTO result = storeService.addStore(req);
@@ -120,19 +125,21 @@ public class StoreServiceTest {
     @Test
     void SUCCESS_getStoreDetails() {
         // 스토어 정보
-        UUID storeId = store1.getStoreId();
+        StoreRequest.GetStoreRequest req = new StoreRequest.GetStoreRequest(
+                store1.getStoreId()
+        );
 
         // given
-        when(storeRepository.findById(storeId)).thenReturn(Optional.of(store1));
+        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.of(store1));
 
         // when
-        StoreDTO result = storeService.getStore(storeId);
+        StoreDTO result = storeService.getStore(req);
 
         // then
         assertNotNull(result);
         assertEquals("정보섬티맥스", result.name());
         assertEquals("SSUBEST", result.code());
-        verify(storeRepository, times(1)).findById(storeId);
+        verify(storeRepository, times(1)).findById(any());
     }
 
     @DisplayName("스토어 삭제 성공")
@@ -166,6 +173,7 @@ public class StoreServiceTest {
 
         // given
         when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.of(store1));
+        when(addressRepository.findById(store2addr.getAddressId())).thenReturn(Optional.of(store2addr));
         when(storeRepository.findStoreByName(req.name())).thenReturn(Optional.empty());
 
         // when
@@ -238,14 +246,14 @@ public class StoreServiceTest {
         );
 
         // given
-        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.empty());
+        when(storeRepository.findStoreByName(store1.getName())).thenReturn(Optional.empty());
         when(addressRepository.findById(store1addr.getAddressId())).thenReturn(Optional.empty());
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> storeService.addStore(req));
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
-        verify(storeRepository, times(1)).findById(any());
+        verify(storeRepository, times(1)).findStoreByName(any());
         verify(addressRepository, times(1)).findById(any());
     }
 
@@ -265,7 +273,7 @@ public class StoreServiceTest {
         );
 
         // given
-        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.empty());
+        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.of(store1));
         when(addressRepository.findById(store1addr.getAddressId())).thenReturn(Optional.empty());
 
         // when, then

@@ -59,6 +59,10 @@ public class Store extends BaseTimeEntity {
         this.code = code;
     }
 
+    public void updateName(String name) {this.name = name;}
+    public void updateCode(String code) {this.code = code;}
+    public void updateAddress(Address address) {this.address = address;}
+
     public StoreDTO toDTO() {
         return new StoreDTO(
                 this.storeId,
