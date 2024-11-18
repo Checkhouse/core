@@ -38,6 +38,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // store
     _STORE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE404", "Store ID를 찾을 수 없습니다."),
     _STORE_ALREADY_EXISTS(HttpStatus.CONFLICT, "STORE409", "중복된 스토어 이름이 존재합니다."),
+    // Hub
+    _HUB_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "HUB404", "Hub ID를 찾을 수 없습니다."),
+    _HUB_ALREADY_EXISTS(HttpStatus.CONFLICT, "HUB409", "중복된 허브 이름이 존재합니다.")
     ;
 
 

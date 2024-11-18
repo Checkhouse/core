@@ -46,10 +46,12 @@ public class Hub extends BaseTimeEntity {
 
     @Builder
     public Hub(
+            UUID hubId,
             Address address,
             String name,
             int clusteredId
     ) {
+        this.hubId = hubId;
         this.address = address;
         this.name = name;
         this.clusteredId = clusteredId;
