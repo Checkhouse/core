@@ -16,6 +16,16 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+
+    // negotiation
+    _NEGOTIATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NEGOTIATION401", "해당 네고시에이션을 찾을 수 없습니다."),
+    // 요청 상태 중복
+    _NEGOTIATION_STATE_DUPLICATE(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 해당 상태로 변경되어 있습니다"),
+    _NEGOTIATION_PRICE_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400" ,"가격 설정이 잘못되었습니다"),
+    _NEGOTIATION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 완료된 네고입니다"),
+    _NEGOTIATION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "NEGOTIATION403", "해당 상품은 네고를 받지 않습니다"),
+
+
     // user
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 유저입니다."),
     _USER_ALREADY_EXIST(HttpStatus.CONFLICT, "USER409", "이미 존재하는 사용자입니다."),
