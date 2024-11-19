@@ -82,7 +82,7 @@ public class NegotiationServiceTest {
                 .description("싸다싸 너만오면 고")
                 .price(3000)
                 .isNegoAllow(true)
-                .state(UsedProductState.PRE_SALE)
+                .state(UsedProductState.ON_SALE)
                 .originProduct(originProduct1)
                 .user(user1)
                 .build();
@@ -278,15 +278,42 @@ public class NegotiationServiceTest {
     @DisplayName("이미 거절된 네고에 대한 거절은 실패")
     @Test
     void FAIL_approveNegotiation_already_denied() {
-
-
+        // ?
     }
 
     @DisplayName("네고를 거부한 중고 상품에 대한 내고 생성은 실패")
     @Test
     void FAIL_addNegotiation_nego_is_not_allowed() {
+        UsedProduct deniedUsedProduct = UsedProduct.builder()
+                .usedProductId(UUID.randomUUID())
+                .title("아이패드 떨이")
+                .description("싸다싸 너만오면 고")
+                .price(3000)
+                .isNegoAllow(false)             // 네고 거부
+                .state(UsedProductState.ON_SALE)
+                .originProduct(originProduct1)
+                .user(user1)
+                .build();
+        
+        NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
+                UUID.randomUUID(),
+                deniedUsedProduct.getUsedProductId(),
+                user1.getUserId(),
+                user2.getUserId(),
+                3000
+        );      
 
+        //given
+        when(usedProductRepository.findById(deniedUsedProduct.getUsedProductId()))
+                .thenReturn(Optional.of(deniedUsedProduct));
 
+        //when
+        GeneralException exception = assertThrows(GeneralException.class,
+                () -> negotiationService.addNegotiation(request));
+
+        //then
+        assertEquals(ErrorStatus._NEGOTIATION_NOT_ALLOWED, exception.getCode());
+        verify(usedProductRepository, times(1)).findById(any());
     }
 
     @DisplayName("중고상품이 없는 경우 가격 제안 실패")
@@ -368,7 +395,6 @@ public class NegotiationServiceTest {
                 approvedNegotiation.getNegotiationId(),
                 NegotiationState.CANCELLED
         );
-
 
         // given
         when(negotiationRepository.findById(approvedNegotiation.getNegotiationId()))
