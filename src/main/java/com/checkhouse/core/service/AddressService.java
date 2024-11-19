@@ -11,9 +11,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.geo.Point;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
+import java.util.UUID;
+
+import com.checkhouse.core.dto.request.AddressRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.geo.Point;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,16 +36,17 @@ public class AddressService {
 
     //주소 추가
     AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
-        Point addressLocation = getAddressLocation(req.getAddress());
+       
+        Point addressLocation = getAddressLocation(req.address());
 
         Address savedAddress = addressRepository.save(
                 Address.builder()
-                        .addressId(req.getAddressId())
-                        .name(req.getName())
-                        .address(req.getAddress())
-                        .zipcode(req.getZipcode())
-                        .phone(req.getPhone())
-                        .addressDetail(req.getAddressDetail())
+                        .addressId(req.addressId())
+                        .name(req.name())
+                        .address(req.address())
+                        .zipcode(req.zipcode())
+                        .phone(req.phone())
+                        .addressDetail(req.addressDetail())
                         .location(addressLocation)
                         .build()
         );
@@ -56,33 +63,35 @@ public class AddressService {
     }
 
     //Id로 가져오기
-    AddressDTO getAddressById(UUID addressId) {
-        Address address = addressRepository.findById(addressId)
+
+    AddressDTO getAddressById(AddressRequest.GetAddressByIdRequest req) {
+        Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
         return address.toDTO();
     }
 
     //Update
-    AddressDTO updateAddress(UUID addressId, AddressRequest.UpdateAddressRequest req) {
-        Address modifiedAddress = addressRepository.findById(addressId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
-        Point addressLocation = getAddressLocation(req.getAddress());
+    AddressDTO updateAddress(AddressRequest.UpdateAddressRequest req) {
+        Address modifiedAddress = addressRepository.findById(req.addressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
+        Point addressLocation = getAddressLocation(req.address());
 
         modifiedAddress.update(
-                req.getName() != null ? req.getName() : modifiedAddress.getName(),
-                req.getAddress() != null ? req.getAddress() : modifiedAddress.getAddress(),
-                req.getAddressDetail() != null ? req.getAddressDetail() : modifiedAddress.getAddressDetail(),
-                req.getZipcode() != 0 ? req.getZipcode() : modifiedAddress.getZipcode(), // 0으로 초기화된 int 처리
+                req.name() != null ? req.name() : modifiedAddress.getName(),
+                req.name() != null ? req.name() : modifiedAddress.getAddress(),
+                req.addressDetail() != null ? req.addressDetail() : modifiedAddress.getAddressDetail(),
+                req.zipcode() != 0 ? req.zipcode() : modifiedAddress.getZipcode(), // 0으로 초기화된 int 처리
                 addressLocation,
-                req.getPhone() != null ? req.getPhone() : modifiedAddress.getPhone()
+                req.phone() != null ? req.phone() : modifiedAddress.getPhone()
         );
 
         return modifiedAddress.toDTO();
     }
 
     //Soft delete (유저 뷰)
+
 //    void deleteAddress(UUID addressId) {
 //        Address address = addressRepository.findById(addressId)
 //                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
@@ -95,6 +104,16 @@ public class AddressService {
     void hardDeleteAddress() {
 
     }
+
+
+}
+    void deleteAddress(AddressRequest.DeleteAddressRequest req) {
+        Address address = addressRepository.findById(req.addressId())
+            .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
+
+        addressRepository.delete(address);
+    }
+
 
 
 }
