@@ -20,15 +20,9 @@ import java.util.stream.Collectors;
 public class AddressService {
     private final AddressRepository addressRepository;
 
-    //TODO: API로 경위도 받아오기, Zipcode도 받아올 수 있긴 할듯
-    //TODO: API로 주소 검증 코드 추가 (필요할까?) 경위도 받아오면서 검증도 같이하면 될듯
-    private Point getAddressLocation(String address) {
-        return new Point(0, 0);
-    }
 
     //주소 추가
     AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
-        Point addressLocation = getAddressLocation(req.address());
 
         Address savedAddress = addressRepository.save(
                 Address.builder()
@@ -38,7 +32,7 @@ public class AddressService {
                         .zipcode(req.zipcode())
                         .phone(req.phone())
                         .addressDetail(req.addressDetail())
-                        .location(addressLocation)
+                        .location(req.location())
                         .build()
         );
 
@@ -66,14 +60,13 @@ public class AddressService {
         Address modifiedAddress = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
-        Point addressLocation = getAddressLocation(req.address());
 
         modifiedAddress.update(
                 req.name() != null ? req.name() : modifiedAddress.getName(),
-                req.name() != null ? req.name() : modifiedAddress.getAddress(),
+                req.address() != null ? req.address() : modifiedAddress.getAddress(),
                 req.addressDetail() != null ? req.addressDetail() : modifiedAddress.getAddressDetail(),
                 req.zipcode() != 0 ? req.zipcode() : modifiedAddress.getZipcode(), // 0으로 초기화된 int 처리
-                addressLocation,
+                req.location() != null ? req.location() : modifiedAddress.getLocation(),
                 req.phone() != null ? req.phone() : modifiedAddress.getPhone()
         );
 

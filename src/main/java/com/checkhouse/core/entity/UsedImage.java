@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update used_image t set t.deleted_at = now() where t.used_image_id = :used_image_id")
+@SQLRestriction("deleted_at IS NULL")
 public class UsedImage extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,9 +44,11 @@ public class UsedImage extends BaseTimeEntity {
 
     @Builder
     public UsedImage(
+            UUID usedImageId,
             ImageURL image,
             UsedProduct usedProduct
     ) {
+        this.usedImageId = usedImageId;
         this.image = image;
         this.usedProduct = usedProduct;
     }

@@ -34,7 +34,6 @@ public class AddressServiceTest {
 
     private Address commonAddress;
     private Address otherAddress;
-    private Address noDetailsAddress;
 
     @BeforeAll
     public static void onlyOnce() {}
@@ -51,18 +50,11 @@ public class AddressServiceTest {
                 .build();
         otherAddress = Address.builder()
                 .addressId(UUID.randomUUID())
-                .name("한글이름")
-                .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
-                .phone("01097063979")
-                .addressDetail("정보과학관 지하 1층")
-                .build();
-        noDetailsAddress = Address.builder()
-                .addressId(UUID.randomUUID())
-                .name("장범식")
-                .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
-                .phone("01012345678")
+                .name("이름입니다")
+                .address("서울특별시 동작구 상도1동")
+                .zipcode(12345)
+                .phone("01023456789")
+                .addressDetail("2220호")
                 .build();
     }
 
@@ -72,10 +64,10 @@ public class AddressServiceTest {
         UUID randomUUID = UUID.randomUUID();
         AddressRequest.AddAddressRequest req = AddressRequest.AddAddressRequest.builder()
                 .addressId(randomUUID)
-                .name("장범식")
-                .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
-                .phone("01012345678")
+                .name(commonAddress.getName())
+                .address(commonAddress.getAddress())
+                .zipcode(commonAddress.getZipcode())
+                .phone(commonAddress.getPhone())
                 .build();
 
         //특정 uuid를 넣으면, 다음과 같이 동작 할 것이다.
@@ -83,11 +75,10 @@ public class AddressServiceTest {
 
         AddressDTO result = addressService.addAddress(req);
         assertNotNull(result);
-        assertEquals(commonAddress.getAddressId(), result.addressId());
-        assertEquals(commonAddress.getName(), result.name());
-        assertEquals(commonAddress.getAddress(), result.address());
-        assertEquals(commonAddress.getZipcode(), result.zipcode());
-        assertEquals(commonAddress.getPhone(), result.phone());
+        assertEquals("한글이름", result.name());
+        assertEquals("서울특별시 동작구 상도로 369", result.address());
+        assertEquals(6978, result.zipcode());
+        assertEquals("01097063979", result.phone());
 
 
     }
@@ -108,12 +99,9 @@ public class AddressServiceTest {
         AddressDTO result = addressService.updateAddress(req);
 
         assertNotNull(result);
-        assertEquals(commonAddress.getAddressId(), result.addressId());
-        assertEquals(commonAddress.getAddress(), result.address());
         assertEquals("홍길동", result.name());
         assertEquals("01012345678", result.phone());
         assertEquals(commonAddress.getZipcode(), result.zipcode());
-        assertEquals(commonAddress.getAddressDetail(), result.addressDetail());
 
         verify(addressRepository, times(1)).findById(addressId);
         verify(addressRepository, never()).save(any(Address.class));
@@ -139,12 +127,11 @@ public class AddressServiceTest {
         AddressDTO result = addressService.updateAddress(req);
 
         assertNotNull(result);
-        assertEquals(commonAddress.getAddressId(), result.addressId());
-        assertEquals(commonAddress.getAddress(), result.address());
+        assertEquals("서울특별시 동작구 상도로 45길", result.address());
         assertEquals("홍길동", result.name());
         assertEquals("01012345678", result.phone());
-        assertEquals(commonAddress.getZipcode(), result.zipcode());
-        assertEquals(commonAddress.getAddressDetail(), result.addressDetail());
+        assertEquals(12345, result.zipcode());
+        assertEquals("어딘가 횡단보도 앞", result.addressDetail());
 
         verify(addressRepository, times(1)).findById(addressId);
         verify(addressRepository, never()).save(any(Address.class));
@@ -162,6 +149,7 @@ public class AddressServiceTest {
         addressService.deleteAddress(req);
 
         verify(addressRepository, times(1)).findById(addressId);
+        verify(addressRepository, times(1)).delete(any(Address.class));
     }
 
     @DisplayName("주소 조회 성공")

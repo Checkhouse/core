@@ -1,10 +1,10 @@
 package com.checkhouse.core.dto.request;
 
+import com.checkhouse.core.entity.ImageURL;
+import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.entity.UsedProduct;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -12,17 +12,73 @@ public class ImageRequest {
 
     @Builder
     public record AddImageRequest (
+            @NotNull
             UUID imageId,
+            @NotNull
             String imageURL
     ) {}
 
     @Builder
     public record GetImageRequest (
+            @NotNull
         UUID imageId
     ) {}
     @Builder
     public record DeleteImageRequest (
+            @NotNull
             UUID imageId
     ) {}
+
+    //원본 이미지
+    @Builder
+    public record AddOriginImageRequest (
+            @NotNull
+            UUID originImageId,
+            @NotNull
+            OriginProduct originProduct,
+            @NotNull
+            String imageURL
+    ) {}
+    @Builder
+    public record GetOriginImageRequest (
+            @NotNull
+            UUID originImageId
+    ) {}
+    @Builder
+    public record GetOriginImagesByOriginIdRequest (
+            @NotNull
+            UUID originProductId
+    ) {}
+    public record DeleteOriginImageRequest (
+            @NotNull
+            UUID originImageId
+    ) {}
+
+    //중고 이미지
+    @Builder
+    public record AddUsedImageRequest (
+            @NotNull
+            UUID usedImageId,
+            @NotNull
+            UsedProduct usedProduct,
+            @NotNull
+            String imageURL
+    ) {}
+    @Builder
+    public record GetUsedImageRequest (
+            @NotNull
+            UUID usedImageId
+    ) {}
+    @Builder
+    public record GetUsedImagesByUsedIdRequest (
+            @NotNull
+            UUID usedProductId
+    ) {}
+    public record DeleteUsedImageRequest (
+            @NotNull
+            UUID usedImageId
+    ) {}
+
+    //TODO: 검수이미지 추가
 
 }
