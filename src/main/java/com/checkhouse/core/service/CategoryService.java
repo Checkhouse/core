@@ -5,7 +5,7 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.CategoryDTO;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.repository.mysql.CategoryRepository;
-import com.checkhouse.core.request.CategoryRequest;
+import com.checkhouse.core.dto.request.CategoryRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -7,7 +7,7 @@ import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.HubRepository;
-import com.checkhouse.core.request.HubRequest;
+import com.checkhouse.core.dto.request.HubRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

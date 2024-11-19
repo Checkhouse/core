@@ -5,7 +5,7 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
 import com.checkhouse.core.entity.ImageURL;
 import com.checkhouse.core.repository.mysql.ImageRepository;
-import com.checkhouse.core.request.ImageRequest;
+import com.checkhouse.core.dto.request.ImageRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

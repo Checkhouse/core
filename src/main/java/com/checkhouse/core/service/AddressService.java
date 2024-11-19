@@ -5,15 +5,13 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.repository.mysql.AddressRepository;
-import com.checkhouse.core.request.AddressRequest;
+import com.checkhouse.core.dto.request.AddressRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.geo.Point;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j

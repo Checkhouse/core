@@ -5,7 +5,7 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.repository.mysql.AddressRepository;
-import com.checkhouse.core.request.AddressRequest;
+import com.checkhouse.core.dto.request.AddressRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

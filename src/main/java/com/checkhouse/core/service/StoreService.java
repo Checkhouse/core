@@ -7,14 +7,13 @@ import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Store;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.StoreRepository;
-import com.checkhouse.core.request.StoreRequest;
+import com.checkhouse.core.dto.request.StoreRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
