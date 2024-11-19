@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -32,4 +33,7 @@ public class BaseTimeEntity {
             updatable = false
     )
     protected LocalDateTime deletedDate = null; //삭제 시간, Null일시 살아있음
+
+    //soft delete 코드 추가
+    public void setDeleted() {this.deletedDate = LocalDateTime.now();}
 }

@@ -1,11 +1,14 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.UsedProductDTO;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -13,6 +16,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update used_product up set up.deleted_at = now() where up.used_product_id = :usedProductId")
+@SQLRestriction("deleted_at is null")
 public class UsedProduct extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -68,6 +73,7 @@ public class UsedProduct extends BaseTimeEntity {
 
     @Builder
     public UsedProduct(
+            UUID usedProductId,
             OriginProduct originProduct,
             User user,
             UsedProductState state,
@@ -76,6 +82,7 @@ public class UsedProduct extends BaseTimeEntity {
             int price,
             boolean isNegoAllow
     ) {
+        this.usedProductId = usedProductId;
         this.originProduct = originProduct;
         this.user = user;
         this.state = state;
@@ -83,5 +90,36 @@ public class UsedProduct extends BaseTimeEntity {
         this.description = description;
         this.price = price;
         this.isNegoAllow = isNegoAllow;
+    }
+    public UsedProductDTO toDto() {
+        return new UsedProductDTO(
+                this.usedProductId,
+                this.title,
+                this.description,
+                this.price,
+                this.state,
+                this.isNegoAllow,
+                this.user.getUserId(),
+                this.originProduct.getOriginProductId()
+        );
+    }
+
+    public void updateUsedProductInfo(
+            String title,
+            String description,
+            int price
+    ) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+    }
+
+    public void updateUsedProductNegoAllow(boolean state) {
+        this.isNegoAllow = state;
+    }
+
+    public void updateUsedProductOriginProduct() {}
+    public void updateUsedProductState(UsedProductState status) {
+        this.state = status;
     }
 }

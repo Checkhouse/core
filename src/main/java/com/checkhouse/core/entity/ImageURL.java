@@ -1,10 +1,13 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -12,6 +15,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update image_url t set t.deleted_at = now() where t.image_id = :image_id")
+@SQLRestriction("deleted_at IS NULL")
 public class ImageURL extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,9 +35,15 @@ public class ImageURL extends BaseTimeEntity {
 
     @Builder
     public ImageURL(
+            UUID imageId,
             String imageURL
     ) {
+        this.imageId = imageId;
         this.imageURL = imageURL;
 
+    }
+
+    public ImageDTO toDTO() {
+        return new ImageDTO(imageId, imageURL);
     }
 }
