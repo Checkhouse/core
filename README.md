@@ -1,0 +1,104 @@
+# Links
+## Git page
+|name|repo|
+|---|---|
+|core(서버, 백엔드)|https://github.com/Checkhouse/core|
+|client(사용자 어플)|https://github.com/Checkhouse/client-app-expo|
+|inspector(검수자 어플)|https://github.com/Checkhouse/inspector-app-expo|
+
+## Documents
+|[API](https://www.notion.so/API-1366bd8d4afe80ef82fffa87ca82d750)|[Figma](https://www.figma.com/design/Z0UrIEXjNobOnoYRNuULLj/%EC%BA%A1%EC%8A%A4%ED%86%A4?node-id=162-157&node-type=canvas&t=Ee6JcpVWmQYCX0HM-0)|[ERD](https://www.erdcloud.com/d/dWtm4NPf4hTjZW9Z9)|[보고서](https://docs.google.com/document/d/1GCXU40AfPEHMGzCJ7iDEaxSIp5GkeCaCfPaHkaDoiAo/edit?tab=t.0)|
+|---|---|---|---|
+
+---
+
+
+# Domains
+
+## auth 인증
+
+- 회원가입
+- 로그인
+
+## user 사용자
+
+- 사용자 정보 수정
+- 사용자 정보 조회
+
+## 카테고리
+
+- 카테고리 등록
+- 카테고리 수정
+- 카테고리 삭제
+- 카테고리 리스트 조회
+
+## add origin 원본 상품
+
+- 원본 상품 등록
+- 원본 상품 수정
+- 원본 상품 삭제
+- 원본 상품 검색
+- 특정 원본 상품 정보 조회
+- 원본 상품 리스트 조회
+
+## add product 중고 상품
+
+- 중고 상품 등록
+    - 중고 상품을 등록합니다.
+- 중고 상품 등록 상태 변경(등록 중, 판매 중, 판매 완료)
+    - 중고 상품의 등록 상태를 변경합니다.
+- 중고 상품 정보 조회
+    - 특정 중고 상품의 정보를 조회합니다.
+- 등록된 중고 상품 등록 취소
+    - 중고 물품 상품을 취소합니다.
+- 특정 상태 중고 상품 리스트
+    - 특정 원본 상품의 특정 상태 중고 상품 리스트를 조회합니다.
+- 특정 사용자가 등록한 중고 상품 리스트 조회
+- 
+
+## Collect 수거
+
+- 수거 상태 조회
+
+## Inspection 검수
+
+- 특정 물품 대상 검수 등록
+- 물품 별 검수 상태 변경(검수 전, 검수 중, 검수 완료, 검수 거절)
+- 물품 별 검수 결과 등록(사진)
+
+## Negotiation 가격 제안
+
+- 가격 제안 생성
+- 가격 제안 상태 변경(수락, )
+- 사용자의 가격 제안 내역 리스트 조회
+
+## transaction 거래
+
+- 거래 등록
+- 거래 상태 조회
+    - 특정 거래의 상태를 조회
+- 거래 상태 변경(결제완료, 배송 중, 배송 완료)
+
+## pickup 픽업
+
+- 사용자의 픽업 거래 리스트
+- 사용자의 픽업 거래의 정보 조회
+- 픽업 거래 완료 인증(스토어 관리자의 고유 아이디 입력?)
+- 특정 스토어의 픽업 거래 리스트 조회
+
+## hub 허브
+
+- 허브 등록
+    - 허브 등록 시 허브 주소를 기반으로 위치 클러스터링
+- 허브 수정
+- 허브 삭제
+- 허브 배정
+    - 등록 상품 지역에 대해서 수거할 허브 배정
+
+## store 스토어
+
+- 스토어 리스트 조회
+- 스토어 삭제
+- 스토어 정보 수정
+
+---
