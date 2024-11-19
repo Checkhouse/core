@@ -446,7 +446,7 @@ public class ImageServiceTest {
         );
 
         // given
-        when(originImageRepository.findById(originImageId)).thenReturn(Optional.of(originImage1));
+        when(originImageRepository.findById(originImageId)).thenReturn(Optional.empty());
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetOriginImage(req));
@@ -458,26 +458,26 @@ public class ImageServiceTest {
     @Test
     void FAIL_getOriginImageByOriginId_invalid_Origin_image_id() {
         // 원본 이미지 정보
-        UUID originImageId = UUID.randomUUID();
+        UUID originProductId = UUID.randomUUID();
         ImageRequest.GetOriginImagesByOriginIdRequest req = new ImageRequest.GetOriginImagesByOriginIdRequest(
-                originImageId
+                originProductId
         );
 
         // given
-        when(originProductRepository.findById(originProduct1.getOriginProductId())).thenReturn(Optional.empty());
+        when(originProductRepository.findById(originProductId)).thenReturn(Optional.empty());
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetOriginImagesByOriginId(req));
 
         assertEquals(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND, exception.getCode());
-        verify(originProductRepository, times(1)).findById(originProduct1.getOriginProductId());
+        verify(originProductRepository, times(1)).findById(any());
     }
     @DisplayName("원본이미지가 존재하지 않으면 삭제 실패")
     @Test
     void Fail_deleteOriginImageUrl_invalid_Origin_image_id() {
         // 원본 이미지 정보
         UUID originImageId = UUID.randomUUID();
-        ImageRequest.DeleteImageRequest req = new ImageRequest.DeleteImageRequest(
+        ImageRequest.DeleteOriginImageRequest req = new ImageRequest.DeleteOriginImageRequest(
                 originImageId
         );
 
@@ -485,7 +485,7 @@ public class ImageServiceTest {
         when(originImageRepository.findById(originImageId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.DeleteImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.DeleteOriginImage(req));
 
         assertEquals(ErrorStatus._ORIGIN_IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(originImageRepository, times(1)).findById(originImageId);
