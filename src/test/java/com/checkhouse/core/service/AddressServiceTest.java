@@ -161,7 +161,6 @@ public class AddressServiceTest {
         AddressRequest.DeleteAddressRequest req = AddressRequest.DeleteAddressRequest.builder().addressId(addressId).build();
         addressService.deleteAddress(req);
 
-        assertNotNull(commonAddress.getDeletedDate());
         verify(addressRepository, times(1)).findById(addressId);
     }
 

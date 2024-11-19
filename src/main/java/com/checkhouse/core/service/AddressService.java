@@ -87,14 +87,9 @@ public class AddressService {
         Address address = addressRepository.findById(req.addressId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
-        address.setDeleted();
+        addressRepository.delete(address);
     }
 
-    @Query(value = "DELETE FROM Address a WHERE a.deletedDate IS NOT NULL", nativeQuery = true)
-    //TODO: hard delete test
-    void hardDeleteAddress() {
-
-    }
 
 
 }

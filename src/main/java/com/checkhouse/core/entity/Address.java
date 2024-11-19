@@ -14,6 +14,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update address addr set addr.deleted_at = now() where addr.address_id = :address_id")
 @SQLRestriction("deleted_at IS NULL")
 public class Address extends BaseTimeEntity {
     @Id
