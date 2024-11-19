@@ -1,4 +1,4 @@
-package com.checkhouse.core.request;
+package com.checkhouse.core.dto.request;
 
 import com.checkhouse.core.entity.Address;
 import lombok.AllArgsConstructor;

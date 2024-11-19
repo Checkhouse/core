@@ -5,8 +5,7 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.CategoryDTO;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.repository.mysql.CategoryRepository;
-import com.checkhouse.core.request.CategoryRequest;
-import org.junit.BeforeClass;
+import com.checkhouse.core.dto.request.CategoryRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

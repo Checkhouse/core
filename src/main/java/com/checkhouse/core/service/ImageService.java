@@ -4,17 +4,13 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
 import com.checkhouse.core.entity.ImageURL;
-import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.ImageRepository;
-import com.checkhouse.core.request.ImageRequest;
+import com.checkhouse.core.dto.request.ImageRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j

@@ -105,7 +105,7 @@ public class OriginProductServiceTest {
         UUID productId = mockedOriginProduct.getOriginProductId();
         UUID newCategoryId = UUID.randomUUID();
         Category newCategory = Category.builder()
-                .id(newCategoryId)
+                .categoryId(newCategoryId)
                 .name("new category")
                 .build();
 

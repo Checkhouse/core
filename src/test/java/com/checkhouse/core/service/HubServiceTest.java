@@ -7,7 +7,7 @@ import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.HubRepository;
-import com.checkhouse.core.request.HubRequest;
+import com.checkhouse.core.dto.request.HubRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
