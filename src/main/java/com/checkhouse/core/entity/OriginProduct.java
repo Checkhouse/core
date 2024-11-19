@@ -1,17 +1,27 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.OriginProductDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
-@Table(name = "origin_product")
+@Table(
+        name = "origin_product",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"name"})
+        }
+)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update origin_product og set og.deleted_at = now() where og.origin_product_id = :originProductId")
+@SQLRestriction("deleted_at is null")
 public class OriginProduct extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -48,12 +58,31 @@ public class OriginProduct extends BaseTimeEntity {
 
     @Builder
     public OriginProduct(
+            UUID id,
             Category category,
             String name,
             String company
     ) {
+        this.originProductId = id;
         this.category = category;
         this.name = name;
         this.company = company;
+    }
+
+    public OriginProductDTO toDto(){
+        return new OriginProductDTO(
+                this.originProductId,
+                this.name,
+                this.company,
+                this.category
+        );
+    }
+    public void updateOriginProductInfo(String name, String company) {
+        this.name = name;
+        this.company = company;
+    }
+
+    public void updateOriginProductCategory(Category category) {
+        this.category = category;
     }
 }

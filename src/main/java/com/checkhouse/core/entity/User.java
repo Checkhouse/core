@@ -1,11 +1,15 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.UserDTO;
 import com.checkhouse.core.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.util.UUID;
 
@@ -13,11 +17,13 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "update user us set us.deleted_at = now() where us.user_id = :userId")
+@SQLRestriction("deleted_at is null")
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
-    private UUID userID;
+    private UUID userId;
 
     @Column(
             name="user_name",
@@ -65,7 +71,7 @@ public class User extends BaseTimeEntity {
 
     @Builder
     public User(
-            UUID userID,
+            UUID userId,
             String username,
             String email,
             String nickname,
@@ -76,7 +82,7 @@ public class User extends BaseTimeEntity {
             Boolean isActive,
             Role role
     ) {
-        this.userID = userID;
+        this.userId = userId;
         this.username = username;
         this.email = email;
         this.nickname = nickname;
@@ -87,5 +93,31 @@ public class User extends BaseTimeEntity {
         this.isActive = isActive;
         this.role = role;
 
+    }
+
+    public UserDTO toDto() {
+        return new UserDTO(
+                this.userId,
+                this.username,
+                this.email,
+                this.nickname,
+                this.password,
+                this.provider,
+                this.providerId,
+                this.isActive,
+                this.role
+        );
+    }
+
+    public void updateUserState(Boolean state) {
+        this.isActive = state;
+    }
+
+    public void updateUserInfo(
+            String name,
+            String nickname
+    ) {
+        this.username = name;
+        this.nickname = nickname;
     }
 }
