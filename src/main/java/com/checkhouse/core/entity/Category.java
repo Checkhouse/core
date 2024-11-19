@@ -1,10 +1,13 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.CategoryDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -12,6 +15,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update category t set t.deleted_at = now() where t.category_id = :category_id")
+@SQLRestriction("deleted_at IS NULL")
 public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,10 +35,19 @@ public class Category extends BaseTimeEntity {
 
     @Builder
     public Category(
-            UUID id,
+            UUID categoryId,
             String name
     ) {
-        this.categoryId = id;
+        this.categoryId = categoryId;
         this.name = name;
+    }
+
+    public void updateName(String name) { this.name = name; }
+
+    public CategoryDTO toDTO() {
+        return new CategoryDTO(
+                this.categoryId,
+                this.name
+        );
     }
 }
