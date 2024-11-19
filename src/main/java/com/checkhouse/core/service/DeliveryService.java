@@ -20,13 +20,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
-    private final DeliveryReㅎpository deliveryRepository;
+    private final DeliveryRepository deliveryRepository;
     private final AddressRepository addressRepository;
 
     /**
      * 배송 등록
      */
-    DeliveryDTO AddDelivery(DeliveryRequest.AddDeliveryRequest req) {
+    DeliveryDTO addDelivery(DeliveryRequest.AddDeliveryRequest req) {
         Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
@@ -45,7 +45,7 @@ public class DeliveryService {
     /**
      * 배송 상태 업데이트
      */
-    DeliveryDTO UpdateDeliveryState(DeliveryRequest.UpdateDeliveryStateRequest req) {
+    DeliveryDTO updateDeliveryState(DeliveryRequest.UpdateDeliveryStateRequest req) {
         //존재하지 않는 배송 정보가 있을 수 있으므로 예외처리
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
@@ -58,7 +58,7 @@ public class DeliveryService {
     /**
      * 송장 번호 등록
      */
-    DeliveryDTO RegisterTrackingCode(DeliveryRequest.RegisterTrackingCodeRequest req) {
+    DeliveryDTO registerTrackingCode(DeliveryRequest.RegisterTrackingCodeRequest req) {
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
 
