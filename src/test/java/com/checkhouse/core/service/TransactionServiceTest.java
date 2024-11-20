@@ -4,6 +4,7 @@ import com.checkhouse.core.dto.request.TransactionRequest;
 import com.checkhouse.core.dto.TransactionDTO;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.entity.enums.Role;
 
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
@@ -14,31 +15,38 @@ import static org.mockito.Mockito.*;
 
 import com.checkhouse.core.repository.mysql.TransactionRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
+import com.checkhouse.core.repository.mysql.UserRepository;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ExtendWith(MockitoExtension.class)
 public class TransactionServiceTest {
     @Mock
     private TransactionRepository transactionRepository;
+    @Mock
     private UsedProductRepository usedProductRepository;
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
+    private TransactionService transactionService;
+
     private User seller;
     private User buyer;
     private OriginProduct originProduct1;
     private UsedProduct usedProduct1;
     private Transaction transaction1;
-
-    private TransactionService transactionService;
-
 
     @BeforeAll
     public static void onlyOnce() {}
@@ -50,12 +58,14 @@ public class TransactionServiceTest {
                 .username("test user")
                 .email("test@test.com")
                 .nickname("test nickname")
+                .role(Role.ROLE_USER)
                 .build();
         buyer = User.builder()
                 .userId(UUID.randomUUID())
                 .username("test user2")
                 .email("test2@test.com")
                 .nickname("test nickname2")
+                .role(Role.ROLE_USER)
                 .build();
 
         originProduct1 = OriginProduct.builder()
@@ -95,6 +105,14 @@ public class TransactionServiceTest {
                 usedProduct1.getUsedProductId(),
                 buyer.getUserId()
         );
+        when(usedProductRepository.findById(usedProduct1.getUsedProductId()))
+                .thenReturn(Optional.of(usedProduct1));
+        when(transactionRepository.findByUsedProduct(usedProduct1.getUsedProductId()))
+                .thenReturn(Optional.empty());
+        when(userRepository.findById(buyer.getUserId()))
+                .thenReturn(Optional.of(buyer));
+        when(transactionRepository.save(any(Transaction.class)))
+                .thenReturn(transaction1);
 
         TransactionDTO result = transactionService.addTransaction(request);
 
@@ -141,8 +159,10 @@ public class TransactionServiceTest {
     void SUCCESS_getTransactionsByUser() {
         TransactionRequest.GetTransactionsByUserRequest request = new TransactionRequest.GetTransactionsByUserRequest(
                 buyer.getUserId()
-        ); 
+        );
 
+        when(userRepository.findById(buyer.getUserId()))
+                .thenReturn(Optional.of(buyer));
         when(transactionRepository.findByBuyer(buyer.getUserId()))
                 .thenReturn(List.of(transaction1));
 
@@ -156,7 +176,30 @@ public class TransactionServiceTest {
 
     @DisplayName("관리자 거래 리스트 조회")
     @Test
-    void SUCCESS_getTransactionsForAdmin() {}
+    void SUCCESS_getTransactionsForAdmin() {
+        User admin = User.builder()
+                .userId(UUID.randomUUID())
+                .username("admin")
+                .email("admin@test.com")
+                .nickname("admin nickname")
+                .role(Role.ROLE_ADMIN)
+                .build();
+        TransactionRequest.GetTransactionsForAdminRequest request = new TransactionRequest.GetTransactionsForAdminRequest(
+                admin.getUserId()
+        );
+
+        when(userRepository.findById(admin.getUserId()))
+                .thenReturn(Optional.of(admin));
+        when(transactionRepository.findAll())
+                .thenReturn(List.of(transaction1));
+
+        List<TransactionDTO> result = transactionService.getTransactionsForAdmin(request);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(transaction1.getTransactionId(), result.get(0).transactionId());
+        verify(transactionRepository, times(1)).findAll();
+    }
 
     @DisplayName("존재하지 않는 거래 정보 조회 실패")
     @Test
@@ -167,10 +210,10 @@ public class TransactionServiceTest {
         );
 
         when(transactionRepository.findById(invalidId))
-                .thenReturn(Optional.empty());  
-    
+                .thenReturn(Optional.empty());
+
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.getTransactionStatus(request));
-        
+
         assertEquals(ErrorStatus._TRANSACTION_NOT_FOUND, exception.getCode());
         verify(transactionRepository, times(1)).findById(any());
         verify(transactionRepository, never()).save(any(Transaction.class));
@@ -179,32 +222,20 @@ public class TransactionServiceTest {
     @DisplayName("같은 중고 상품에 대해 거래가 이미 생성된 경우 실패")
     @Test
     void FAIL_addTransaction_already_exists_error() {
-        ///// 고쳐야 함
-
-        UsedProduct usedProduct2 = UsedProduct.builder()
-                .usedProductId(UUID.randomUUID())
-                .originProduct(originProduct1)
-                .title("[판매완료]아이패드")
-                .description("싸다싸 너만오면 고")
-                .price(3000)
-                .isNegoAllow(true)
-                .state(UsedProductState.POST_SALE)  // 판매완료
-                .user(seller)
-                .build();
-
         TransactionRequest.AddTransactionRequest request = new TransactionRequest.AddTransactionRequest(
-                UUID.randomUUID(),  // 랜덤 거래
-                usedProduct2.getUsedProductId(), // 중고 상품
+                UUID.randomUUID(),              // 새로운 거래
+                usedProduct1.getUsedProductId(),
                 buyer.getUserId()
         );
-
-        when(usedProductRepository.findById(usedProduct2.getUsedProductId()))
-                .thenReturn(Optional.of(usedProduct2));
+        when(usedProductRepository.findById(usedProduct1.getUsedProductId()))
+                .thenReturn(Optional.of(usedProduct1));
+        when(transactionRepository.findByUsedProduct(usedProduct1.getUsedProductId()))
+                .thenReturn(Optional.of(transaction1));
 
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.addTransaction(request));
-        
-        assertEquals(ErrorStatus._USED_PRODUCT_NOT_FOUND, exception.getCode());
-        verify(usedProductRepository, times(1)).findById(any());
+
+        assertEquals(ErrorStatus._TRANSACTION_ALREADY_EXISTS, exception.getCode());
+        verify(transactionRepository, times(1)).findByUsedProduct(any());
         verify(transactionRepository, never()).save(any(Transaction.class));
     }
 
@@ -251,13 +282,28 @@ public class TransactionServiceTest {
                 UUID.randomUUID()
         );
 
-        when(transactionRepository.findByBuyer(request.userId()))
-                .thenReturn(List.of());
+        when(userRepository.findById(request.userId()))
+                .thenReturn(Optional.empty());
 
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.getTransactionsByUser(request));
 
         assertEquals(ErrorStatus._TRANSACTION_USER_LIST_FAILED, exception.getCode());
-        verify(transactionRepository, times(1)).findByBuyer(any());
+        verify(userRepository, times(1)).findById(any());
+    }
+
+    @DisplayName("일반 유저가 관리자 거래 조회시 실패")
+    @Test
+    void FAIL_getTransactionsForAdmin_user_not_admin() {        
+        TransactionRequest.GetTransactionsForAdminRequest request = new TransactionRequest.GetTransactionsForAdminRequest(
+               buyer.getUserId()        // 관리자가 아닌 유저
+        );
+
+        when(userRepository.findById(request.adminId()))
+                .thenReturn(Optional.of(buyer));
+
+        GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.getTransactionsForAdmin(request));
+
+        assertEquals(ErrorStatus._USER_NOT_ADMIN, exception.getCode());
     }
 
 }
