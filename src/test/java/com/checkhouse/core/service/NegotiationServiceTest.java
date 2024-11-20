@@ -28,6 +28,7 @@ import java.util.UUID;
 public class NegotiationServiceTest {
     @Mock
     private NegotiationRepository negotiationRepository;
+    @Mock
     private UsedProductRepository usedProductRepository;
 
     @InjectMocks
@@ -256,29 +257,32 @@ public class NegotiationServiceTest {
 
     @DisplayName("이미 승인된 네고에 대한 승인은 실패")
     @Test
-    void FAIL_approveNegotiation_already_approved() {  
-        UUID invalidId = UUID.randomUUID();
+    void FAIL_approveNegotiation_already_approved() {
+        /////// 이미 승인된 부분
+        Negotiation AcceptedNegotiation = Negotiation.builder()
+                .negotiationId(UUID.randomUUID())
+                .price(3000)
+                .state(NegotiationState.ACCEPTED)
+                .usedProduct(usedProduct1)
+                .seller(user1)
+                .build();
+
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                invalidId,
+                negotiation1.getNegotiationId(),
                 NegotiationState.ACCEPTED
         );
 
         // given
-        when(negotiationRepository.findById(invalidId)).thenReturn(Optional.empty());
+        when(negotiationRepository.findById(AcceptedNegotiation.getNegotiationId()))
+                .thenReturn(Optional.of(AcceptedNegotiation));
 
         // when
         GeneralException exception = assertThrows(GeneralException.class, () -> negotiationService.updateNegotiationState(request));
 
         // then
-        assertEquals(ErrorStatus._NEGOTIATION_NOT_FOUND, exception.getCode());
+        assertEquals(ErrorStatus._NEGOTIATION_ALREADY_ACCEPTED, exception.getCode());
         verify(negotiationRepository, times(1)).findById(any());
         verify(negotiationRepository, never()).save(any(Negotiation.class));
-    }
-
-    @DisplayName("이미 거절된 네고에 대한 거절은 실패")
-    @Test
-    void FAIL_approveNegotiation_already_denied() {
-        // ?
     }
 
     @DisplayName("네고를 거부한 중고 상품에 대한 내고 생성은 실패")
@@ -376,7 +380,7 @@ public class NegotiationServiceTest {
         GeneralException exception = assertThrows(GeneralException.class, () -> negotiationService.updateNegotiationState(request));
 
         // then 
-        assertEquals(ErrorStatus._NEGOTIATION_NOT_FOUND, exception.getCode());
+        assertEquals(ErrorStatus._NEGOTIATION_ALREADY_CANCELLED, exception.getCode());
     }
 
     @DisplayName("네고 취소 시 제안이 이미 승인된 경우 실패")
