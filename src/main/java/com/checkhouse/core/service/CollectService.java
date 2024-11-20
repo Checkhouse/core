@@ -29,11 +29,11 @@ public class CollectService {
     //수거 등록 성공
     public CollectDTO addCollect(CollectRequest.RegisterCollectRequest req) {
         //존재하지 않는 배송 정보가 있을 수 있으므로 예외처리
-        Delivery delivery = deliveryRepository.findById(req.getDeliveryId())
+        Delivery delivery = deliveryRepository.findById(req.deliveryId())
         .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
 
         //존재하지 않는 중고 상품 정보가 있을 수 있으므로 예외처리
-        UsedProduct usedProduct = usedProductRepository.findById(req.getUsedProductId())
+        UsedProduct usedProduct = usedProductRepository.findById(req.usedProductId())
         .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
         
         //수거 등록
@@ -42,7 +42,8 @@ public class CollectService {
             .usedProduct(usedProduct)
             .state(DeliveryState.COLLECTING)
             .build();
-        return collect.toDTO();
+        Collect savedCollect = collectRepository.save(collect);
+        return savedCollect.toDTO();
 
     }
     //수거 상태 수정
@@ -51,6 +52,7 @@ public class CollectService {
         Collect collect = collectRepository.findById(collectId)
         .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
         collect.updateCollectState(deliveryState);
-        return collect.toDTO();
+        Collect updatedCollect = collectRepository.save(collect);
+        return updatedCollect.toDTO();
     }
 }

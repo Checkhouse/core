@@ -48,13 +48,8 @@ public class InspectionService {
         return inspection.toDTO();
     }
     // 검수 사진 등록(상태 업데이트)
-    // InspectionDTO updateInspectionImage(UUID inspectionId, InspectionRequest.UpdateInspectionImageRequest req) {
-    //     // 존재하지 않는 검수 정보가 있을 수 있으므로 예외처리
-    //     Inspection inspection = inspectionRepository.findById(inspectionId)
-    //     .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
-    //     inspection.updateInspectionState(req.isDone());
-    //     return inspection.toDTO();
-    // }
+    // todo: imageservice에서 사진 가져오기
+    
     // 검수 리스트 조회(관리자)
     List<InspectionDTO> getInspectionList(UUID usedProductId) {
         return inspectionRepository.findByUsedProductId(usedProductId)

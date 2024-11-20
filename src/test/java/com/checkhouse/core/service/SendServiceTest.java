@@ -83,11 +83,11 @@ public class SendServiceTest {
         UUID transactionId = transaction1.getTransactionId();
         UUID sendId = send1.getSendId();
 
-        SendRequest.RegisterSendRequest req = new SendRequest.RegisterSendRequest(
-            sendId,
-            transactionId,
-            deliveryId
-        );
+        SendRequest.RegisterSendRequest req = SendRequest.RegisterSendRequest.builder()
+            .sendId(sendId)
+            .transactionId(transactionId)
+            .deliveryId(deliveryId)
+            .build();
 
         // given
         when(deliveryRepository.findById(deliveryId))
@@ -134,11 +134,11 @@ public class SendServiceTest {
         UUID transactionId = transaction1.getTransactionId();
         UUID sendId = send1.getSendId();
 
-        SendRequest.RegisterSendRequest req = new SendRequest.RegisterSendRequest(
-            sendId,
-            transactionId,
-            deliveryId
-        );
+        SendRequest.RegisterSendRequest req = SendRequest.RegisterSendRequest.builder()
+            .sendId(sendId)
+            .transactionId(transactionId)
+            .deliveryId(deliveryId)
+            .build();
 
         // given
         when(deliveryRepository.findById(deliveryId))
@@ -157,11 +157,11 @@ public class SendServiceTest {
         UUID transactionId = UUID.randomUUID();
         UUID sendId = send1.getSendId();
 
-        SendRequest.RegisterSendRequest req = new SendRequest.RegisterSendRequest(
-            sendId,
-            transactionId,
-            deliveryId
-        );
+        SendRequest.RegisterSendRequest req = SendRequest.RegisterSendRequest.builder()
+            .sendId(sendId)
+            .transactionId(transactionId)
+            .deliveryId(deliveryId)
+            .build();
 
         // given
         when(deliveryRepository.findById(deliveryId))

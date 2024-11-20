@@ -6,6 +6,6 @@ public record InspectionDTO(
         UUID inspectionId,
         boolean isDone,
         String description,
-        UsedProductDTO usedProductDTO
-        //,UserDTO userDTO
+        UsedProductDTO usedProductDTO,
+        UserDTO userDTO
 ) {}

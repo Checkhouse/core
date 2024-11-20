@@ -51,17 +51,21 @@ public class Collect extends BaseTimeEntity {
 
     @Builder
     public Collect(
+            UUID collectId,
             UsedProduct usedProduct,
             Delivery delivery,
             DeliveryState state
     ) {
+        this.collectId = collectId;
         this.usedProduct = usedProduct;
         this.delivery = delivery;
         this.state = state;
     }
 
     public void updateCollectState(DeliveryState deliveryState) {this.state = deliveryState;}
+    
     public CollectDTO toDTO() {
         return new CollectDTO(collectId, usedProduct.toDto(), delivery.toDTO(), state);
     }
+
 }
