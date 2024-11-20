@@ -8,10 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-import com.checkhouse.core.dto.InspectionDTO;
-
-import com.checkhouse.core.dto.InspectionDTO;
-
 @Table(name = "inspection")
 @Entity
 @Getter
@@ -54,25 +50,14 @@ public class Inspection extends BaseTimeEntity {
 
     @Builder
     public Inspection(
-            UUID inspectionId,
             UsedProduct usedProduct,
             User user,
             boolean isDone,
             String description
     ) {
-        this.inspectionId = inspectionId;
-        this.inspectionId = inspectionId;
         this.usedProduct = usedProduct;
         this.user = user;
         this.isDone = isDone;
         this.description = description;
     }
-
-    public void updateInspectionState(boolean isDone) {
-        this.isDone = isDone;
-    }
-    public InspectionDTO toDTO() {
-        return new InspectionDTO(inspectionId, isDone, description, usedProduct.toDto());
-    }
-
 }

@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-import com.checkhouse.core.dto.DeliveryDTO;
-
 @Table(name = "transaction")
 @Entity
 @Getter
@@ -57,11 +55,5 @@ public class Transaction extends BaseTimeEntity {
         this.usedProduct = usedProduct;
         this.buyer = buyer;
         this.isCompleted = isCompleted;
-    }
-
-
-    public DeliveryDTO toDTO() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toDTO'");
     }
 }

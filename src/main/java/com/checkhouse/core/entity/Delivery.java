@@ -1,6 +1,5 @@
 package com.checkhouse.core.entity;
 
-import com.checkhouse.core.dto.DeliveryDTO;
 import com.checkhouse.core.entity.enums.DeliveryState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,21 +16,14 @@ import java.util.UUID;
 public class Delivery extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(
-            name="delivery_id"
-    )
+    @Column(name="delivery_id")
     private UUID deliveryId;
 
 
-    @Column(
-            name="tracking_code"
-    )
+    @Column(name="tracking_code")
     private String trackingCode;
 
-    @Column(
-            name = "state",
-            nullable = false
-    )
+    @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private DeliveryState deliveryState = DeliveryState.PRE_DELIVERY;
 
@@ -50,22 +42,12 @@ public class Delivery extends BaseTimeEntity {
 
     @Builder
     public Delivery(
-            UUID deliveryId,
             Address address,
             String trackingCode,
             DeliveryState deliveryState
     ) {
-        this.deliveryId = deliveryId;
         this.address = address;
         this.trackingCode = trackingCode;
         this.deliveryState = deliveryState;
-    }
-
-    public void UpdateAddress(Address address) {this.address = address;}
-    public void UpdateTrackingCode(String trackingCode) {this.trackingCode = trackingCode;}
-    public void UpdateDeliveryState(DeliveryState deliveryState) {this.deliveryState = deliveryState;}
-
-    public DeliveryDTO toDTO() {
-        return new DeliveryDTO(deliveryId, trackingCode, deliveryState, address.toDTO());
     }
 }

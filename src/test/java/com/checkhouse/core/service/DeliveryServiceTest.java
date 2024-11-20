@@ -4,15 +4,11 @@ import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.BeforeEach;
 
 /**
  * 거래 생성 후 등록할 물건을 수거하러 갈 떄
  */
-
-@ExtendWith(MockitoExtension.class)
 public class DeliveryServiceTest {
     @BeforeAll
     public static void onlyOnce() {}
@@ -22,10 +18,7 @@ public class DeliveryServiceTest {
 
     @DisplayName("배송 등록 성공")
     @Test
-    void SUCCESS_addDelivery() {
-        // 배송 등록
-        
-    }
+    void SUCCESS_addDelivery() {}
 
     @DisplayName("배송 리스트 조회 성공")
     @Test
