@@ -12,6 +12,10 @@ import com.checkhouse.core.repository.mysql.DeliveryRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 
@@ -49,6 +53,12 @@ public class DeliveryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
         delivery.UpdateDeliveryState(req.deliveryState());
         return delivery.toDTO();
+    }
+    // 배송 리스트 조회
+    public List<DeliveryDTO> getDeliveryList() {
+        return deliveryRepository.findAll().stream()
+            .map(Delivery::toDTO)
+            .collect(Collectors.toList());
     }
 
     /**
