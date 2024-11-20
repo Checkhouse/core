@@ -7,7 +7,7 @@ import lombok.Builder;
 
 public class SendRequest {
     @Builder
-    public record RegisterSendRequest(
+    public record AddSendRequest(
         UUID sendId,
         UUID transactionId,
         UUID deliveryId
@@ -15,6 +15,7 @@ public class SendRequest {
 
     @Builder
     public record UpdateSendStateRequest(
+        UUID sendId,
         DeliveryState deliveryState
     ) {}
 

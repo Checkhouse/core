@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.SendDTO;
 import com.checkhouse.core.dto.request.SendRequest;
 import com.checkhouse.core.entity.Address;
@@ -83,7 +84,7 @@ public class SendServiceTest {
         UUID transactionId = transaction1.getTransactionId();
         UUID sendId = send1.getSendId();
 
-        SendRequest.RegisterSendRequest req = SendRequest.RegisterSendRequest.builder()
+        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .sendId(sendId)
             .transactionId(transactionId)
             .deliveryId(deliveryId)
@@ -98,7 +99,7 @@ public class SendServiceTest {
             .thenReturn(send1);
 
         // when
-        SendDTO result = sendService.registerSend(req);
+        SendDTO result = sendService.addSend(req);
 
         // then
         assertEquals(send1.toDTO(), result);
@@ -111,7 +112,7 @@ public class SendServiceTest {
         UUID sendId = send1.getSendId();
         DeliveryState state = DeliveryState.SENDING;
 
-        SendRequest.UpdateSendStateRequest req = new SendRequest.UpdateSendStateRequest(state);
+        SendRequest.UpdateSendStateRequest req = new SendRequest.UpdateSendStateRequest(sendId, state);
 
         // given
         when(sendRepository.findById(sendId))
@@ -120,7 +121,7 @@ public class SendServiceTest {
             .thenReturn(send1);
 
         // when
-        SendDTO result = sendService.updateSendState(sendId, req);
+        SendDTO result = sendService.updateSendState(req);
 
         // then
         assertEquals(send1.toDTO(), result);
@@ -134,7 +135,7 @@ public class SendServiceTest {
         UUID transactionId = transaction1.getTransactionId();
         UUID sendId = send1.getSendId();
 
-        SendRequest.RegisterSendRequest req = SendRequest.RegisterSendRequest.builder()
+        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .sendId(sendId)
             .transactionId(transactionId)
             .deliveryId(deliveryId)
@@ -145,7 +146,7 @@ public class SendServiceTest {
             .thenReturn(Optional.empty());
 
         // when
-        assertThrows(RuntimeException.class, () -> sendService.registerSend(req));
+        assertThrows(GeneralException.class, () -> sendService.addSend(req));
         
     }
 
@@ -157,7 +158,7 @@ public class SendServiceTest {
         UUID transactionId = UUID.randomUUID();
         UUID sendId = send1.getSendId();
 
-        SendRequest.RegisterSendRequest req = SendRequest.RegisterSendRequest.builder()
+        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .sendId(sendId)
             .transactionId(transactionId)
             .deliveryId(deliveryId)
@@ -170,7 +171,7 @@ public class SendServiceTest {
             .thenReturn(Optional.empty());
 
         // when
-        assertThrows(RuntimeException.class, () -> sendService.registerSend(req));
+        assertThrows(GeneralException.class, () -> sendService.addSend(req));
     }
 
     @DisplayName("존재하지 않는 발송 상태로 수정하는 경우 실패")
@@ -180,13 +181,31 @@ public class SendServiceTest {
         UUID sendId = send1.getSendId();
         DeliveryState state = DeliveryState.DELIVERED;
 
-        SendRequest.UpdateSendStateRequest req = new SendRequest.UpdateSendStateRequest(state);
+        SendRequest.UpdateSendStateRequest req = new SendRequest.UpdateSendStateRequest(sendId, state);
 
         // given
         when(sendRepository.findById(sendId))
             .thenReturn(Optional.of(send1));
 
         // when
-        assertThrows(RuntimeException.class, () -> sendService.updateSendState(sendId, req));
+        assertThrows(GeneralException.class, () -> sendService.updateSendState(req));
+        
+    }
+    @DisplayName("존재하지 않는 발송 ID를 수정하는 경우 실패")
+    @Test
+    void FAIL_updateSendStatus_invalid_sendId() {
+        // 데이터 생성
+        UUID sendId = UUID.randomUUID();
+        DeliveryState state = DeliveryState.SENDING;
+
+        SendRequest.UpdateSendStateRequest req = new SendRequest.UpdateSendStateRequest(sendId, state);
+
+        // given
+        when(sendRepository.findById(sendId))
+            .thenReturn(Optional.empty());
+
+        // when
+        assertThrows(GeneralException.class, () -> sendService.updateSendState(req));
+        
     }
 }

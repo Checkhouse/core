@@ -10,10 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Table(name = "send")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update send t set t.deleted_at = now() where t.send_id = :send_id")
+@SQLRestriction("deleted_at IS NULL")
 public class Send extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -62,8 +67,6 @@ public class Send extends BaseTimeEntity {
         this.state = state;
     }
     public void updateSendState(DeliveryState state) {this.state = state;}
-    public void updateTransaction(Transaction transaction) {this.transaction = transaction;}
-    public void updateDelivery(Delivery delivery) {this.delivery = delivery;}
 
     public SendDTO toDTO(){
         return new SendDTO(sendId, transaction.toDTO(), delivery.toDTO(), state);

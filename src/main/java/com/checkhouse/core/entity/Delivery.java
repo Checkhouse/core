@@ -10,10 +10,15 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 @Table(name = "delivery")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update delivery t set t.deleted_at = now() where t.delivery_id = :delivery_id")
+@SQLRestriction("deleted_at IS NULL")
 public class Delivery extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

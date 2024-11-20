@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.checkhouse.core.dto.InspectionDTO;
 
 import com.checkhouse.core.dto.InspectionDTO;
@@ -16,6 +19,8 @@ import com.checkhouse.core.dto.InspectionDTO;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update inspection t set t.deleted_at = now() where t.inspection_id = :inspection_id")
+@SQLRestriction("deleted_at IS NULL")
 public class Inspection extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -60,7 +65,6 @@ public class Inspection extends BaseTimeEntity {
             boolean isDone,
             String description
     ) {
-        this.inspectionId = inspectionId;
         this.inspectionId = inspectionId;
         this.usedProduct = usedProduct;
         this.user = user;

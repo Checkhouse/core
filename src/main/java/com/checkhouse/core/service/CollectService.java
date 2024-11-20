@@ -27,7 +27,7 @@ public class CollectService {
     private final DeliveryRepository deliveryRepository;
     private final UsedProductRepository usedProductRepository;
     //수거 등록 성공
-    public CollectDTO addCollect(CollectRequest.RegisterCollectRequest req) {
+    public CollectDTO addCollect(CollectRequest.AddCollectRequest req) {
         //존재하지 않는 배송 정보가 있을 수 있으므로 예외처리
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
         .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));

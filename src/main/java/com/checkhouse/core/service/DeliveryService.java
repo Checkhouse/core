@@ -51,6 +51,11 @@ public class DeliveryService {
     public DeliveryDTO updateDeliveryState(DeliveryRequest.UpdateDeliveryStateRequest req) {
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
+        //PRE_DELIVERY, DELIVERING, DELIVERED 외의 상태는 예외 처리
+        if(!req.deliveryState().equals(DeliveryState.PRE_DELIVERY) && !req.deliveryState().equals(DeliveryState.DELIVERING) && !req.deliveryState().equals(DeliveryState.DELIVERED)) {
+            throw new GeneralException(ErrorStatus._DELIVERY_STATE_CHANGE_FAILED);
+        }
+        //배송 상태 업데이트
         delivery.UpdateDeliveryState(req.deliveryState());
         return delivery.toDTO();
     }

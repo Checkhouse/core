@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import com.checkhouse.core.dto.CollectDTO;
 import com.checkhouse.core.entity.enums.DeliveryState;
 
@@ -15,6 +18,8 @@ import com.checkhouse.core.entity.enums.DeliveryState;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql= "update collect t set t.deleted_at = now() where t.collect_id = :collect_id")
+@SQLRestriction("deleted_at IS NULL")
 public class Collect extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

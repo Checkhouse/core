@@ -60,7 +60,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _DELIVERY_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "DELIVERY404", "Delivery ID를 찾을 수 없습니다."),
     _DELIVERY_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "DELIVERY4041", "배송 상태를 찾을 수 없습니다."),
     _DELIVERY_TRACKING_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "DELIVERY4042", "송장 번호를 찾을 수 없습니다."),
-
+    _DELIVERY_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "DELIVERY400", "배송 상태 변경에 실패하였습니다."),
     // Inspection
     _INSPECTION_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "INSPECTION404", "Inspection ID를 찾을 수 없습니다."),
 
@@ -83,10 +83,15 @@ public enum ErrorStatus implements BaseErrorCode {
     _TRANSACTION_ALREADY_EXISTS(HttpStatus.CONFLICT, "TRANSACTION409", "이미 존재하는 거래입니다."),
     _TRANSACTION_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "거래 상태 변경에 실패하였습니다."),
     _TRANSACTION_USER_LIST_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "사용자 특정 실패 시 리스트 조회에 실패하였습니다."),
-
+    _TRANSACTION_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "TRANSACTION404", "Transaction ID를 찾을 수 없습니다."),
     // collect
     _COLLECT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECT404", "Collect ID를 찾을 수 없습니다."),
     _COLLECT_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECT4041", "수거 상태를 찾을 수 없습니다."),
+    
+    // send
+    _SEND_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND404", "Send ID를 찾을 수 없습니다."),
+    _SEND_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND4041", "발송 상태를 찾을 수 없습니다."),
+    _SEND_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "SEND400", "발송 상태 변경에 실패하였습니다.")
     ;
 
     

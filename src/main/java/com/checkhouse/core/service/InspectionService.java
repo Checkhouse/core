@@ -52,7 +52,7 @@ public class InspectionService {
     
     // 검수 리스트 조회(관리자)
     List<InspectionDTO> getInspectionList(UUID usedProductId) {
-        return inspectionRepository.findByUsedProductId(usedProductId)
+        return inspectionRepository.findByUsedProduct_UsedProductId(usedProductId)
             .stream()
             .map(Inspection::toDTO)
             .collect(Collectors.toList());

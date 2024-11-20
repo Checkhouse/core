@@ -9,5 +9,11 @@ public enum DeliveryState {
     COLLECTING, //수거 전
     //발송
     SENDING //발송 전
+;
+
+    boolean isValidState(DeliveryState deliveryState) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isValidState'");
+    }
 
 }

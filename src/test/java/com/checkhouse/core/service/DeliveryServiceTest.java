@@ -137,14 +137,14 @@ public class DeliveryServiceTest {
         // 데이터 생성
         DeliveryRequest.RegisterTrackingCodeRequest req = new DeliveryRequest.RegisterTrackingCodeRequest(
             del1.getDeliveryId(),
-            "1234567890"
+            "34567890"
         );
         //given
         when(deliveryRepository.findById(del1.getDeliveryId())).thenReturn(Optional.of(del1));
         //when
         DeliveryDTO result = deliveryService.registerTrackingCode(req);
         //then
-        assertEquals("1234567890", result.trackingCode());
+        assertEquals("34567890", result.trackingCode());
     }
 
     @DisplayName("존재하지 않는 배송지 ID일 경우 배송 등록 실패")
@@ -165,10 +165,12 @@ public class DeliveryServiceTest {
     @DisplayName("존재하지 않는 배송 상태로 변경시 업데이트 실패")
     @Test
     void FAIL_updateDeliveryStatus_invalid_status() {
+        //when
+        when(deliveryRepository.findById(del1.getDeliveryId())).thenReturn(Optional.of(del1));
         //given
         DeliveryRequest.UpdateDeliveryStateRequest req = new DeliveryRequest.UpdateDeliveryStateRequest(
             del1.getDeliveryId(),
-            DeliveryState.DELIVERING
+            DeliveryState.COLLECTING
         );
         //then
         assertThrows(GeneralException.class, () -> deliveryService.updateDeliveryState(req));

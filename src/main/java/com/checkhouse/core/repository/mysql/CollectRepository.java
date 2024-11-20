@@ -11,6 +11,6 @@ import com.checkhouse.core.entity.enums.DeliveryState;
 public interface CollectRepository extends JpaRepository<Collect, UUID> {
     //수거 상태 수정
     @Modifying
-    @Query("UPDATE Collect c SET c.state = :state WHERE c.id = :id")
-    void updateCollectState(@Param("id") UUID id, @Param("state") DeliveryState state);
+    @Query("UPDATE Collect c SET c.state = :state WHERE c.collectId = :collectId")
+    void updateCollectState(@Param("collectId") UUID collectId, @Param("state") DeliveryState state);
 }

@@ -13,5 +13,5 @@ public interface InspectionRepository extends JpaRepository<Inspection, UUID> {
     @Modifying
     @Query("UPDATE Inspection i SET i.isDone = :isDone WHERE i.inspectionId = :inspectionId")
     void update(@Param("inspectionId") UUID inspectionId, @Param("isDone") boolean isDone);
-    List<Inspection> findByUsedProductId(UUID usedProductId);
+    List<Inspection> findByUsedProduct_UsedProductId(UUID usedProductId);
 }

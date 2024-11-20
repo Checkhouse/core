@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.CollectDTO;
-import com.checkhouse.core.dto.request.CollectRequest.RegisterCollectRequest;
+import com.checkhouse.core.dto.request.CollectRequest.AddCollectRequest;
 import com.checkhouse.core.entity.Collect;
 import com.checkhouse.core.entity.Delivery;
 import com.checkhouse.core.entity.UsedProduct;
@@ -49,7 +49,6 @@ public class CollectServiceTest {
 
 
     private static Collect collect1;
-    private static Collect collect2;
     private static UsedProduct usedProduct1;
     private static UsedProduct usedProduct2;
     private static Delivery delivery1;
@@ -109,20 +108,13 @@ public class CollectServiceTest {
                 .address("서울시 서초구")
                 .build())
             .build();
-
-        collect2 = Collect.builder()
-            .collectId(UUID.randomUUID())
-            .usedProduct(usedProduct2)
-            .delivery(delivery2)
-            .state(DeliveryState.COLLECTING)
-            .build();
     }
-
+    
     @DisplayName("수거 등록 성공")
     @Test
     void SUCCESS_addCollect() {
         // given
-        RegisterCollectRequest req = new RegisterCollectRequest(
+        AddCollectRequest req = new AddCollectRequest(
             delivery1.getDeliveryId(),
             usedProduct1.getUsedProductId()
         );
@@ -168,7 +160,7 @@ public class CollectServiceTest {
     @Test
     void FAIL_addCollect_not_found() {
         // given
-        RegisterCollectRequest req = new RegisterCollectRequest(
+        AddCollectRequest req = new AddCollectRequest(
             UUID.randomUUID(),
             usedProduct1.getUsedProductId()
         );
@@ -186,10 +178,10 @@ public class CollectServiceTest {
         UUID deliveryId = delivery1.getDeliveryId();
         UUID nonExistentUsedProductId = UUID.randomUUID();
 
-        RegisterCollectRequest req = RegisterCollectRequest.builder()
-            .deliveryId(deliveryId)
-            .usedProductId(nonExistentUsedProductId)
-            .build();
+        AddCollectRequest req = new AddCollectRequest(
+            deliveryId,
+            nonExistentUsedProductId
+        );
 
         when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery1));
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
