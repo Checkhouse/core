@@ -1,7 +1,5 @@
 package com.checkhouse.core.entity;
 
-import com.checkhouse.core.dto.OriginImageDTO;
-import com.checkhouse.core.dto.UsedImageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -53,12 +51,5 @@ public class UsedImage extends BaseTimeEntity {
         this.usedImageId = usedImageId;
         this.image = image;
         this.usedProduct = usedProduct;
-    }
-    public UsedImageDTO toDTO() {
-        return new UsedImageDTO(
-                this.usedImageId,
-                this.image,
-                this.usedProduct
-        );
     }
 }

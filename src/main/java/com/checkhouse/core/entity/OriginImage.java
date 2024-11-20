@@ -1,6 +1,5 @@
 package com.checkhouse.core.entity;
 
-import com.checkhouse.core.dto.OriginImageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -52,13 +51,5 @@ public class OriginImage extends BaseTimeEntity {
         this.originImageId = originImageId;
         this.image = image;
         this.originProduct = originProduct;
-    }
-
-    public OriginImageDTO toDTO() {
-        return new OriginImageDTO(
-                this.originImageId,
-                this.image,
-                this.originProduct
-        );
     }
 }
