@@ -31,9 +31,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _TRANSACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "TRANSACTION404", "해당 거래를 찾을 수 없습니다."),
     _TRANSACTION_ALREADY_EXISTS(HttpStatus.CONFLICT, "TRANSACTION409", "이미 존재하는 거래입니다."),
     _TRANSACTION_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "거래 상태 변경에 실패하였습니다."),
-    _TRANSACTION_USER_LIST_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "사용자 특정 실패 시 리스트 조회에 실패하였습니다."),
+    _TRANSACTION_USER_LIST_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "사용자 특정이 불가해 리스트 조회를 실패하였습니다."),
     
-    // picup
+    // pickup
     _PICKUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "해당 픽업을 찾을 수 없습니다."),
     _PICKUP_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "존재하지 않는 스토어입니다."),
     _PICKUP_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "존재하지 않는 사용자입니다."),
@@ -45,7 +45,8 @@ public enum ErrorStatus implements BaseErrorCode {
     // user
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 유저입니다."),
     _USER_ALREADY_EXIST(HttpStatus.CONFLICT, "USER409", "이미 존재하는 사용자입니다."),
-
+    _USER_NOT_ADMIN(HttpStatus.BAD_REQUEST, "USER400", "관리자가 아닙니다."),
+    
     // origin product
     _ORIGIN_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "OG404", "원본 상품이 존재하지 않습니다."),
     _ORIGIN_PRODUCT_ALREADY_EXISTS(HttpStatus.CONFLICT, "OG409", "중복된 원본 상품 이름이 존재합니다."),
