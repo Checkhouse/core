@@ -61,12 +61,14 @@ public class Send extends BaseTimeEntity {
         this.delivery = delivery;
         this.state = state;
     }
-    public void updateSendState(DeliveryState deliveryState) {
-        this.state = deliveryState;
-    }
-    public SendDTO toDTO() {
-        // return new SendDTO(sendId, transaction.toDTO(), delivery.toDTO(), state);
-        return null;
+    public void updateSendState(DeliveryState state) {this.state = state;}
+    public void updateTransaction(Transaction transaction) {this.transaction = transaction;}
+    public void updateDelivery(Delivery delivery) {this.delivery = delivery;}
+
+    public SendDTO toDTO(){
+        return new SendDTO(sendId, transaction.toDTO(), delivery.toDTO(), state);
     }
 }
+
+
 

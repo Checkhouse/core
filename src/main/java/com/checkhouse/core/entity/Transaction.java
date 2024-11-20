@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.TransactionDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
-
-import com.checkhouse.core.dto.DeliveryDTO;
 
 @Table(name = "transaction")
 @Entity
@@ -50,18 +49,24 @@ public class Transaction extends BaseTimeEntity {
 
     @Builder
     public Transaction(
+            UUID transactionId,
             UsedProduct usedProduct,
             User buyer,
             Boolean isCompleted
     ) {
+        this.transactionId = transactionId;
         this.usedProduct = usedProduct;
         this.buyer = buyer;
         this.isCompleted = isCompleted;
     }
 
-
-    public DeliveryDTO toDTO() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toDTO'");
+    //toDTO
+    public TransactionDTO toDTO() {
+        return new TransactionDTO(
+                this.transactionId,
+                this.usedProduct,
+                this.buyer,
+                this.isCompleted
+        );
     }
 }

@@ -36,20 +36,21 @@ public class SendService {
 
         Send savedSend = sendRepository.save(
             Send.builder()
-                .transaction(transactionRepository.findById(req.transactionId()).orElseThrow(() -> new RuntimeException("Transaction not found")))
-                .delivery(deliveryRepository.findById(req.deliveryId()).orElseThrow(() -> new RuntimeException("Delivery not found")))
+                .transaction(transaction)
+                .delivery(delivery)
                 .state(DeliveryState.PRE_DELIVERY)
                 .build()
         );
         return savedSend.toDTO();
     }
     //발송 상태 수정
-    SendDTO updateSendState(UUID sendId, DeliveryState deliveryState) {
+    SendDTO updateSendState(UUID sendId, SendRequest.UpdateSendStateRequest req) {
         //존재하지 않는 발송 정보가 있을 수 있으므로 예외처리
         Send send = sendRepository.findById(sendId)
         .orElseThrow(() -> new RuntimeException("Send not found"));
         //발송 상태 수정
-        send.updateSendState(deliveryState);
-        return send.toDTO();
+        send.updateSendState(req.deliveryState());
+        SendDTO updatedSend = sendRepository.save(send).toDTO();
+        return updatedSend;
     }
 }
