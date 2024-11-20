@@ -1,10 +1,6 @@
 package com.checkhouse.core.dto;
 
 
-public class UsedProductDTO {
-
-}
-
 import com.checkhouse.core.entity.enums.UsedProductState;
 
 import java.util.UUID;

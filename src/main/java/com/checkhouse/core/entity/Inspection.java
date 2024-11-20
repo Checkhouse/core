@@ -55,7 +55,6 @@ public class Inspection extends BaseTimeEntity {
     @Builder
     public Inspection(
             UUID inspectionId,
-            UUID inspectionId,
             UsedProduct usedProduct,
             User user,
             boolean isDone,
