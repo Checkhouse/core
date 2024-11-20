@@ -10,9 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface NegotiationRepository extends JpaRepository<Negotiation, UUID> {
-    // ID 조회
-    Optional<Negotiation> findById(UUID negotiationId);
-
     // 구매자 ID 조회
     @Query("select up from Negotiation up where up.buyer = :buyerId and up.deletedDate is null")
     List<Negotiation> findAllByBuyerId(UUID buyerId);

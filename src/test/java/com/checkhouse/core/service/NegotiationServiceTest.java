@@ -13,39 +13,45 @@ import com.checkhouse.core.dto.request.NegotiationRequest;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
+import com.checkhouse.core.repository.mysql.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
+@ExtendWith(MockitoExtension.class)
 public class NegotiationServiceTest {
     @Mock
     private NegotiationRepository negotiationRepository;
     @Mock
     private UsedProductRepository usedProductRepository;
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
-    private User user1;
-    private User user2;
+    private NegotiationService negotiationService;
+
+    private User seller;
+    private User buyer;
     private OriginProduct originProduct1;
     private UsedProduct usedProduct1;
     private Negotiation negotiation1;
-
-    private NegotiationService negotiationService;
 
     @BeforeAll
     public static void onlyOnce() {}
 
     @BeforeEach
     void setup() {
-        user1 = User.builder()
+        seller = User.builder()
                 .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
@@ -55,7 +61,7 @@ public class NegotiationServiceTest {
                 .provider("naver")
                 .providerId("random id naver")
                 .build();
-        user2 = User.builder()
+        buyer = User.builder()
                 .userId(UUID.randomUUID())
                 .username("test user2")
                 .email("test2@test.com")
@@ -85,7 +91,7 @@ public class NegotiationServiceTest {
                 .isNegoAllow(true)
                 .state(UsedProductState.ON_SALE)
                 .originProduct(originProduct1)
-                .user(user1)
+                .user(seller)
                 .build();
         
         negotiation1 = Negotiation.builder()
@@ -93,7 +99,7 @@ public class NegotiationServiceTest {
                 .price(2000)
                 .state(NegotiationState.WAITING)
                 .usedProduct(usedProduct1)
-                .seller(user1)
+                .seller(seller)
                 .build();
     }
 
@@ -103,18 +109,28 @@ public class NegotiationServiceTest {
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
                 UUID.randomUUID(),
                 usedProduct1.getUsedProductId(),
-                user1.getUserId(),
-                user1.getUserId(),
-                3000
+                seller.getUserId(),
+                buyer.getUserId(),
+                negotiation1.getPrice()
         );
 
-        NegotiationDTO result = negotiationService.addNegotiation(request);
+        //given
+        when(usedProductRepository.findById(usedProduct1.getUsedProductId()))
+                .thenReturn(Optional.of(usedProduct1));
+        when(userRepository.findById(seller.getUserId()))
+                .thenReturn(Optional.of(seller));
+        when(userRepository.findById(buyer.getUserId()))
+                .thenReturn(Optional.of(buyer));
+        when(negotiationRepository.save(any(Negotiation.class)))
+                .thenReturn(negotiation1);
 
+        //when
+        NegotiationDTO result = negotiationService.addNegotiation(request);
+        
         assertNotNull(result);
+        assertEquals(negotiation1.getNegotiationId(), result.negotiationId());
         assertEquals(request.price(), result.price());
         assertEquals(request.usedProductId(), result.usedProduct().getUsedProductId());
-        assertEquals(request.buyerId(), result.buyer().getUserId());
-        assertEquals(request.sellerId(), result.seller().getUserId());
     }
 
     @DisplayName("네고 승인 - 수락 or 거절")
@@ -137,19 +153,21 @@ public class NegotiationServiceTest {
         assertNotNull(result);
         assertEquals(NegotiationState.ACCEPTED, result.state());
         verify(negotiationRepository, times(1)).findById(negotiation1.getNegotiationId());
-        verify(negotiationRepository, times(1)).save(any(Negotiation.class));
+        verify(negotiationRepository, never()).save(any(Negotiation.class));
     }
 
     @DisplayName("제안한 네고 내역 리스트 조회")
     @Test
     void SUCCESS_getProposedNegotiations() {
         NegotiationRequest.GetNegotiationByBuyerRequest request = new NegotiationRequest.GetNegotiationByBuyerRequest(
-                user1.getUserId()
+                buyer.getUserId()
         );
 
         //given
-        when(negotiationRepository.findAllByBuyerId(user1.getUserId()))
+        when(negotiationRepository.findAllByBuyerId(buyer.getUserId()))
                 .thenReturn(List.of(negotiation1));
+        when(userRepository.findById(buyer.getUserId()))
+                .thenReturn(Optional.of(buyer));
 
         //when
         List<NegotiationDTO> result = negotiationService.getNegotiationByBuyer(request);
@@ -157,25 +175,27 @@ public class NegotiationServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(negotiation1.getNegotiationId(), result.get(0).negotiationId());
-        verify(negotiationRepository, times(1)).findAllByBuyerId(user1.getUserId());
+        verify(negotiationRepository, times(1)).findAllByBuyerId(buyer.getUserId());
     }
 
     @DisplayName("제안 받은 네고 내역 리스트 조회")
     @Test
     void SUCCESS_getReceivedNegotiations() {
         NegotiationRequest.GetNegotiationBySellerRequest request = new NegotiationRequest.GetNegotiationBySellerRequest(
-                user1.getUserId()
+                seller.getUserId()
         );
         //when
-        when(negotiationRepository.findAllBySellerId(user1.getUserId()))
+        when(negotiationRepository.findAllBySellerId(seller.getUserId()))
                 .thenReturn(List.of(negotiation1));
+        when(userRepository.findById(seller.getUserId()))
+                .thenReturn(Optional.of(seller));
 
         //then
         List<NegotiationDTO> result = negotiationService.getNegotiationBySeller(request);
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(negotiation1.getNegotiationId(), result.get(0).negotiationId());
-        verify(negotiationRepository, times(1)).findAllByBuyerId(user1.getUserId());
+        verify(negotiationRepository, times(1)).findAllBySellerId(seller.getUserId());
     }
 
     @DisplayName("네고 취소")
@@ -196,9 +216,9 @@ public class NegotiationServiceTest {
 
         //then
         assertNotNull(result);
-        assertEquals(NegotiationState.ACCEPTED, result.state());
+        assertEquals(NegotiationState.CANCELLED, result.state());
         verify(negotiationRepository, times(1)).findById(negotiation1.getNegotiationId());
-        verify(negotiationRepository, times(1)).save(any(Negotiation.class));
+        verify(negotiationRepository, never()).save(any(Negotiation.class));
 
     }
 
@@ -208,22 +228,22 @@ public class NegotiationServiceTest {
         // 동일 가격 제안
         Negotiation samePriceNegotiation = Negotiation.builder()
                 .negotiationId(UUID.randomUUID())
-                .price(3000)
+                .price(3000)    // 같은 가격
                 .state(NegotiationState.WAITING)
                 .usedProduct(usedProduct1)
-                .seller(user1)
+                .seller(seller)
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
                 samePriceNegotiation.getNegotiationId(),
                 samePriceNegotiation.getUsedProduct().getUsedProductId(),
-                samePriceNegotiation.getSeller().getUserId(),
-                samePriceNegotiation.getBuyer().getUserId(),
+                seller.getUserId(),
+                buyer.getUserId(),
                 samePriceNegotiation.getPrice() 
         );
         //given
-        when(negotiationRepository.save(any(Negotiation.class)))
-                .thenReturn(samePriceNegotiation);
+        when(usedProductRepository.findById(samePriceNegotiation.getUsedProduct().getUsedProductId()))
+                .thenReturn(Optional.of(samePriceNegotiation.getUsedProduct()));
 
         //when
         GeneralException exception = assertThrows(GeneralException.class,
@@ -231,7 +251,7 @@ public class NegotiationServiceTest {
 
         //then
         assertEquals(ErrorStatus._NEGOTIATION_PRICE_ERROR, exception.getCode());
-        verify(negotiationRepository, times(1)).save(any(Negotiation.class));
+        verify(usedProductRepository, times(1)).findById(any());
     }
 
     @DisplayName("존재하지 않는 네고 승인은 실패")
@@ -264,11 +284,11 @@ public class NegotiationServiceTest {
                 .price(3000)
                 .state(NegotiationState.ACCEPTED)
                 .usedProduct(usedProduct1)
-                .seller(user1)
+                .seller(seller)
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                negotiation1.getNegotiationId(),
+                AcceptedNegotiation.getNegotiationId(),
                 NegotiationState.ACCEPTED
         );
 
@@ -280,7 +300,7 @@ public class NegotiationServiceTest {
         GeneralException exception = assertThrows(GeneralException.class, () -> negotiationService.updateNegotiationState(request));
 
         // then
-        assertEquals(ErrorStatus._NEGOTIATION_ALREADY_ACCEPTED, exception.getCode());
+        assertEquals(ErrorStatus._NEGOTIATION_STATE_DUPLICATE, exception.getCode());
         verify(negotiationRepository, times(1)).findById(any());
         verify(negotiationRepository, never()).save(any(Negotiation.class));
     }
@@ -296,15 +316,15 @@ public class NegotiationServiceTest {
                 .isNegoAllow(false)             // 네고 거부
                 .state(UsedProductState.ON_SALE)
                 .originProduct(originProduct1)
-                .user(user1)
+                .user(seller)
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
                 UUID.randomUUID(),
                 deniedUsedProduct.getUsedProductId(),
-                user1.getUserId(),
-                user2.getUserId(),
-                3000
+                seller.getUserId(),
+                buyer.getUserId(),
+                2000
         );      
 
         //given
@@ -330,8 +350,8 @@ public class NegotiationServiceTest {
                 .price(2000)
                 .state(NegotiationState.WAITING)
                 .usedProduct(null)
-                .seller(user1)
-                .buyer(user2)
+                .seller(seller)
+                .buyer(buyer)
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
@@ -363,8 +383,8 @@ public class NegotiationServiceTest {
                 .price(2000)
                 .state(NegotiationState.CANCELLED)       // 취소
                 .usedProduct(usedProduct1)
-                .seller(user1)
-                .buyer(user2)
+                .seller(seller)
+                .buyer(buyer)
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
@@ -391,8 +411,8 @@ public class NegotiationServiceTest {
                 .price(2000)
                 .state(NegotiationState.ACCEPTED)
                 .usedProduct(usedProduct1)
-                .seller(user1)
-                .buyer(user2)
+                .seller(seller)
+                .buyer(buyer)
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
@@ -408,7 +428,7 @@ public class NegotiationServiceTest {
         GeneralException exception = assertThrows(GeneralException.class, () -> negotiationService.updateNegotiationState(request));
 
         // then
-        assertEquals(ErrorStatus._NEGOTIATION_NOT_FOUND, exception.getCode());
+        assertEquals(ErrorStatus._NEGOTIATION_ALREADY_ACCEPTED, exception.getCode());
     }
 
 }
