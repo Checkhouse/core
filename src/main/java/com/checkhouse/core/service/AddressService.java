@@ -5,6 +5,14 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.repository.mysql.AddressRepository;
+import com.checkhouse.core.request.AddressRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.geo.Point;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Service;
+import java.util.UUID;
+
 import com.checkhouse.core.dto.request.AddressRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +36,7 @@ public class AddressService {
 
     //주소 추가
     AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
+       
         Point addressLocation = getAddressLocation(req.address());
 
         Address savedAddress = addressRepository.save(
@@ -54,6 +63,7 @@ public class AddressService {
     }
 
     //Id로 가져오기
+
     AddressDTO getAddressById(AddressRequest.GetAddressByIdRequest req) {
         Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
@@ -62,10 +72,10 @@ public class AddressService {
     }
 
     //Update
+
     AddressDTO updateAddress(AddressRequest.UpdateAddressRequest req) {
         Address modifiedAddress = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
-
         Point addressLocation = getAddressLocation(req.address());
 
         modifiedAddress.update(
@@ -81,6 +91,22 @@ public class AddressService {
     }
 
     //Soft delete (유저 뷰)
+
+//    void deleteAddress(UUID addressId) {
+//        Address address = addressRepository.findById(addressId)
+//                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
+//
+//        address.setDeleted();
+//    }
+
+    @Query(value = "DELETE FROM Address a WHERE a.deletedDate IS NOT NULL", nativeQuery = true)
+        //TODO: hard delete test
+    void hardDeleteAddress() {
+
+    }
+
+
+}
     void deleteAddress(AddressRequest.DeleteAddressRequest req) {
         Address address = addressRepository.findById(req.addressId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));

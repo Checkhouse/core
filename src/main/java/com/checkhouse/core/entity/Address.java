@@ -105,4 +105,7 @@ public class Address extends BaseTimeEntity {
                 this.location
         );
     }
+
+}
+
 }

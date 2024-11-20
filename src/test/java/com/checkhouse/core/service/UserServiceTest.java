@@ -38,6 +38,7 @@ import static org.mockito.Mockito.*;
     }
 
     @BeforeEach
+
     void setup() {
         // naver 로그인 사용자
         mockedUser = User.builder()
@@ -76,6 +77,7 @@ import static org.mockito.Mockito.*;
 
     @DisplayName("사용자 저장: OAuth")
     @Test
+
     void SUCCESS_addUser_oauth() {
         // 사용자 정보
         UserRequest.AddUserRequest request = UserRequest.AddUserRequest.builder()
@@ -293,6 +295,12 @@ import static org.mockito.Mockito.*;
                 .state(false)
                 .email("test@testtest.com")
                 .build();
+
+
+    @DisplayName("존재하지 않는 사용자 상태로 상태를 변경하려는 경우 실패")
+    @Test
+    void FAIL_updateUserState_invalid_state() {}
+}
 
         // when
         when(userRepository.findUserByEmail(any())).thenReturn(Optional.empty());
