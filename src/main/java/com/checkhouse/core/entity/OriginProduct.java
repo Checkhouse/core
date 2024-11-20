@@ -74,7 +74,7 @@ public class OriginProduct extends BaseTimeEntity {
                 this.originProductId,
                 this.name,
                 this.company,
-                this.category
+                this.category.toDTO()
         );
     }
     public void updateOriginProductInfo(String name, String company) {

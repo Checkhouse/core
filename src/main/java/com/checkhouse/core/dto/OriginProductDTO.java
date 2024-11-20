@@ -9,6 +9,6 @@ public record OriginProductDTO(
         UUID originProductId,
         String name,
         String company,
-        Category category
+        CategoryDTO categoryDTO
 ) {
 }
