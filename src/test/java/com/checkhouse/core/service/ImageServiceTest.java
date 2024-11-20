@@ -193,6 +193,7 @@ public class ImageServiceTest {
 
         // then
         verify(imageRepository, times(1)).findById(imageId);
+        verify(imageRepository, times(1)).delete(image1);
     }
 
     //원본 이미지
