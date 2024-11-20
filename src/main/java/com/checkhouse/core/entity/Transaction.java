@@ -69,4 +69,9 @@ public class Transaction extends BaseTimeEntity {
                 this.isCompleted
         );
     }
+
+    // 거래 상태 변경
+    public void updateStatus() {
+        this.isCompleted = true;
+    }
 }

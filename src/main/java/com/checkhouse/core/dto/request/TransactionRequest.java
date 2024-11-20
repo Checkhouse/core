@@ -4,20 +4,24 @@ import java.util.UUID;
 
 public class TransactionRequest {
 	public record AddTransactionRequest(
-			UUID transactionId,
-			UUID usedProductId,
-			UUID buyerId
+		UUID transactionId,
+		UUID usedProductId,
+		UUID buyerId
 	){ }
 
 	public record GetTransactionStatusRequest(
-			UUID transactionId
+		UUID transactionId
 	){ }
 
 	public record UpdateTransactionRequest(
-			UUID transactionId
+		UUID transactionId
 	){ }
 
 	public record GetTransactionsByUserRequest(
-			UUID userId
+		UUID userId
+	){ }
+
+	public record GetTransactionsForAdminRequest(
+		UUID adminId
 	){ }
 }
