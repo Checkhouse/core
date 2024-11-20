@@ -1,6 +1,8 @@
-package com.checkhouse.core.request;
+package com.checkhouse.core.dto.request;
 
 import java.util.UUID;
+
+import com.checkhouse.core.entity.enums.DeliveryState;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,4 +22,13 @@ public class CollectRequest {
         private UUID usedProductId;
         
     }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateCollectStateRequest {
+        private UUID collectId;
+        private DeliveryState deliveryState;
+    }
+
 }

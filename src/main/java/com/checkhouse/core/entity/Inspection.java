@@ -65,8 +65,11 @@ public class Inspection extends BaseTimeEntity {
         this.description = description;
     }
 
-    public InspectionDTO toDTO() {
-        //return new InspectionDTO(inspectionId, isDone, description, usedProduct.toDTO());
-        return null;
+    public void updateInspectionState(boolean isDone) {
+        this.isDone = isDone;
     }
+    public InspectionDTO toDTO() {
+        return new InspectionDTO(inspectionId, isDone, description, usedProduct.toDto());
+    }
+
 }

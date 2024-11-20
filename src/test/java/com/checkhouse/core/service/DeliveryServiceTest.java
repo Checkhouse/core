@@ -22,7 +22,10 @@ public class DeliveryServiceTest {
 
     @DisplayName("배송 등록 성공")
     @Test
-    void SUCCESS_addDelivery() {}
+    void SUCCESS_addDelivery() {
+        // 배송 등록
+        
+    }
 
     @DisplayName("배송 리스트 조회 성공")
     @Test

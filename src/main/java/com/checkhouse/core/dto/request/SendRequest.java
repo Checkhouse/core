@@ -1,4 +1,4 @@
-package com.checkhouse.core.request;
+package com.checkhouse.core.dto.request;
 
 import java.util.UUID;
 

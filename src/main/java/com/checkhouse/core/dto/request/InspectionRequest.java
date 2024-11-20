@@ -1,4 +1,4 @@
-package com.checkhouse.core.request;
+package com.checkhouse.core.dto.request;
 
 import java.util.UUID;
 
@@ -18,4 +18,7 @@ public record InspectionRequest(
     public record UpdateInspectionImageRequest(
             String imageUrl
     ) {} 
+    public record UpdateInspectionStateRequest(
+            boolean isDone
+    ) {}
 }
