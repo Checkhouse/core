@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public record PickupDTO(
 	UUID pickupId,
-	UUID transactionId,
-	UUID storeId,
+	TransactionDTO transaction,
+	StoreDTO store,
 	Boolean isPicked_up
 ) {}

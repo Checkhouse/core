@@ -39,6 +39,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _PICKUP_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "존재하지 않는 사용자입니다."),
     _PICKUP_CHECK_FAILED(HttpStatus.BAD_REQUEST, "PICKUP400", "픽업 확인에 실패하였습니다."),
     _PICKUP_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "PICKUP400", "픽업 상태 변경에 실패하였습니다."),
+    _PICKUP_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, "PICKUP400", "이미 완료된 픽업입니다."),
     _PICKUP_CODE_NOT_MATCH(HttpStatus.BAD_REQUEST, "PICKUP400", "확인 코드가 다릅니다."),
    
 
@@ -46,7 +47,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 유저입니다."),
     _USER_ALREADY_EXIST(HttpStatus.CONFLICT, "USER409", "이미 존재하는 사용자입니다."),
     _USER_NOT_ADMIN(HttpStatus.BAD_REQUEST, "USER400", "관리자가 아닙니다."),
-    
+
     // origin product
     _ORIGIN_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "OG404", "원본 상품이 존재하지 않습니다."),
     _ORIGIN_PRODUCT_ALREADY_EXISTS(HttpStatus.CONFLICT, "OG409", "중복된 원본 상품 이름이 존재합니다."),
