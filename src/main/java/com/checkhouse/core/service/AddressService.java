@@ -3,12 +3,12 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
+import com.checkhouse.core.dto.UserAddressDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.dto.request.AddressRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class AddressService {
 
 
     //주소 추가
-    AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
+    AddressDTO AddAddress(AddressRequest.AddAddressRequest req) {
 
         Address savedAddress = addressRepository.save(
                 Address.builder()
@@ -40,7 +40,7 @@ public class AddressService {
     }
 
     //리스트 가져오기
-    List<AddressDTO> getAllAddresses() {
+    List<AddressDTO> GetAllAddresses() {
         return addressRepository.findAll()
                 .stream()
                 .map(Address::toDTO)
@@ -48,7 +48,7 @@ public class AddressService {
     }
 
     //Id로 가져오기
-    AddressDTO getAddressById(AddressRequest.GetAddressByIdRequest req) {
+    AddressDTO GetAddressById(AddressRequest.GetAddressByIdRequest req) {
         Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
@@ -56,7 +56,7 @@ public class AddressService {
     }
 
     //Update
-    AddressDTO updateAddress(AddressRequest.UpdateAddressRequest req) {
+    AddressDTO UpdateAddress(AddressRequest.UpdateAddressRequest req) {
         Address modifiedAddress = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
@@ -73,14 +73,17 @@ public class AddressService {
         return modifiedAddress.toDTO();
     }
 
-    //Soft delete (유저 뷰)
-    void deleteAddress(AddressRequest.DeleteAddressRequest req) {
+    void DeleteAddress(AddressRequest.DeleteAddressRequest req) {
         Address address = addressRepository.findById(req.addressId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
         addressRepository.delete(address);
     }
 
-
+    //UserAddress
+    UserAddressDTO AddUserAddress(AddressRequest.AddUserAddressRequest req) {return null;}
+    UserAddressDTO GetUserAddress(AddressRequest.GetUserAddressRequest req) {return null;}
+    List<UserAddressDTO> GetAllUserAddressesById(AddressRequest.GetAllUserAddressesByIdRequest req) {return null;}
+    void DeleteUserAddress(AddressRequest.DeleteUserAddressRequest req) {}
 
 }

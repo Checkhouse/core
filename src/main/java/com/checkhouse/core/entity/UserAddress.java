@@ -50,10 +50,12 @@ public class UserAddress extends BaseTimeEntity {
 
     @Builder
     public UserAddress(
+            UUID userAddressId,
             Address address,
             User user,
             Hub hub
     ) {
+        this.userAddressId = userAddressId;
         this.address = address;
         this.user = user;
         this.hub = hub;

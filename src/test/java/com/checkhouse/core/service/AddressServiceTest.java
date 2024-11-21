@@ -3,9 +3,16 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
+import com.checkhouse.core.dto.UserAddressDTO;
 import com.checkhouse.core.entity.Address;
+import com.checkhouse.core.entity.Hub;
+import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.UserAddress;
+import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.dto.request.AddressRequest;
+import com.checkhouse.core.repository.mysql.UserAddressRepository;
+import com.checkhouse.core.repository.mysql.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.geo.Point;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +36,8 @@ import static org.mockito.Mockito.*;
 public class AddressServiceTest {
     @Mock
     private AddressRepository addressRepository;
+    private UserAddressRepository userAddressRepository;
+    private UserRepository userRepository;
 
 
     @InjectMocks
@@ -34,6 +45,9 @@ public class AddressServiceTest {
 
     private Address commonAddress;
     private Address otherAddress;
+    private UserAddress userAddress;
+    private User user;
+    private Hub hub;
 
     @BeforeAll
     public static void onlyOnce() {}
@@ -47,6 +61,7 @@ public class AddressServiceTest {
                 .zipcode(6978)
                 .phone("01097063979")
                 .addressDetail("정보과학관 지하 1층")
+                .location(new Point(0, 0))
                 .build();
         otherAddress = Address.builder()
                 .addressId(UUID.randomUUID())
@@ -55,7 +70,31 @@ public class AddressServiceTest {
                 .zipcode(12345)
                 .phone("01023456789")
                 .addressDetail("2220호")
+                .location(new Point(0, 0))
                 .build();
+        user = User.builder()
+                .userId(UUID.randomUUID())
+                .username("test user")
+                .email("test@test.com")
+                .nickname("test nickname")
+                .password(null)
+                .role(Role.ROLE_USER)
+                .provider("naver")
+                .providerId("random id naver")
+                .build();
+        hub = Hub.builder()
+                .hubId(UUID.randomUUID())
+                .address(otherAddress)
+                .name("허브1")
+                .clusteredId(1)
+                .build();
+        userAddress = UserAddress.builder()
+                .userAddressId(UUID.randomUUID())
+                .address(commonAddress)
+                .user(user)
+                .hub(hub)
+                .build();
+
     }
 
     @DisplayName("주소 등록 성공")
@@ -73,7 +112,7 @@ public class AddressServiceTest {
         //특정 uuid를 넣으면, 다음과 같이 동작 할 것이다.
         when(addressRepository.save(any(Address.class))).thenReturn(commonAddress);
 
-        AddressDTO result = addressService.addAddress(req);
+        AddressDTO result = addressService.AddAddress(req);
         assertNotNull(result);
         assertEquals("한글이름", result.name());
         assertEquals("서울특별시 동작구 상도로 369", result.address());
@@ -96,7 +135,7 @@ public class AddressServiceTest {
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.updateAddress(req);
+        AddressDTO result = addressService.UpdateAddress(req);
 
         assertNotNull(result);
         assertEquals("홍길동", result.name());
@@ -124,7 +163,7 @@ public class AddressServiceTest {
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.updateAddress(req);
+        AddressDTO result = addressService.UpdateAddress(req);
 
         assertNotNull(result);
         assertEquals("서울특별시 동작구 상도로 45길", result.address());
@@ -146,7 +185,7 @@ public class AddressServiceTest {
 
         //when
         AddressRequest.DeleteAddressRequest req = AddressRequest.DeleteAddressRequest.builder().addressId(addressId).build();
-        addressService.deleteAddress(req);
+        addressService.DeleteAddress(req);
 
         verify(addressRepository, times(1)).findById(addressId);
         verify(addressRepository, times(1)).delete(any(Address.class));
@@ -159,7 +198,7 @@ public class AddressServiceTest {
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(commonAddress));
 
         AddressRequest.GetAddressByIdRequest req = AddressRequest.GetAddressByIdRequest.builder().addressId(addressId).build();
-        AddressDTO result = addressService.getAddressById(req);
+        AddressDTO result = addressService.GetAddressById(req);
 
         assertNotNull(result);
         assertEquals(commonAddress.getAddressId(), result.addressId());
@@ -177,7 +216,7 @@ public class AddressServiceTest {
     void SUCCESS_getAddressList() {
         when(addressRepository.findAll()).thenReturn(List.of(commonAddress, otherAddress));
 
-        List<AddressDTO> result = addressService.getAllAddresses();
+        List<AddressDTO> result = addressService.GetAllAddresses();
 
 
         assertNotNull(result);
@@ -200,6 +239,114 @@ public class AddressServiceTest {
         assertEquals(otherAddress.getPhone(), address2.phone());
     }
 
+    //UserAddress
+    @DisplayName("유저 배송지 추가 성공")
+    @Test
+    void SUCCESS_addUserAddress() {
+        //유저배송지
+        AddressRequest.AddUserAddressRequest req = AddressRequest.AddUserAddressRequest.builder()
+                .userAddressId(UUID.randomUUID())
+                .userId(user.getUserId())
+                .name(commonAddress.getName())
+                .address(commonAddress.getAddress())
+                .zipcode(commonAddress.getZipcode())
+                .phone(commonAddress.getPhone())
+                .addressDetail(commonAddress.getAddressDetail())
+                .location(commonAddress.getLocation())
+                .build();
+
+        //given
+        when(addressRepository.save(any(Address.class))).thenReturn(commonAddress);
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(userAddressRepository.save(any(UserAddress.class))).thenReturn(userAddress);
+
+        //when
+        UserAddressDTO result = addressService.AddUserAddress(req);
+
+        //then
+        assertNotNull(result);
+        assertEquals(result.userAddressId(), req.userAddressId());
+        assertEquals(result.address().addressId(), commonAddress.getAddressId());
+        assertEquals(result.user().userId(), user.getUserId());
+
+        verify(addressRepository, times(1)).save(any(Address.class));
+        verify(userRepository, times(1)).findById(user.getUserId());
+        verify(userAddressRepository, times(1)).save(any(UserAddress.class));
+    }
+    @DisplayName("유저 배송지 조회 성공")
+    @Test
+    void SUCCESS_getUserAddress() {
+        //유저배송지
+        UUID userAddressId = userAddress.getUserAddressId();
+        AddressRequest.GetUserAddressRequest req = AddressRequest.GetUserAddressRequest.builder()
+                .userAddressId(userAddressId)
+                        .build();
+
+        //given
+        when(userAddressRepository.findById(userAddressId)).thenReturn(Optional.of(userAddress));
+
+        //when
+        UserAddressDTO result = addressService.GetUserAddress(req);
+
+        //then
+        assertNotNull(result);
+        assertEquals(userAddressId, result.userAddressId());
+        assertEquals(userAddress.getAddress().getAddressId(), result.address().addressId());
+
+        verify(userAddressRepository, times(1)).findById(userAddressId);
+        verify(userAddressRepository, never()).save(any(UserAddress.class));
+    }
+    @DisplayName("특정 유저 배송지 리스트 조회 성공")
+    @Test
+    void SUCCESS_getAllUserAddressesById() {
+        //유저배송지
+        UUID userId = user.getUserId();
+
+        AddressRequest.GetAllUserAddressesByIdRequest req = AddressRequest.GetAllUserAddressesByIdRequest.builder()
+                .userId(userId)
+                .build();
+
+        //Given
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userAddressRepository.findAllByUserId(userId)).thenReturn(List.of(userAddress));
+
+        //when
+        List<UserAddressDTO> result = addressService.GetAllUserAddressesById(req);
+
+        //then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        UserAddressDTO userAddressDTO = result.get(0);
+        assertEquals(userAddress.getUserAddressId(), userAddressDTO.userAddressId());
+        assertEquals(userAddress.getAddress().getAddressId(), userAddressDTO.address().addressId());
+        assertEquals(userAddress.getUser().getUserId(), userAddressDTO.user().userId());
+
+        verify(userRepository, times(1)).findById(userId);
+        verify(userAddressRepository, times(1)).findAllByUserId(userId);
+
+    }
+    @DisplayName("유저 배송지 삭제 성공")
+    @Test
+    void SUCCESS_deleteUserAddress() {
+        //유저 배송지
+        UUID userAddressId = userAddress.getUserAddressId();
+
+        AddressRequest.DeleteUserAddressRequest req = AddressRequest.DeleteUserAddressRequest.builder()
+                .userAddressId(userAddressId)
+                .build();
+
+        //Given
+        when(userAddressRepository.findById(userAddressId)).thenReturn(Optional.of(userAddress));
+
+        //when
+        addressService.DeleteUserAddress(req);
+
+        //then
+        verify(userAddressRepository, times(1)).findById(userAddressId);
+        verify(userAddressRepository, times(1)).delete(userAddress);
+    }
+
+    //--------------------------Fail------------------------
 
     @DisplayName("존재하지 않는 주소의 경우 조회 실패")
     @Test
@@ -211,7 +358,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.getAddressById(req);
+            addressService.GetAddressById(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -233,7 +380,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.updateAddress(req);
+            addressService.UpdateAddress(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -250,26 +397,99 @@ public class AddressServiceTest {
 
         // When, Then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.deleteAddress(req);
+            addressService.DeleteAddress(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
         verify(addressRepository, times(1)).findById(invalidUUID);
     }
 
-    //TODO: soft delete testcode
-    @DisplayName("삭제된 주소의 경우 조회 실패")
+    //UserAddress
+    @DisplayName("존재하지 않는 유저 배송지 추가 실패")
     @Test
-    void FAIL_getAddress_deleted_address() {
+    void FAIL_addUserAddress_user_not_found() {
+        //유저 배송지
+        UUID invalidUserId = UUID.randomUUID();
+        AddressRequest.AddUserAddressRequest req = AddressRequest.AddUserAddressRequest.builder()
+                .userAddressId(UUID.randomUUID())
+                .userId(invalidUserId)
+                .name(commonAddress.getName())
+                .address(commonAddress.getAddress())
+                .zipcode(commonAddress.getZipcode())
+                .phone(commonAddress.getPhone())
+                .addressDetail(commonAddress.getAddressDetail())
+                .location(commonAddress.getLocation())
+                .build();
+
+        //given
+        when(userRepository.findById(invalidUserId)).thenReturn(Optional.empty());
+
+        //when then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.AddUserAddress(req);
+        });
+
+        assertEquals(ErrorStatus._USER_NOT_FOUND, exception.getCode());
+        verify(userRepository, times(1)).findById(invalidUserId);
     }
-
-    @DisplayName("삭제된 주소의 경우 수정 실패")
+    @DisplayName("존재하지 않는 유저 배송지 조회 실패")
     @Test
-    void FAIL_updateAddress_deleted_address() {
+    void FAIL_getUserAddress_not_found() {
+        //유저 배송지
+        UUID invalidUserAddressId = UUID.randomUUID();
+        AddressRequest.GetUserAddressRequest req = AddressRequest.GetUserAddressRequest.builder()
+                .userAddressId(invalidUserAddressId)
+                .build();
 
+        //given
+        when(userAddressRepository.findById(invalidUserAddressId)).thenReturn(Optional.empty());
+
+        //when then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.GetUserAddress(req);
+        });
+
+        assertEquals(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND, exception.getCode());
+        verify(userAddressRepository, times(1)).findById(invalidUserAddressId);
     }
-
-    @DisplayName("삭제된 주소의 경우 삭제 실패")
+    @DisplayName("존재하지 않는 유저 배송지 리스트 조회 실패")
     @Test
-    void FAIL_deleteAddress_deleted_address() {}
+    void FAIL_getAllUserAddressesById_user_not_found() {
+        //유저 배송지
+        UUID invalidUserId = UUID.randomUUID();
+        AddressRequest.GetAllUserAddressesByIdRequest req = AddressRequest.GetAllUserAddressesByIdRequest.builder()
+                .userId(invalidUserId)
+                .build();
+
+        //given
+        when(userRepository.findById(invalidUserId)).thenReturn(Optional.empty());
+
+        //when then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.GetAllUserAddressesById(req);
+        });
+
+        assertEquals(ErrorStatus._USER_NOT_FOUND, exception.getCode());
+        verify(userRepository, times(1)).findById(invalidUserId);
+    }
+    @DisplayName("존재하지 않는 유저 배송지 삭제 실패")
+    @Test
+    void FAIL_deleteUserAddress_not_found() {
+        //유저 배송지
+        UUID invalidUserAddressId = UUID.randomUUID();
+        AddressRequest.DeleteUserAddressRequest req = AddressRequest.DeleteUserAddressRequest.builder()
+                .userAddressId(invalidUserAddressId)
+                .build();
+
+        //given
+        when(userAddressRepository.findById(invalidUserAddressId)).thenReturn(Optional.empty());
+
+        //when then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.DeleteUserAddress(req);
+        });
+
+        assertEquals(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND, exception.getCode());
+        verify(userAddressRepository, times(1)).findById(invalidUserAddressId);
+    }
 }
