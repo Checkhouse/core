@@ -34,7 +34,7 @@ public class TransactionService {
 	public TransactionDTO addTransaction(TransactionRequest.AddTransactionRequest request) {
 		// 중고 상품 확인
 		UsedProduct usedProduct = usedProductRepository
-				.findById(request.usedProductId())
+				.findById(request.usedProduct().getUsedProductId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
 		// 이미 거래된 상품인지 확인 
 		transactionRepository.findByUsedProduct(usedProduct.getUsedProductId())
@@ -42,12 +42,12 @@ public class TransactionService {
 					throw new GeneralException(ErrorStatus._TRANSACTION_ALREADY_EXISTS);
 				});
 		// 구매자 확인
-		User buyer = userRepository.findById(request.buyerId())
+		User buyer = userRepository.findById(request.buyer().getUserId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
-		// 거래 등록	
+		// 거래 등록
+		// toDo 픽업, 딜리버리 생성
 		Transaction savedTransaction = transactionRepository.save(
 			Transaction.builder()
-					.transactionId(request.transactionId())
 					.usedProduct(usedProduct)
 					.buyer(buyer)
 					.isCompleted(false)
@@ -59,14 +59,14 @@ public class TransactionService {
 
 	// 거래 상태 조회
 	public TransactionDTO getTransactionStatus(TransactionRequest.GetTransactionStatusRequest request) {
-		return transactionRepository.findById(request.transactionId())
+		return transactionRepository.findById(request.transaction().getTransactionId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_NOT_FOUND))
 				.toDTO();
 	}
 
 	// 거래 상태 변경
 	public TransactionDTO updateTransactionStatus(TransactionRequest.UpdateTransactionRequest request) {
-		Transaction transaction = transactionRepository.findById(request.transactionId())
+		Transaction transaction = transactionRepository.findById(request.transaction().getTransactionId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_NOT_FOUND));
 
 		//상태 중복 체크
@@ -80,7 +80,7 @@ public class TransactionService {
 
 	public List<TransactionDTO> getTransactionsByUser(TransactionRequest.GetTransactionsByUserRequest request) {
 		// 구매자 확인
-		User buyer = userRepository.findById(request.userId())
+		User buyer = userRepository.findById(request.user().getUserId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_USER_LIST_FAILED));
 		
 		return transactionRepository.findByBuyer(buyer.getUserId())
@@ -91,7 +91,7 @@ public class TransactionService {
 
 	public List<TransactionDTO> getTransactionsForAdmin(TransactionRequest.GetTransactionsForAdminRequest request) {
 		// 관리자 확인
-		User admin = userRepository.findById(request.adminId())
+		User admin = userRepository.findById(request.admin().getUserId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
 		if(!admin.getRole().equals(Role.ROLE_ADMIN)){

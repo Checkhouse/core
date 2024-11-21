@@ -196,22 +196,18 @@ public class PickupServiceTest {
         verify(pickupRepository, times(1)).findById(pickup1.getPickupId());
     }
 
+    // toDo 관리자 관련
     @DisplayName("픽업 확인 - 스토어 관리자가 qr 찍은 후")
     @Test
     void SUCCESS_verifyPickupWithQR() {
-        // toDo qr 서비스 추가
+        // qr 서비스 추가
     }
 
     @DisplayName("픽업 확인 - 관리자 id 입력해서")
     @Test
     void SUCCESS_verifyPickupWithAdminId() {
         // 관리자 id가 맞는지
-
     }
-
-//    @DisplayName("픽업 확인 - qr이랑 맞는 지 확인")
-//    @Test
-//    void SUCCESS_verifyPickupWithQRMatch() { }
 
     @DisplayName("특정 스토어의 픽업 리스트 조회 성공")
     @Test
@@ -306,6 +302,7 @@ public class PickupServiceTest {
         verify(pickupRepository, times(1)).findById(invalidPickupId);
     }
 
+    //toDo 관리자 관련
     @DisplayName("존재하지 않는 픽업의 경우 픽업 확인 실패")
     @Test
     void FAIL_verifyPickup_not_found() {

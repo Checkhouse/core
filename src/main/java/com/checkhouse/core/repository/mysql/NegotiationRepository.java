@@ -11,15 +11,15 @@ import java.util.UUID;
 
 public interface NegotiationRepository extends JpaRepository<Negotiation, UUID> {
     // 구매자 ID 조회
-    @Query("select up from Negotiation up where up.buyer = :buyerId and up.deletedDate is null")
+    @Query("select n from Negotiation n where n.buyer = :buyerId")
     List<Negotiation> findAllByBuyerId(UUID buyerId);
 
     // 판매자 ID 조회
-    @Query("select up from Negotiation up where up.seller = :sellerId and up.deletedDate is null")
+    @Query("select n from Negotiation n where n.seller = :sellerId")
     List<Negotiation> findAllBySellerId(UUID sellerId);
 
     // 상태 조회    
-    @Query("select up from Negotiation up where up.state = :state and up.deletedDate is null")
+    @Query("select n from Negotiation n where n.state = :state")
     List<Negotiation> findAllByState(NegotiationState state);
 
 

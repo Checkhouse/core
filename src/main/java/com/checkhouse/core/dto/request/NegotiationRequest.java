@@ -1,36 +1,39 @@
 package com.checkhouse.core.dto.request;
 
+import com.checkhouse.core.entity.Negotiation;
+import com.checkhouse.core.entity.UsedProduct;
+import com.checkhouse.core.entity.User;
 import com.checkhouse.core.entity.enums.NegotiationState;
-
-import java.util.UUID;
+import lombok.Builder;
 
 public class NegotiationRequest {
     // 네고 등록
+    @Builder
     public record AddNegotiationRequest(
-            UUID negotiationId,
-            UUID usedProductId,
-            UUID sellerId,
-            UUID buyerId,
+            UsedProduct usedProduct,
+            User seller,
+            User buyer,
             int price
     ){ }
     // 네고 상태 변경
+    @Builder
     public record UpdateNegotiationRequest(
-            UUID negotiationId,
+            Negotiation negotiation,
             NegotiationState state
     ){ }
 
     // 제안한 네고 조회
     public record GetNegotiationByBuyerRequest(
-            UUID buyerId
+            User buyer
     ){ }
     // 받은 네고 조회
     public record GetNegotiationBySellerRequest(
-            UUID sellerId
+            User seller
     ){ }
 
     // 네고 삭제
     public record DeleteNegotiationRequest(
-            UUID negotiationId
+            Negotiation negotiation
     ){ }
 
 }

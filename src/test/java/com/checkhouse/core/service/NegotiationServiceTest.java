@@ -100,6 +100,7 @@ public class NegotiationServiceTest {
                 .state(NegotiationState.WAITING)
                 .usedProduct(usedProduct1)
                 .seller(seller)
+                .buyer(buyer)
                 .build();
     }
 
@@ -107,10 +108,9 @@ public class NegotiationServiceTest {
     @Test
     void SUCCESS_addNegotiation() {
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                UUID.randomUUID(),
-                usedProduct1.getUsedProductId(),
-                seller.getUserId(),
-                buyer.getUserId(),
+                usedProduct1,
+                seller,
+                buyer,
                 negotiation1.getPrice()
         );
 
@@ -128,9 +128,7 @@ public class NegotiationServiceTest {
         NegotiationDTO result = negotiationService.addNegotiation(request);
         
         assertNotNull(result);
-        assertEquals(negotiation1.getNegotiationId(), result.negotiationId());
-        assertEquals(request.price(), result.price());
-        assertEquals(request.usedProductId(), result.usedProduct().getUsedProductId());
+        assertEquals(negotiation1.toDTO(), result);
     }
 
     @DisplayName("네고 승인 - 수락 or 거절")
@@ -138,7 +136,7 @@ public class NegotiationServiceTest {
     void SUCCESS_approveNegotiation() {
         // 요청
         NegotiationRequest.UpdateNegotiationRequest acceptedRequest = new NegotiationRequest.UpdateNegotiationRequest(
-                negotiation1.getNegotiationId(),
+                negotiation1,
                 NegotiationState.ACCEPTED       // 수락
         );
 
@@ -160,7 +158,7 @@ public class NegotiationServiceTest {
     @Test
     void SUCCESS_getProposedNegotiations() {
         NegotiationRequest.GetNegotiationByBuyerRequest request = new NegotiationRequest.GetNegotiationByBuyerRequest(
-                buyer.getUserId()
+                buyer
         );
 
         //given
@@ -174,7 +172,7 @@ public class NegotiationServiceTest {
         //
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(negotiation1.getNegotiationId(), result.get(0).negotiationId());
+        assertEquals(negotiation1.toDTO(), result.get(0));
         verify(negotiationRepository, times(1)).findAllByBuyerId(buyer.getUserId());
     }
 
@@ -182,7 +180,7 @@ public class NegotiationServiceTest {
     @Test
     void SUCCESS_getReceivedNegotiations() {
         NegotiationRequest.GetNegotiationBySellerRequest request = new NegotiationRequest.GetNegotiationBySellerRequest(
-                seller.getUserId()
+                seller
         );
         //when
         when(negotiationRepository.findAllBySellerId(seller.getUserId()))
@@ -194,7 +192,7 @@ public class NegotiationServiceTest {
         List<NegotiationDTO> result = negotiationService.getNegotiationBySeller(request);
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(negotiation1.getNegotiationId(), result.get(0).negotiationId());
+        assertEquals(negotiation1.toDTO(), result.get(0));
         verify(negotiationRepository, times(1)).findAllBySellerId(seller.getUserId());
     }
 
@@ -203,7 +201,7 @@ public class NegotiationServiceTest {
     void SUCCESS_cancelNegotiation() {
                 // 요청
         NegotiationRequest.UpdateNegotiationRequest cancelledRequest = new NegotiationRequest.UpdateNegotiationRequest(
-                negotiation1.getNegotiationId(),
+                negotiation1,
                 NegotiationState.CANCELLED       // 취소
         );
 
@@ -235,10 +233,9 @@ public class NegotiationServiceTest {
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                samePriceNegotiation.getNegotiationId(),
-                samePriceNegotiation.getUsedProduct().getUsedProductId(),
-                seller.getUserId(),
-                buyer.getUserId(),
+                samePriceNegotiation.getUsedProduct(),
+                seller,
+                buyer,
                 samePriceNegotiation.getPrice() 
         );
         //given
@@ -258,8 +255,11 @@ public class NegotiationServiceTest {
     @Test
     void FAIL_approveNegotiation_not_found() {  
         UUID invalidId = UUID.randomUUID();
+        Negotiation invalidNegotiation = Negotiation.builder()
+                .negotiationId(invalidId)
+                .build();
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                invalidId,
+                invalidNegotiation,
                 NegotiationState.ACCEPTED
         );
 
@@ -278,7 +278,6 @@ public class NegotiationServiceTest {
     @DisplayName("이미 승인된 네고에 대한 승인은 실패")
     @Test
     void FAIL_approveNegotiation_already_approved() {
-        /////// 이미 승인된 부분
         Negotiation AcceptedNegotiation = Negotiation.builder()
                 .negotiationId(UUID.randomUUID())
                 .price(3000)
@@ -288,7 +287,7 @@ public class NegotiationServiceTest {
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                AcceptedNegotiation.getNegotiationId(),
+                AcceptedNegotiation,
                 NegotiationState.ACCEPTED
         );
 
@@ -320,10 +319,9 @@ public class NegotiationServiceTest {
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                UUID.randomUUID(),
-                deniedUsedProduct.getUsedProductId(),
-                seller.getUserId(),
-                buyer.getUserId(),
+                deniedUsedProduct,
+                seller,
+                buyer,
                 2000
         );      
 
@@ -345,20 +343,22 @@ public class NegotiationServiceTest {
     void FAIL_addNegotiation_no_used_product() {
         // given
         UUID invalidUsedProductId = UUID.randomUUID();
+        UsedProduct invalidUsedProduct = UsedProduct.builder()
+                .usedProductId(invalidUsedProductId)
+                .build();
         Negotiation negotiation = Negotiation.builder()
                 .negotiationId(UUID.randomUUID())
                 .price(2000)
                 .state(NegotiationState.WAITING)
-                .usedProduct(null)
+                .usedProduct(invalidUsedProduct)
                 .seller(seller)
                 .buyer(buyer)
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                negotiation.getNegotiationId(),
-                invalidUsedProductId,                   // 존재하지 않는 중고상품 ID
-                negotiation.getSeller().getUserId(),
-                negotiation.getBuyer().getUserId(),
+                invalidUsedProduct,
+                negotiation.getSeller(),
+                negotiation.getBuyer(),
                 negotiation.getPrice()
         );
         when(usedProductRepository.findById(invalidUsedProductId))
@@ -370,8 +370,6 @@ public class NegotiationServiceTest {
 
         // then
         assertEquals(ErrorStatus._USED_PRODUCT_NOT_FOUND, exception.getCode());
-        
-        // 중고상품 조회만 실행되고, 이후 로직은 실행되지 않아야 함
         verify(usedProductRepository, times(1)).findById(any());
     }
 
@@ -388,7 +386,7 @@ public class NegotiationServiceTest {
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                cancelledNegotiation.getNegotiationId(),
+                cancelledNegotiation,
                 NegotiationState.ACCEPTED
         );
 
@@ -416,7 +414,7 @@ public class NegotiationServiceTest {
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                approvedNegotiation.getNegotiationId(),
+                approvedNegotiation,
                 NegotiationState.CANCELLED
         );
 

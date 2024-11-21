@@ -51,7 +51,6 @@ public class PickupService {
 						.store(store)
 						.isPicked_up(false)
 						.build()
-
 		);
 
 		return pickup.toDTO();
@@ -79,7 +78,6 @@ public class PickupService {
 		if (!pickup.getTransaction().getBuyer().getUserId().equals(user.getUserId())) {
 			throw new GeneralException(ErrorStatus._PICKUP_USER_NOT_FOUND);
 		}
-
 		return pickup.toDTO();
 	}
 
@@ -97,10 +95,13 @@ public class PickupService {
 
 		// 픽업 상태 변경
 		pickup.updateState();
+		// toDo 거래 완료로 상태 변경
 		// 픽업 저장
 		pickupRepository.save(pickup);
 
 		return pickup.toDTO();
 	}
-
+	// toDo 관리자 픽업 확인
+	// public PickupDTO updatePickupForAdmin(PickupRequest.UpdatePickUpForAdminRequest request) {
+	// }
 }

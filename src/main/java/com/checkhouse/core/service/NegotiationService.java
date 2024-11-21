@@ -34,7 +34,7 @@ public class NegotiationService {
     NegotiationDTO addNegotiation(NegotiationRequest.AddNegotiationRequest request){
         // 중고 상품 확인
         UsedProduct usedProduct = usedProductRepository
-                .findById(request.usedProductId())
+                .findById(request.usedProduct().getUsedProductId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND)
         );
 
@@ -49,9 +49,9 @@ public class NegotiationService {
         }
 
         // 판매자 및 구매자 확인
-        User seller = userRepository.findById(request.sellerId())
+        User seller = userRepository.findById(request.seller().getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
-        User buyer = userRepository.findById(request.buyerId())
+        User buyer = userRepository.findById(request.buyer().getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
         // 판매자 체크
         if(!seller.getUserId().equals(usedProduct.getUser().getUserId())){
@@ -62,7 +62,6 @@ public class NegotiationService {
         // toDo 레디스 시간관리 추가
         Negotiation savedNegotiation = negotiationRepository.save(
             Negotiation.builder()
-                    .negotiationId(request.negotiationId())
                     .usedProduct(usedProduct)
                     .seller(seller)
                     .buyer(buyer)
@@ -76,8 +75,10 @@ public class NegotiationService {
 
     // 네고 상태 변경 (승인, 거절, 취소)
     NegotiationDTO updateNegotiationState(NegotiationRequest.UpdateNegotiationRequest request){
+        //toDo 네고가 WAITING 일경우에만 수정 가능하도록 로직 변경, 승인시 트랜잭션 생성
+
         // 네고 조회
-        Negotiation negotiation = negotiationRepository.findById(request.negotiationId())
+        Negotiation negotiation = negotiationRepository.findById(request.negotiation().getNegotiationId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._NEGOTIATION_NOT_FOUND));
         // 상태 변경
         switch(request.state()){
@@ -104,16 +105,16 @@ public class NegotiationService {
 
     // 제안한 네고 조회
     List<NegotiationDTO> getNegotiationByBuyer(NegotiationRequest.GetNegotiationByBuyerRequest request){
-        User buyer = userRepository.findById(request.buyerId())
+        User buyer = userRepository.findById(request.buyer().getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        return negotiationRepository.findAllByBuyerId(request.buyerId())
+        return negotiationRepository.findAllByBuyerId(request.buyer().getUserId())
                 .stream().map(Negotiation::toDTO).collect(Collectors.toList());
     }
 
     // 받은 네고 조회
     List<NegotiationDTO> getNegotiationBySeller(NegotiationRequest.GetNegotiationBySellerRequest request){
-        User seller = userRepository.findById(request.sellerId())
+        User seller = userRepository.findById(request.seller().getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         return negotiationRepository.findAllBySellerId(seller.getUserId())
@@ -122,7 +123,7 @@ public class NegotiationService {
 
     // 네고 삭제
     void deleteNegotiation(NegotiationRequest.DeleteNegotiationRequest request){
-        Negotiation negotiation = negotiationRepository.findById(request.negotiationId())
+        Negotiation negotiation = negotiationRepository.findById(request.negotiation().getNegotiationId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._NEGOTIATION_NOT_FOUND));
         negotiationRepository.delete(negotiation);
     }

@@ -1,27 +1,30 @@
 package com.checkhouse.core.dto.request;
 
-import java.util.UUID;
+import com.checkhouse.core.entity.Transaction;
+import com.checkhouse.core.entity.UsedProduct;
+import com.checkhouse.core.entity.User;
+import lombok.Builder;
 
 public class TransactionRequest {
+	@Builder
 	public record AddTransactionRequest(
-		UUID transactionId,
-		UUID usedProductId,
-		UUID buyerId
+		UsedProduct usedProduct,
+		User buyer
 	){ }
-
+	@Builder
 	public record GetTransactionStatusRequest(
-		UUID transactionId
+		Transaction transaction
 	){ }
-
+	@Builder
 	public record UpdateTransactionRequest(
-		UUID transactionId
+		Transaction transaction
 	){ }
-
+	@Builder
 	public record GetTransactionsByUserRequest(
-		UUID userId
+		User user
 	){ }
-
+	@Builder
 	public record GetTransactionsForAdminRequest(
-		UUID adminId
+		User admin
 	){ }
 }

@@ -83,9 +83,9 @@ public class Negotiation extends BaseTimeEntity {
     public NegotiationDTO toDTO() {
         return new NegotiationDTO(
                 this.negotiationId,
-                this.usedProduct,
-                this.seller,
-                this.buyer,
+                this.usedProduct.toDto(),
+                this.seller.toDto(),
+                this.buyer.toDto(),
                 this.state,
                 this.price
                 
