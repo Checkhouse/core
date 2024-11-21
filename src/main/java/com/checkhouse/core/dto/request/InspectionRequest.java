@@ -2,23 +2,23 @@ package com.checkhouse.core.dto.request;
 
 import java.util.UUID;
 
-public record InspectionRequest(
+import com.checkhouse.core.dto.UserDTO;
+
+import lombok.Builder;
+
+public class InspectionRequest {
+    @Builder
+    public record AddInspectionRequest(
         UUID usedProductId,
         String description,
-        boolean isDone
-) {
-    public record CreateInspectionRequest(
-            UUID usedProductId,
-            String description,
-            boolean isDone
+        boolean isDone,
+        UUID userId
     ) {}
+
+    @Builder
     public record UpdateInspectionRequest(
-            boolean isDone
-    ) {} 
-    public record UpdateInspectionImageRequest(
-            String imageUrl
-    ) {} 
-    public record UpdateInspectionStateRequest(
-            boolean isDone
+        UUID inspectionId,
+        boolean isDone,
+        UserDTO user
     ) {}
 }

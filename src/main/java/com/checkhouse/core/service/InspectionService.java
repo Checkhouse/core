@@ -14,6 +14,7 @@ import com.checkhouse.core.repository.mysql.InspectionRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
+import com.checkhouse.core.repository.mysql.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,26 +25,45 @@ import lombok.extern.slf4j.Slf4j;
 public class InspectionService {
     private final InspectionRepository inspectionRepository;
     private final UsedProductRepository usedProductRepository;
+    private final UserRepository userRepository;
     /**
      * 검수 물품 등록
      */
-    InspectionDTO createInspection(InspectionRequest.CreateInspectionRequest req) {
+    InspectionDTO addInspection(InspectionRequest.AddInspectionRequest req) {
+        // 판매 등록이 안된 상품은 검수 등록 불가
+        if (req.usedProductId() == null) {
+            throw new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND);
+        }
+        
         // 판매 등록이 안된 상품은 검수 등록 불가
         UsedProduct usedProduct = usedProductRepository.findById(req.usedProductId())
-        .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
+            .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
+            
+        // 이미 완료된 검수가 있는 상품은 검수 등록 불가
+        inspectionRepository.findByUsedProductAndIsDone(usedProduct, true)
+            .ifPresent(inspection -> {
+                throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
+            });
         // 검수 등록
         Inspection inspection = Inspection.builder()
                 .usedProduct(usedProduct)
                 .description(req.description())
                 .isDone(req.isDone())
+                .user(userRepository.findById(req.userId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND)))
                 .build();
-        return inspection.toDTO();
+        Inspection savedInspection = inspectionRepository.save(inspection);
+        return savedInspection.toDTO();
     }
     // 검수 상태 업데이트
     InspectionDTO updateInspection(UUID inspectionId, InspectionRequest.UpdateInspectionRequest req) {
         // 존재하지 않는 검수 정보가 있을 수 있으므로 예외처리
         Inspection inspection = inspectionRepository.findById(inspectionId)
         .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
+        // 이미 완료된 검수는 상태 변경 불가
+        if (inspection.isDone()) {
+            throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
+        }
         inspection.updateInspectionState(req.isDone());
         return inspection.toDTO();
     }

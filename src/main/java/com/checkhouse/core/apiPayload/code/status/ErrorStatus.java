@@ -19,6 +19,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // user
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 유저입니다."),
     _USER_ALREADY_EXIST(HttpStatus.CONFLICT, "USER409", "이미 존재하는 사용자입니다."),
+    _USER_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4041", "User ID를 찾을 수 없습니다."),
 
     // origin product
     _ORIGIN_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "OG404", "원본 상품이 존재하지 않습니다."),
@@ -91,7 +92,10 @@ public enum ErrorStatus implements BaseErrorCode {
     // send
     _SEND_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND404", "Send ID를 찾을 수 없습니다."),
     _SEND_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND4041", "발송 상태를 찾을 수 없습니다."),
-    _SEND_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "SEND400", "발송 상태 변경에 실패하였습니다.")
+    _SEND_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "SEND400", "발송 상태 변경에 실패하였습니다."),
+
+    // inspection
+    _INSPECTION_ALREADY_DONE(HttpStatus.BAD_REQUEST, "INSPECTION400", "이미 완료된 검수가 있습니다.")
     ;
 
     
