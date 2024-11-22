@@ -96,7 +96,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.of(hub1addr));
 
         // When
-        HubDTO result = hubService.AddHub(req);
+        HubDTO result = hubService.addHub(req);
 
         // Then
         assertNotNull(result);
@@ -125,7 +125,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.of(hub1addr));
 
         // When
-        HubDTO result = hubService.UpdateHub(req);
+        HubDTO result = hubService.updateHub(req);
 
         // Then
         assertNotNull(result);
@@ -150,7 +150,7 @@ public class HubServiceTest {
         when(hubRepository.findById(hubId)).thenReturn(Optional.of(hub1));
 
         // when
-        hubService.DeleteHub(req);
+        hubService.deleteHub(req);
 
         // then
         verify(hubRepository, times(1)).findById(hubId);
@@ -180,7 +180,7 @@ public class HubServiceTest {
         when(hubRepository.findAll()).thenReturn(List.of(hub1, hub2));
 
         // when
-        List<HubDTO> result = hubService.GetHubs();
+        List<HubDTO> result = hubService.getHubs();
 
         // then
         assertNotNull(result);
@@ -210,7 +210,7 @@ public class HubServiceTest {
         when(hubRepository.findHubByName("허브2")).thenReturn(Optional.of(hub2));
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.AddHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.addHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ALREADY_EXISTS, exception.getCode());
@@ -234,7 +234,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.empty());
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.AddHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.addHub(req));
 
         // Then
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -272,7 +272,7 @@ public class HubServiceTest {
         when(hubRepository.findById(invalidHubId)).thenReturn(Optional.empty());
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.UpdateHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
@@ -295,7 +295,7 @@ public class HubServiceTest {
         when(hubRepository.findHubByName("허브2")).thenReturn(Optional.of(hub2));
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.UpdateHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ALREADY_EXISTS, exception.getCode());
@@ -319,7 +319,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub2addr.getAddressId())).thenReturn(Optional.empty());
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.UpdateHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateHub(req));
 
         // Then
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -348,7 +348,7 @@ public class HubServiceTest {
         when(hubRepository.findById(invalidHub)).thenReturn(Optional.empty());
 
         // when
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.DeleteHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.deleteHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());

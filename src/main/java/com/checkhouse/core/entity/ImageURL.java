@@ -41,7 +41,7 @@ public class ImageURL extends BaseTimeEntity {
 
     }
 
-    public ImageDTO toDTO() {
+    public ImageDTO toDto() {
         return new ImageDTO(imageId, imageURL);
     }
 }

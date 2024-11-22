@@ -23,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.geo.Point;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -124,7 +123,7 @@ public class AddressServiceTest {
         //특정 uuid를 넣으면, 다음과 같이 동작 할 것이다.
         when(addressRepository.save(any(Address.class))).thenReturn(commonAddress);
 
-        AddressDTO result = addressService.AddAddress(req);
+        AddressDTO result = addressService.addAddress(req);
         assertNotNull(result);
         assertEquals("한글이름", result.name());
         assertEquals("서울특별시 동작구 상도로 369", result.address());
@@ -147,7 +146,7 @@ public class AddressServiceTest {
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.UpdateAddress(req);
+        AddressDTO result = addressService.updateAddress(req);
 
         assertNotNull(result);
         assertEquals("홍길동", result.name());
@@ -175,7 +174,7 @@ public class AddressServiceTest {
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
 
-        AddressDTO result = addressService.UpdateAddress(req);
+        AddressDTO result = addressService.updateAddress(req);
 
         assertNotNull(result);
         assertEquals("서울특별시 동작구 상도로 45길", result.address());
@@ -197,7 +196,7 @@ public class AddressServiceTest {
 
         //when
         AddressRequest.DeleteAddressRequest req = AddressRequest.DeleteAddressRequest.builder().addressId(addressId).build();
-        addressService.DeleteAddress(req);
+        addressService.deleteAddress(req);
 
         verify(addressRepository, times(1)).findById(addressId);
         verify(addressRepository, times(1)).delete(any(Address.class));
@@ -210,7 +209,7 @@ public class AddressServiceTest {
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(commonAddress));
 
         AddressRequest.GetAddressByIdRequest req = AddressRequest.GetAddressByIdRequest.builder().addressId(addressId).build();
-        AddressDTO result = addressService.GetAddressById(req);
+        AddressDTO result = addressService.getAddressById(req);
 
         assertNotNull(result);
         assertEquals(commonAddress.getAddressId(), result.addressId());
@@ -228,7 +227,7 @@ public class AddressServiceTest {
     void SUCCESS_getAddressList() {
         when(addressRepository.findAll()).thenReturn(List.of(commonAddress, otherAddress));
 
-        List<AddressDTO> result = addressService.GetAllAddresses();
+        List<AddressDTO> result = addressService.getAllAddresses();
 
 
         assertNotNull(result);
@@ -274,7 +273,7 @@ public class AddressServiceTest {
         when(userAddressRepository.save(any(UserAddress.class))).thenReturn(userAddress);
 
         //when
-        UserAddressDTO result = addressService.AddUserAddress(req);
+        UserAddressDTO result = addressService.addUserAddress(req);
 
         //then
         assertNotNull(result);
@@ -301,7 +300,7 @@ public class AddressServiceTest {
         when(hubRepository.findById(any())).thenReturn(Optional.of(hub2));
 
         //when
-        UserAddressDTO result = addressService.UpdateUserAddressHub(req);
+        UserAddressDTO result = addressService.updateUserAddressHub(req);
 
         //then
         assertNotNull(result);
@@ -326,7 +325,7 @@ public class AddressServiceTest {
         when(userAddressRepository.findById(userAddressId)).thenReturn(Optional.of(userAddress));
 
         //when
-        UserAddressDTO result = addressService.GetUserAddress(req);
+        UserAddressDTO result = addressService.getUserAddress(req);
 
         //then
         assertNotNull(result);
@@ -351,7 +350,7 @@ public class AddressServiceTest {
         when(userAddressRepository.findAllByUserUserId(userId)).thenReturn(List.of(userAddress));
 
         //when
-        List<UserAddressDTO> result = addressService.GetAllUserAddressesById(req);
+        List<UserAddressDTO> result = addressService.getAllUserAddressesById(req);
 
         //then
         assertNotNull(result);
@@ -379,7 +378,7 @@ public class AddressServiceTest {
         when(userAddressRepository.findById(userAddressId)).thenReturn(Optional.of(userAddress));
 
         //when
-        addressService.DeleteUserAddress(req);
+        addressService.deleteUserAddress(req);
 
         //then
         verify(userAddressRepository, times(1)).findById(userAddressId);
@@ -398,7 +397,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.GetAddressById(req);
+            addressService.getAddressById(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -420,7 +419,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.UpdateAddress(req);
+            addressService.updateAddress(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -437,7 +436,7 @@ public class AddressServiceTest {
 
         // When, Then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.DeleteAddress(req);
+            addressService.deleteAddress(req);
         });
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -467,7 +466,7 @@ public class AddressServiceTest {
 
         //when then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.AddUserAddress(req);
+            addressService.addUserAddress(req);
         });
 
         assertEquals(ErrorStatus._USER_NOT_FOUND, exception.getCode());
@@ -496,7 +495,7 @@ public class AddressServiceTest {
 
         //when then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.AddUserAddress(req);
+            addressService.addUserAddress(req);
         });
 
         assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
@@ -519,7 +518,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.UpdateUserAddressHub(req);
+            addressService.updateUserAddressHub(req);
         });
 
         assertEquals(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -542,7 +541,7 @@ public class AddressServiceTest {
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.UpdateUserAddressHub(req);
+            addressService.updateUserAddressHub(req);
         });
 
         assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
@@ -563,7 +562,7 @@ public class AddressServiceTest {
 
         //when then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.GetUserAddress(req);
+            addressService.getUserAddress(req);
         });
 
         assertEquals(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -583,7 +582,7 @@ public class AddressServiceTest {
 
         //when then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.GetAllUserAddressesById(req);
+            addressService.getAllUserAddressesById(req);
         });
 
         assertEquals(ErrorStatus._USER_NOT_FOUND, exception.getCode());
@@ -603,10 +602,11 @@ public class AddressServiceTest {
 
         //when then
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            addressService.DeleteUserAddress(req);
+            addressService.deleteUserAddress(req);
         });
 
         assertEquals(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND, exception.getCode());
         verify(userAddressRepository, times(1)).findById(invalidUserAddressId);
     }
 }
+

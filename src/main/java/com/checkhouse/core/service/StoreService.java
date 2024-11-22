@@ -40,23 +40,23 @@ public class StoreService {
                         .build()
         );
 
-        return savedStore.toDTO();
+        return savedStore.toDto();
     }
     //스토어 이름으로 조회
     StoreDTO getStoreByName(String name) {
         Store store = storeRepository.findStoreByName(name).orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
-        return store.toDTO();
+        return store.toDto();
     }
     //스토어 조회
     StoreDTO getStore(StoreRequest.GetStoreRequest req) {
         Store store = storeRepository.findById(req.storeId()).orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
-        return store.toDTO();
+        return store.toDto();
     }
     //스토어 리스트 조회
     List<StoreDTO> getStores() {
         return storeRepository.findAll()
                 .stream()
-                .map(Store::toDTO)
+                .map(Store::toDto)
                 .toList();
     }
     //스토어 정보 수정
@@ -72,14 +72,14 @@ public class StoreService {
         store.updateName(req.name());
         store.updateAddress(addr);
 
-        return store.toDTO();
+        return store.toDto();
     }
     //스토어 코드 수정
     StoreDTO updateStoreCode(StoreRequest.UpdateStoreCodeRequest req) {
         Store store = storeRepository.findById(req.storeId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         store.updateCode(req.code());
-        return store.toDTO();
+        return store.toDto();
     }
     //스토어 코드 확인
     boolean verifyCode(StoreRequest.VerifyCodeRequest req) {

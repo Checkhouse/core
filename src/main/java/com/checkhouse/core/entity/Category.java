@@ -44,7 +44,7 @@ public class Category extends BaseTimeEntity {
 
     public void updateName(String name) { this.name = name; }
 
-    public CategoryDTO toDTO() {
+    public CategoryDTO toDto() {
         return new CategoryDTO(
                 this.categoryId,
                 this.name

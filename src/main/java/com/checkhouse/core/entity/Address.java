@@ -94,7 +94,7 @@ public class Address extends BaseTimeEntity {
     }
 
 
-    public AddressDTO toDTO() {
+    public AddressDTO toDto() {
         return new AddressDTO(
                 this.addressId,
                 this.name,

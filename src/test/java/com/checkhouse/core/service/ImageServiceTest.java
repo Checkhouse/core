@@ -150,7 +150,7 @@ public class ImageServiceTest {
         when(imageRepository.save(any())).thenReturn(image1);
 
         // when
-        ImageDTO result = imageService.AddImage(req);
+        ImageDTO result = imageService.addImage(req);
 
         // then
         assertNotNull(result);
@@ -169,7 +169,7 @@ public class ImageServiceTest {
         when(imageRepository.findById(imageId)).thenReturn(Optional.of(image1));
 
         // when
-        ImageDTO result = imageService.GetImage(req);
+        ImageDTO result = imageService.getImage(req);
 
         // then
         assertNotNull(result);
@@ -189,7 +189,7 @@ public class ImageServiceTest {
         // when
         ImageRequest.DeleteImageRequest req = new ImageRequest.DeleteImageRequest(imageId);
 
-        imageService.DeleteImage(req);
+        imageService.deleteImage(req);
 
         // then
         verify(imageRepository, times(1)).findById(imageId);
@@ -203,7 +203,7 @@ public class ImageServiceTest {
         // 원본 이미지 정보
         ImageRequest.AddOriginImageRequest req = new ImageRequest.AddOriginImageRequest(
                 originImage1.getOriginImageId(),
-                originProduct1,
+                originProduct1.getOriginProductId(),
                 image1.getImageURL()
         );
 
@@ -213,12 +213,12 @@ public class ImageServiceTest {
         when(originProductRepository.findById(originProduct1.getOriginProductId())).thenReturn(Optional.of(originProduct1));
 
         // when
-        OriginImageDTO result = imageService.AddOriginImage(req);
+        OriginImageDTO result = imageService.addOriginImage(req);
 
         // then
         assertNotNull(result);
-        assertEquals(result.originProduct().getName(), originProduct1.getName());
-        assertEquals(result.image().getImageURL(), image1.getImageURL());
+        assertEquals(result.originProduct().name(), originProduct1.getName());
+        assertEquals(result.image().imageURL(), image1.getImageURL());
         verify(imageRepository, times(1)).save(any());
         verify(originImageRepository, times(1)).save(any());
         verify(originProductRepository, times(1)).findById(originProduct1.getOriginProductId());
@@ -235,12 +235,12 @@ public class ImageServiceTest {
         when(originImageRepository.findById(originImage1.getOriginImageId())).thenReturn(Optional.of(originImage1));
 
         // when
-        OriginImageDTO result = imageService.GetOriginImage(req);
+        OriginImageDTO result = imageService.getOriginImage(req);
 
         // then
         assertNotNull(result);
-        assertEquals(result.originProduct().getName(), originProduct1.getName());
-        assertEquals(result.image().getImageURL(), image1.getImageURL());
+        assertEquals(result.originProduct().name(), originProduct1.getName());
+        assertEquals(result.image().imageURL(), image1.getImageURL());
         verify(originImageRepository, times(1)).findById(originImage1.getOriginImageId());
     }
     @DisplayName("원본 물품에 대한 이미지 리스트 조회 성공")
@@ -253,15 +253,15 @@ public class ImageServiceTest {
 
         // given
         when(originProductRepository.findById(originProduct1.getOriginProductId())).thenReturn(Optional.of(originProduct1));
-        when(originImageRepository.findUsedImagesByOriginProduct(originProduct1)).thenReturn(List.of(originImage1, originImage2));
+        when(originImageRepository.findOriginImagesByOriginProductOriginProductId(originProduct1.getOriginProductId())).thenReturn(List.of(originImage1, originImage2));
 
         // when
-        List<OriginImageDTO> result = imageService.GetOriginImagesByOriginId(req);
+        List<OriginImageDTO> result = imageService.getOriginImagesByOriginId(req);
 
         // then
         assertNotNull(result);
         assertEquals(result.size(), 2);
-        verify(originImageRepository, times(1)).findUsedImagesByOriginProduct(originProduct1);
+        verify(originImageRepository, times(1)).findOriginImagesByOriginProductOriginProductId(originProduct1.getOriginProductId());
         verify(originProductRepository, times(1)).findById(originProduct1.getOriginProductId());
     }
     @DisplayName("원본 이미지 삭제 성공")
@@ -276,7 +276,7 @@ public class ImageServiceTest {
         when(originImageRepository.findById(originImage1.getOriginImageId())).thenReturn(Optional.of(originImage1));
 
         // when
-        imageService.DeleteOriginImage(req);
+        imageService.deleteOriginImage(req);
 
         // then
         verify(originImageRepository, times(1)).findById(originImage1.getOriginImageId());
@@ -290,7 +290,7 @@ public class ImageServiceTest {
         // 중고 이미지 정보
         ImageRequest.AddUsedImageRequest req = new ImageRequest.AddUsedImageRequest(
                 UUID.randomUUID(),
-                usedProduct1,
+                usedProduct1.getUsedProductId(),
                 image1.getImageURL()
         );
 
@@ -300,13 +300,13 @@ public class ImageServiceTest {
         when(usedProductRepository.findById(usedProduct1.getUsedProductId())).thenReturn(Optional.of(usedProduct1));
 
         // when
-        UsedImageDTO result = imageService.AddUsedImage(req);
+        UsedImageDTO result = imageService.addUsedImage(req);
 
         // then
         assertNotNull(result);
-        assertEquals(result.usedProduct().getTitle(), usedProduct1.getTitle());
-        assertEquals(result.usedProduct().getDescription(), usedProduct1.getDescription());
-        assertEquals(result.image().getImageURL(), image1.getImageURL());
+        assertEquals(result.usedProduct().title(), usedProduct1.getTitle());
+        assertEquals(result.usedProduct().description(), usedProduct1.getDescription());
+        assertEquals(result.image().imageURL(), image1.getImageURL());
         verify(imageRepository, times(1)).save(any());
         verify(usedImageRepository, times(1)).save(any());
         verify(usedProductRepository, times(1)).findById(usedProduct1.getUsedProductId());
@@ -322,12 +322,12 @@ public class ImageServiceTest {
         when(usedImageRepository.findById(usedImageId)).thenReturn(Optional.of(usedImage1));
 
         // when
-        UsedImageDTO result = imageService.GetUsedImage(req);
+        UsedImageDTO result = imageService.getUsedImage(req);
 
         // then
         assertNotNull(result);
-        assertEquals(result.image().getImageURL(), usedImage1.getImage().getImageURL());
-        assertEquals(result.usedProduct().getTitle(), usedProduct1.getTitle());
+        assertEquals(result.image().imageURL(), usedImage1.getImage().getImageURL());
+        assertEquals(result.usedProduct().title(), usedProduct1.getTitle());
         verify(usedImageRepository, times(1)).findById(usedImageId);
     }
     @DisplayName("중고 물품에 대한 이미지 리스트 조회 성공")
@@ -339,16 +339,16 @@ public class ImageServiceTest {
 
         // given
         when(usedProductRepository.findById(usedProductId)).thenReturn(Optional.of(usedProduct1));
-        when(usedImageRepository.findUsedImagesByUsedProduct(usedProduct1)).thenReturn(List.of(usedImage1, usedImage2));
+        when(usedImageRepository.findUsedImagesByUsedProductUsedProductId(usedProductId)).thenReturn(List.of(usedImage1, usedImage2));
 
         // when
-        List<UsedImageDTO> result = imageService.GetUsedImagesByUsedId(req);
+        List<UsedImageDTO> result = imageService.getUsedImagesByUsedId(req);
 
         // then
         assertNotNull(result);
         assertEquals(result.size(), 2);
         verify(usedProductRepository, times(1)).findById(usedProductId);
-        verify(usedImageRepository, times(1)).findUsedImagesByUsedProduct(usedProduct1);
+        verify(usedImageRepository, times(1)).findUsedImagesByUsedProductUsedProductId(usedProductId);
 
     }
     @DisplayName("중고 이미지 삭제 성공")
@@ -362,7 +362,7 @@ public class ImageServiceTest {
         when(usedImageRepository.findById(usedImageId)).thenReturn(Optional.of(usedImage1));
 
         // when
-        imageService.DeleteUsedImage(req);
+        imageService.deleteUsedImage(req);
 
         // then
         verify(usedImageRepository, times(1)).findById(usedImageId);
@@ -381,7 +381,7 @@ public class ImageServiceTest {
         when(imageRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         //given, when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getImage(req));
 
         assertEquals(ErrorStatus._IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(imageRepository, times(1)).findById(invalidId);
@@ -398,7 +398,7 @@ public class ImageServiceTest {
         ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageId(), image.getImageURL());
 
         //given, when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.AddImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addImage(req));
 
         assertEquals(ErrorStatus._IMAGE_URL_NOT_EXIST, exception.getCode());
     }
@@ -411,7 +411,7 @@ public class ImageServiceTest {
         when(imageRepository.findById(invalidId)).thenReturn(Optional.empty());
 
         //given, when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.DeleteImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.deleteImage(req));
 
         assertEquals(ErrorStatus._IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(imageRepository, times(1)).findById(invalidId);
@@ -424,7 +424,7 @@ public class ImageServiceTest {
         // 원본 이미지 정보
         ImageRequest.AddOriginImageRequest req = new ImageRequest.AddOriginImageRequest(
                 UUID.randomUUID(),
-                originProduct1,
+                originProduct1.getOriginProductId(),
                 image1.getImageURL()
         );
 
@@ -432,7 +432,7 @@ public class ImageServiceTest {
         when(originProductRepository.findById(originProduct1.getOriginProductId())).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.AddOriginImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addOriginImage(req));
 
         assertEquals(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND, exception.getCode());
         verify(originProductRepository, times(1)).findById(originProduct1.getOriginProductId());
@@ -447,10 +447,10 @@ public class ImageServiceTest {
         );
 
         // given
-        when(originImageRepository.findById(originImageId)).thenReturn(Optional.of(originImage1));
+        when(originImageRepository.findById(originImageId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetOriginImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getOriginImage(req));
 
         assertEquals(ErrorStatus._ORIGIN_IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(originImageRepository, times(1)).findById(originImageId);
@@ -465,20 +465,20 @@ public class ImageServiceTest {
         );
 
         // given
-        when(originProductRepository.findById(originProduct1.getOriginProductId())).thenReturn(Optional.empty());
+        when(originProductRepository.findById(originImageId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetOriginImagesByOriginId(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getOriginImagesByOriginId(req));
 
         assertEquals(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND, exception.getCode());
-        verify(originProductRepository, times(1)).findById(originProduct1.getOriginProductId());
+        verify(originProductRepository, times(1)).findById(originImageId);
     }
     @DisplayName("원본이미지가 존재하지 않으면 삭제 실패")
     @Test
     void Fail_deleteOriginImageUrl_invalid_Origin_image_id() {
         // 원본 이미지 정보
         UUID originImageId = UUID.randomUUID();
-        ImageRequest.DeleteImageRequest req = new ImageRequest.DeleteImageRequest(
+        ImageRequest.DeleteOriginImageRequest req = new ImageRequest.DeleteOriginImageRequest(
                 originImageId
         );
 
@@ -486,7 +486,7 @@ public class ImageServiceTest {
         when(originImageRepository.findById(originImageId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.DeleteImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.deleteOriginImage(req));
 
         assertEquals(ErrorStatus._ORIGIN_IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(originImageRepository, times(1)).findById(originImageId);
@@ -499,7 +499,7 @@ public class ImageServiceTest {
         // 중고 이미지 정보
         ImageRequest.AddUsedImageRequest req = new ImageRequest.AddUsedImageRequest(
                 UUID.randomUUID(),
-                usedProduct1,
+                usedProduct1.getUsedProductId(),
                 image1.getImageURL()
         );
 
@@ -507,7 +507,7 @@ public class ImageServiceTest {
         when(usedProductRepository.findById(usedProduct1.getUsedProductId())).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.AddUsedImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addUsedImage(req));
 
         assertEquals(ErrorStatus._USED_PRODUCT_NOT_FOUND, exception.getCode());
         verify(usedProductRepository, times(1)).findById(usedProduct1.getUsedProductId());
@@ -523,7 +523,7 @@ public class ImageServiceTest {
         when(usedImageRepository.findById(usedImageId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetUsedImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getUsedImage(req));
 
         assertEquals(ErrorStatus._USED_IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(usedImageRepository, times(1)).findById(usedImageId);
@@ -539,7 +539,7 @@ public class ImageServiceTest {
         when(usedProductRepository.findById(usedProductId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.GetUsedImagesByUsedId(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getUsedImagesByUsedId(req));
 
         assertEquals(ErrorStatus._USED_PRODUCT_NOT_FOUND, exception.getCode());
         verify(usedProductRepository, times(1)).findById(usedProductId);
@@ -555,7 +555,7 @@ public class ImageServiceTest {
         when(usedImageRepository.findById(usedImageId)).thenReturn(Optional.empty());
 
         // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.DeleteUsedImage(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.deleteUsedImage(req));
 
         assertEquals(ErrorStatus._USED_IMAGE_ID_NOT_FOUND, exception.getCode());
         verify(usedImageRepository, times(1)).findById(usedImageId);

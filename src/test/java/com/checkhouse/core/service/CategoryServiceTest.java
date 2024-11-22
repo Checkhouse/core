@@ -68,7 +68,7 @@ public class CategoryServiceTest {
         when(categoryRepository.save(any(Category.class))).thenReturn(phone);
 
         // when
-        CategoryDTO result = categoryService.AddCategory(req);
+        CategoryDTO result = categoryService.addCategory(req);
 
         //then
         assertNotNull(result);
@@ -89,7 +89,7 @@ public class CategoryServiceTest {
         // when
         CategoryRequest.UpdateCategoryByIdRequest req = new CategoryRequest.UpdateCategoryByIdRequest(categoryId, "smartphone");
 
-        CategoryDTO result = categoryService.UpdateCategoryById(req);
+        CategoryDTO result = categoryService.updateCategoryById(req);
 
         // then
         assertNotNull(result);
@@ -111,7 +111,7 @@ public class CategoryServiceTest {
         // when
         CategoryRequest.DeleteCategoryRequest req = new CategoryRequest.DeleteCategoryRequest(categoryId);
 
-        categoryService.DeleteCategory(req);
+        categoryService.deleteCategory(req);
 
         // then
         verify(categoryRepository, times(1)).findById(categoryId);
@@ -124,7 +124,7 @@ public class CategoryServiceTest {
         when(categoryRepository.findAll()).thenReturn(List.of(phone, tablet, laptop));
 
         // when
-        List<CategoryDTO> categories = categoryService.GetCategories();
+        List<CategoryDTO> categories = categoryService.getCategories();
 
         // then
         assertNotNull(categories);
@@ -141,7 +141,7 @@ public class CategoryServiceTest {
 
         // given, when, then
         CategoryRequest.UpdateCategoryByIdRequest req = new CategoryRequest.UpdateCategoryByIdRequest(categoryId, "smartphone");
-        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.UpdateCategoryById(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.updateCategoryById(req));
 
         assertEquals(ErrorStatus._CATEGORY_ID_NOT_FOUND, exception.getCode());
         verify(categoryRepository, times(1)).findById(categoryId);
@@ -157,7 +157,7 @@ public class CategoryServiceTest {
 
         // given, when, then
         CategoryRequest.UpdateCategoryByIdRequest req = new CategoryRequest.UpdateCategoryByIdRequest(categoryId, "tablet");
-        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.UpdateCategoryById(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.updateCategoryById(req));
 
         assertEquals(ErrorStatus._CATEGORY_ALREADY_EXIST, exception.getCode());
         verify(categoryRepository, times(1)).findById(categoryId);
@@ -173,7 +173,7 @@ public class CategoryServiceTest {
 
         // given, when, then
         CategoryRequest.DeleteCategoryRequest req = new CategoryRequest.DeleteCategoryRequest(categoryId);
-        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.DeleteCategory(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.deleteCategory(req));
 
         assertEquals(ErrorStatus._CATEGORY_ID_NOT_FOUND, exception.getCode());
         verify(categoryRepository, times(1)).findById(categoryId);
@@ -187,7 +187,7 @@ public class CategoryServiceTest {
         CategoryRequest.GetCategoryByIdRequest req = new CategoryRequest.GetCategoryByIdRequest(categoryId);
 
         // given, when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.GetCategory(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> categoryService.getCategory(req));
 
         assertEquals(ErrorStatus._CATEGORY_ID_NOT_FOUND, exception.getCode());
         verify(categoryRepository, times(1)).findById(categoryId);

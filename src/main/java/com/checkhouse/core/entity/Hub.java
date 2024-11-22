@@ -66,7 +66,7 @@ public class Hub extends BaseTimeEntity {
     public void UpdateName(String name) {this.name = name;}
     public void UpdateClusteredId(int clusteredId) {this.clusteredId = clusteredId;}
 
-    public HubDTO toDTO() {
-        return new HubDTO(hubId, name, clusteredId, address.toDTO());
+    public HubDTO toDto() {
+        return new HubDTO(hubId, name, clusteredId, address.toDto());
     }
 }

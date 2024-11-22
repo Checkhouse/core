@@ -21,7 +21,7 @@ public class HubService {
     private final HubRepository hubRepository;
     private final AddressRepository addressRepository;
 
-    HubDTO AddHub(HubRequest.AddHubRequest req) {
+    HubDTO addHub(HubRequest.AddHubRequest req) {
         hubRepository.findHubByName(req.name()).ifPresent(hub -> {
             throw new GeneralException(ErrorStatus._HUB_ALREADY_EXISTS);
         });
@@ -40,9 +40,9 @@ public class HubService {
                         .clusteredId(req.clusteredId())
                         .build()
         );
-        return savedHub.toDTO();
+        return savedHub.toDto();
     }
-    HubDTO UpdateHub(HubRequest.UpdateHubRequest req) {
+    HubDTO updateHub(HubRequest.UpdateHubRequest req) {
         Hub hub = hubRepository.findById(req.hubId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND)
         );
@@ -58,23 +58,23 @@ public class HubService {
         hub.UpdateAddress(addr);
         hub.UpdateName(req.name());
         hub.UpdateClusteredId(req.clusteredId());
-        return hub.toDTO();
+        return hub.toDto();
     }
-    void DeleteHub(HubRequest.DeleteHubRequest req) {
+    void deleteHub(HubRequest.DeleteHubRequest req) {
         Hub hub = hubRepository.findById(req.hubId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND)
         );
         hubRepository.delete(hub);
     }
-    List<HubDTO> GetHubs() {
+    List<HubDTO> getHubs() {
         return hubRepository.findAll()
                 .stream()
-                .map(Hub::toDTO)
+                .map(Hub::toDto)
                 .toList();
     }
 
 
     //TODO: ALLOCate 구현
-    HubDTO AllocateHub(HubRequest.AllocateHubRequest req) {return null;}
+    HubDTO allocateHub(HubRequest.AllocateHubRequest req) {return null;}
 
 }

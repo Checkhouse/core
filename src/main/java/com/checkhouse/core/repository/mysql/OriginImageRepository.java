@@ -10,7 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface OriginImageRepository extends JpaRepository<OriginImage, UUID> {
-    List<OriginImage> findUsedImagesByOriginProduct(OriginProduct originProduct);
-
-
+    List<OriginImage> findOriginImagesByOriginProductOriginProductId(UUID originProductId);
 }

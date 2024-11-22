@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public record UsedImageDTO(
         UUID usedImageId,
-        ImageURL image,
-        UsedProduct usedProduct
+        ImageDTO image,
+        UsedProductDTO usedProduct
 ) {}

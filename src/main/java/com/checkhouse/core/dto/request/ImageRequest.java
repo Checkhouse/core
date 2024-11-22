@@ -35,7 +35,7 @@ public class ImageRequest {
             @NotNull
             UUID originImageId,
             @NotNull
-            OriginProduct originProduct,
+            UUID originProductId,
             @NotNull
             String imageURL
     ) {}
@@ -60,7 +60,7 @@ public class ImageRequest {
             @NotNull
             UUID usedImageId,
             @NotNull
-            UsedProduct usedProduct,
+            UUID usedProductId,
             @NotNull
             String imageURL
     ) {}

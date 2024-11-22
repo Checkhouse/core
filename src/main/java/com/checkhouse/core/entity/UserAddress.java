@@ -65,12 +65,12 @@ public class UserAddress extends BaseTimeEntity {
         this.hub = newhub;
     }
 
-    public UserAddressDTO toDTO() {
+    public UserAddressDTO toDto() {
         return new UserAddressDTO(
                 this.userAddressId,
-                this.address.toDTO(),
+                this.address.toDto(),
                 this.user.toDto(),
-                this.hub.toDTO()
+                this.hub.toDto()
         );
     }
 
