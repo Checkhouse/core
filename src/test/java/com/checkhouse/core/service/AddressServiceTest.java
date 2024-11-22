@@ -11,6 +11,7 @@ import com.checkhouse.core.entity.UserAddress;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.dto.request.AddressRequest;
+import com.checkhouse.core.repository.mysql.HubRepository;
 import com.checkhouse.core.repository.mysql.UserAddressRepository;
 import com.checkhouse.core.repository.mysql.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,8 +37,12 @@ import static org.mockito.Mockito.*;
 public class AddressServiceTest {
     @Mock
     private AddressRepository addressRepository;
+    @Mock
     private UserAddressRepository userAddressRepository;
+    @Mock
     private UserRepository userRepository;
+    @Mock
+    private HubRepository hubRepository;
 
 
     @InjectMocks
@@ -48,6 +53,7 @@ public class AddressServiceTest {
     private UserAddress userAddress;
     private User user;
     private Hub hub;
+    private Hub hub2;
 
     @BeforeAll
     public static void onlyOnce() {}
@@ -87,6 +93,12 @@ public class AddressServiceTest {
                 .address(otherAddress)
                 .name("허브1")
                 .clusteredId(1)
+                .build();
+        hub2 = Hub.builder()
+                .hubId(UUID.randomUUID())
+                .address(commonAddress)
+                .name("허브2")
+                .clusteredId(2)
                 .build();
         userAddress = UserAddress.builder()
                 .userAddressId(UUID.randomUUID())
@@ -245,7 +257,7 @@ public class AddressServiceTest {
     void SUCCESS_addUserAddress() {
         //유저배송지
         AddressRequest.AddUserAddressRequest req = AddressRequest.AddUserAddressRequest.builder()
-                .userAddressId(UUID.randomUUID())
+                .userAddressId(userAddress.getUserAddressId())
                 .userId(user.getUserId())
                 .name(commonAddress.getName())
                 .address(commonAddress.getAddress())
@@ -258,6 +270,7 @@ public class AddressServiceTest {
         //given
         when(addressRepository.save(any(Address.class))).thenReturn(commonAddress);
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(hubRepository.findById(any())).thenReturn(Optional.of(hub));
         when(userAddressRepository.save(any(UserAddress.class))).thenReturn(userAddress);
 
         //when
@@ -271,7 +284,34 @@ public class AddressServiceTest {
 
         verify(addressRepository, times(1)).save(any(Address.class));
         verify(userRepository, times(1)).findById(user.getUserId());
+        verify(hubRepository, times(1)).findById(any());
         verify(userAddressRepository, times(1)).save(any(UserAddress.class));
+    }
+    @DisplayName("유저 배송지 허브 수정 성공")
+    @Test
+    void SUCCESS_updateUserAddressHub() {
+        //유저배송지
+        AddressRequest.UpdateUserAddressHubRequest req = AddressRequest.UpdateUserAddressHubRequest.builder()
+                .userAddressId(userAddress.getUserAddressId())
+                        .hubId(hub2.getHubId())
+                                .build();
+
+        //given
+        when(userAddressRepository.findById(any())).thenReturn(Optional.of(userAddress));
+        when(hubRepository.findById(any())).thenReturn(Optional.of(hub2));
+
+        //when
+        UserAddressDTO result = addressService.UpdateUserAddressHub(req);
+
+        //then
+        assertNotNull(result);
+        assertEquals(result.userAddressId(), req.userAddressId());
+        assertEquals(result.address().addressId(), commonAddress.getAddressId());
+        assertEquals(result.user().userId(), user.getUserId());
+        assertEquals(result.hub().hubId(), hub2.getHubId());
+
+        verify(userAddressRepository, times(1)).findById(userAddress.getUserAddressId());
+        verify(hubRepository, times(1)).findById(any());
     }
     @DisplayName("유저 배송지 조회 성공")
     @Test
@@ -308,7 +348,7 @@ public class AddressServiceTest {
 
         //Given
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(userAddressRepository.findAllByUserId(userId)).thenReturn(List.of(userAddress));
+        when(userAddressRepository.findAllByUserUserId(userId)).thenReturn(List.of(userAddress));
 
         //when
         List<UserAddressDTO> result = addressService.GetAllUserAddressesById(req);
@@ -322,7 +362,7 @@ public class AddressServiceTest {
         assertEquals(userAddress.getUser().getUserId(), userAddressDTO.user().userId());
 
         verify(userRepository, times(1)).findById(userId);
-        verify(userAddressRepository, times(1)).findAllByUserId(userId);
+        verify(userAddressRepository, times(1)).findAllByUserUserId(userId);
 
     }
     @DisplayName("유저 배송지 삭제 성공")
@@ -419,6 +459,7 @@ public class AddressServiceTest {
                 .phone(commonAddress.getPhone())
                 .addressDetail(commonAddress.getAddressDetail())
                 .location(commonAddress.getLocation())
+                .hubId(hub.getHubId())
                 .build();
 
         //given
@@ -431,6 +472,82 @@ public class AddressServiceTest {
 
         assertEquals(ErrorStatus._USER_NOT_FOUND, exception.getCode());
         verify(userRepository, times(1)).findById(invalidUserId);
+    }
+    @DisplayName("존재하지 않는 허브 배송지 추가 실패")
+    @Test
+    void FAIL_addUserAddress_hub_not_found() {
+        //유저 배송지
+        UUID invalidHubId = UUID.randomUUID();
+        AddressRequest.AddUserAddressRequest req = AddressRequest.AddUserAddressRequest.builder()
+                .userAddressId(UUID.randomUUID())
+                .userId(user.getUserId())
+                .name(commonAddress.getName())
+                .address(commonAddress.getAddress())
+                .zipcode(commonAddress.getZipcode())
+                .phone(commonAddress.getPhone())
+                .addressDetail(commonAddress.getAddressDetail())
+                .location(commonAddress.getLocation())
+                .hubId(invalidHubId)
+                .build();
+
+        //given
+        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(hubRepository.findById(invalidHubId)).thenReturn(Optional.empty());
+
+        //when then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.AddUserAddress(req);
+        });
+
+        assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
+        verify(userRepository, times(1)).findById(user.getUserId());
+        verify(hubRepository, times(1)).findById(invalidHubId);
+
+    }
+    @DisplayName("존재하지 않는 유저배송지의 허브 수정 실패")
+    @Test
+    void FAIL_updateUserAddressHub_not_found() {
+        //유저 배송지 요청
+        UUID invalidUserAddressId = UUID.randomUUID();
+        AddressRequest.UpdateUserAddressHubRequest req = AddressRequest.UpdateUserAddressHubRequest.builder()
+                .userAddressId(invalidUserAddressId)
+                .hubId(hub.getHubId())
+                .build();
+
+        // given
+        when(userAddressRepository.findById(invalidUserAddressId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.UpdateUserAddressHub(req);
+        });
+
+        assertEquals(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND, exception.getCode());
+        verify(userAddressRepository, times(1)).findById(invalidUserAddressId);
+    }
+    @DisplayName("존재하지 않는 허브로 허브 수정 실패")
+    @Test
+    void FAIL_updateUserAddressHub_hub_not_found() {
+        // 유저 배송지 요청
+        UUID userAddressId = userAddress.getUserAddressId();
+        UUID invalidHubId = UUID.randomUUID();
+        AddressRequest.UpdateUserAddressHubRequest req = AddressRequest.UpdateUserAddressHubRequest.builder()
+                .userAddressId(userAddressId)
+                .hubId(invalidHubId)
+                .build();
+
+        // given
+        when(userAddressRepository.findById(userAddressId)).thenReturn(Optional.of(userAddress));
+        when(hubRepository.findById(invalidHubId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            addressService.UpdateUserAddressHub(req);
+        });
+
+        assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
+        verify(userAddressRepository, times(1)).findById(userAddressId);
+        verify(hubRepository, times(1)).findById(invalidHubId);
     }
     @DisplayName("존재하지 않는 유저 배송지 조회 실패")
     @Test

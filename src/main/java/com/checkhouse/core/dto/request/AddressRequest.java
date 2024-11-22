@@ -1,5 +1,6 @@
 package com.checkhouse.core.dto.request;
 
+import com.checkhouse.core.entity.Hub;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.springframework.data.geo.Point;
@@ -56,12 +57,21 @@ public class AddressRequest {
             String phone,
             String addressDetail,
             @NotNull
-            Point location
+            Point location,
+            @NotNull
+            UUID hubId
     ) {}
     @Builder
     public record GetUserAddressRequest (
             @NotNull
             UUID userAddressId
+    ) {}
+    @Builder
+    public record UpdateUserAddressHubRequest (
+            @NotNull
+            UUID userAddressId,
+            @NotNull
+            UUID hubId
     ) {}
     @Builder
     public record DeleteUserAddressRequest (@NotNull UUID userAddressId) {}

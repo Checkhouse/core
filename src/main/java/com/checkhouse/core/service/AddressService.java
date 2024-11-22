@@ -3,15 +3,24 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
+import com.checkhouse.core.dto.HubDTO;
 import com.checkhouse.core.dto.UserAddressDTO;
 import com.checkhouse.core.entity.Address;
+import com.checkhouse.core.entity.Hub;
+import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.UserAddress;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.dto.request.AddressRequest;
+import com.checkhouse.core.repository.mysql.HubRepository;
+import com.checkhouse.core.repository.mysql.UserAddressRepository;
+import com.checkhouse.core.repository.mysql.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,6 +28,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AddressService {
     private final AddressRepository addressRepository;
+    private final UserAddressRepository userAddressRepository;
+    private final UserRepository userRepository;
+    private final HubRepository hubRepository;
 
 
     //주소 추가
@@ -81,9 +93,61 @@ public class AddressService {
     }
 
     //UserAddress
-    UserAddressDTO AddUserAddress(AddressRequest.AddUserAddressRequest req) {return null;}
-    UserAddressDTO GetUserAddress(AddressRequest.GetUserAddressRequest req) {return null;}
-    List<UserAddressDTO> GetAllUserAddressesById(AddressRequest.GetAllUserAddressesByIdRequest req) {return null;}
-    void DeleteUserAddress(AddressRequest.DeleteUserAddressRequest req) {}
+    UserAddressDTO AddUserAddress(AddressRequest.AddUserAddressRequest req) {
+        User user = userRepository.findById(req.userId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        Hub hub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+
+        Address address = addressRepository.save(
+                Address.builder()
+                        .addressId(UUID.randomUUID())
+                        .name(req.name())
+                        .address(req.address())
+                        .zipcode(req.zipcode())
+                        .phone(req.phone())
+                        .addressDetail(req.addressDetail())
+                        .location(req.location())
+                        .build()
+        );
+        UserAddress userAddress = userAddressRepository.save(
+                UserAddress.builder()
+                        .userAddressId(req.userAddressId())
+                        .address(address)
+                        .user(user)
+                        .hub(hub)
+                        .build()
+        );
+        return userAddress.toDTO();
+    }
+    UserAddressDTO UpdateUserAddressHub(AddressRequest.UpdateUserAddressHubRequest req) {
+        UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
+        Hub newhub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+        userAddress.UpdateHub(newhub);
+        return userAddress.toDTO();
+    }
+    UserAddressDTO GetUserAddress(AddressRequest.GetUserAddressRequest req) {
+        UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
+        return userAddress.toDTO();
+    }
+    List<UserAddressDTO> GetAllUserAddressesById(AddressRequest.GetAllUserAddressesByIdRequest req) {
+        UUID userId = req.userId();
+        userRepository.findById(userId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
+        );
+        return userAddressRepository.findAllByUserUserId(userId)
+                .stream()
+                .map(UserAddress::toDTO)
+                .collect(Collectors.toList());
+    }
+    void DeleteUserAddress(AddressRequest.DeleteUserAddressRequest req) {
+        UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
+        userAddressRepository.delete(userAddress);
+    }
 
 }
