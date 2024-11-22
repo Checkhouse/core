@@ -481,6 +481,7 @@ public class HubServiceTest {
         HubRequest.GetStocksByHubIdRequest req = new HubRequest.GetStocksByHubIdRequest(hub1.getHubId());
 
         // Given
+        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
         when(stockRepository.findStocksByHubHubId(hub1.getHubId())).thenReturn(List.of(stock));
 
         // When
@@ -500,6 +501,7 @@ public class HubServiceTest {
         HubRequest.GetStocksByAreaRequest req = new HubRequest.GetStocksByAreaRequest(hub1.getHubId(), area);
 
         // Given
+        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
         when(stockRepository.findStocksByHubHubIdAndArea(hub1.getHubId(), area)).thenReturn(List.of(stock));
 
         // When
@@ -641,6 +643,7 @@ public class HubServiceTest {
         );
 
         // Given
+        when(hubRepository.findById(req.hubId())).thenReturn(Optional.of(hub1));
         when(stockRepository.findStocksByHubHubIdAndArea(hub1.getHubId(), req.area())).thenReturn(List.of());
 
         // When
