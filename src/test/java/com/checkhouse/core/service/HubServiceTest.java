@@ -3,11 +3,16 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.HubDTO;
+import com.checkhouse.core.dto.StockDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
+import com.checkhouse.core.entity.Stock;
+import com.checkhouse.core.entity.UsedProduct;
+import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.HubRepository;
 import com.checkhouse.core.dto.request.HubRequest;
+import com.checkhouse.core.repository.mysql.StockRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +36,8 @@ public class HubServiceTest {
     @Mock
     private HubRepository hubRepository;
     @Mock
+    private StockRepository stockRepository;
+    @Mock
     private AddressRepository addressRepository;
 
     @InjectMocks
@@ -41,6 +48,9 @@ public class HubServiceTest {
 
     private Hub hub1;
     private Hub hub2;
+
+    private UsedProduct usedProduct1;
+    private Stock stock;
 
     @BeforeAll
     public static void onlyOnce() {}
@@ -76,6 +86,12 @@ public class HubServiceTest {
                 .name("허브2")
                 .clusteredId(2)
                 .build();
+        stock = Stock.builder()
+                .stockId(UUID.randomUUID())
+                .usedProductId(UUID.randomUUID())
+                .hub(hub1)
+                .area("A-1")
+                .build();
     }
 
     @Test
@@ -84,7 +100,7 @@ public class HubServiceTest {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
                 hub1.getHubId(),
-                hub1addr,
+                hub1addr.getAddressId(),
                 "허브1",
                 1
         );
@@ -96,7 +112,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.of(hub1addr));
 
         // When
-        HubDTO result = hubService.AddHub(req);
+        HubDTO result = hubService.addHub(req);
 
         // Then
         assertNotNull(result);
@@ -113,7 +129,7 @@ public class HubServiceTest {
         // 데이터 생성
         HubRequest.UpdateHubRequest req = new HubRequest.UpdateHubRequest(
                 hub1.getHubId(),
-                hub1addr,
+                hub1addr.getAddressId(),
                 "허브1234",
                 5
         );
@@ -125,7 +141,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.of(hub1addr));
 
         // When
-        HubDTO result = hubService.UpdateHub(req);
+        HubDTO result = hubService.updateHub(req);
 
         // Then
         assertNotNull(result);
@@ -150,7 +166,7 @@ public class HubServiceTest {
         when(hubRepository.findById(hubId)).thenReturn(Optional.of(hub1));
 
         // when
-        hubService.DeleteHub(req);
+        hubService.deleteHub(req);
 
         // then
         verify(hubRepository, times(1)).findById(hubId);
@@ -164,7 +180,7 @@ public class HubServiceTest {
     void SUCCESS_allocateHub() {
         // data
         HubRequest.AllocateHubRequest req = new HubRequest.AllocateHubRequest(
-                hub2addr
+                hub2addr.getAddressId()
         );
         // given
 
@@ -180,7 +196,7 @@ public class HubServiceTest {
         when(hubRepository.findAll()).thenReturn(List.of(hub1, hub2));
 
         // when
-        List<HubDTO> result = hubService.GetHubs();
+        List<HubDTO> result = hubService.getHubs();
 
         // then
         assertNotNull(result);
@@ -201,7 +217,7 @@ public class HubServiceTest {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
                 hub1.getHubId(),
-                hub1addr,
+                hub1addr.getAddressId(),
                 "허브2",
                 1
         );
@@ -210,7 +226,7 @@ public class HubServiceTest {
         when(hubRepository.findHubByName("허브2")).thenReturn(Optional.of(hub2));
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.AddHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.addHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ALREADY_EXISTS, exception.getCode());
@@ -223,7 +239,7 @@ public class HubServiceTest {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
                 UUID.randomUUID(),
-                hub1addr,
+                hub1addr.getAddressId(),
                 "허브1",
                 1
         );
@@ -234,7 +250,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub1addr.getAddressId())).thenReturn(Optional.empty());
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.AddHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.addHub(req));
 
         // Then
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -263,7 +279,7 @@ public class HubServiceTest {
         UUID invalidHubId = UUID.randomUUID();
         HubRequest.UpdateHubRequest req = new HubRequest.UpdateHubRequest(
                 invalidHubId,
-                hub1addr,
+                hub1addr.getAddressId(),
                 "허브1",
                 1
         );
@@ -272,7 +288,7 @@ public class HubServiceTest {
         when(hubRepository.findById(invalidHubId)).thenReturn(Optional.empty());
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.UpdateHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
@@ -285,7 +301,7 @@ public class HubServiceTest {
         // 데이터 생성
         HubRequest.UpdateHubRequest req = new HubRequest.UpdateHubRequest(
                 hub1.getHubId(),
-                hub1addr,
+                hub1addr.getAddressId(),
                 "허브2",
                 1
         );
@@ -295,7 +311,7 @@ public class HubServiceTest {
         when(hubRepository.findHubByName("허브2")).thenReturn(Optional.of(hub2));
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.UpdateHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ALREADY_EXISTS, exception.getCode());
@@ -309,7 +325,7 @@ public class HubServiceTest {
         // 데이터 생성
         HubRequest.UpdateHubRequest req = new HubRequest.UpdateHubRequest(
                 hub1.getHubId(),
-                hub2addr,
+                hub2addr.getAddressId(),
                 "허브1",
                 1
         );
@@ -319,7 +335,7 @@ public class HubServiceTest {
         when(addressRepository.findById(hub2addr.getAddressId())).thenReturn(Optional.empty());
 
         // When
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.UpdateHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateHub(req));
 
         // Then
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
@@ -348,7 +364,7 @@ public class HubServiceTest {
         when(hubRepository.findById(invalidHub)).thenReturn(Optional.empty());
 
         // when
-        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.DeleteHub(req));
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.deleteHub(req));
 
         // Then
         assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
@@ -367,4 +383,275 @@ public class HubServiceTest {
     @Test
     void FAIL_allocHub_not_found_zone() {}
 
+
+
+    /* -------------------- STOCK TEST -------------------- */
+    @DisplayName("허브에 상품 추가 성공")
+    @Test
+    void SUCCESS_addStock() {
+        // 데이터 생성
+        HubRequest.AddStockRequest req = new HubRequest.AddStockRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "B-2",
+                hub1.getHubId()
+        );
+
+        Stock newStock = Stock.builder()
+                .stockId(req.stockId())
+                .usedProductId(req.usedProductId())
+                .area(req.area())
+                .hub(hub1)
+                .build();
+
+        // Given
+        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
+        when(stockRepository.save(any(Stock.class))).thenReturn(newStock);
+
+        // When
+        StockDTO result = hubService.addStock(req);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(result.area(), "B-2");
+        assertEquals(result.hubDTO().hubId(), hub1.getHubId());
+        verify(hubRepository, times(1)).findById(hub1.getHubId());
+        verify(stockRepository, times(1)).save(any(Stock.class));
+    }
+    @DisplayName("상품 ID로 조회 성공")
+    @Test
+    void SUCCESS_getStockByUsedProductId() {
+        // 데이터 생성
+        UUID usedProductId = stock.getUsedProductId();
+
+        // Given
+        when(stockRepository.findStockByUsedProductId(usedProductId)).thenReturn(Optional.of(stock));
+
+        // When
+        StockDTO result = hubService.getStockByUsedProductId(new HubRequest.GetStockByUsedProductIdRequest(usedProductId));
+
+        // Then
+        assertNotNull(result);
+        assertEquals(result.usedProductId(), usedProductId);
+        verify(stockRepository, times(1)).findStockByUsedProductId(usedProductId);
+    }
+    @DisplayName("허브에 상품 위치 수정 성공")
+    @Test
+    void SUCCESS_updateStockArea() {
+        // 데이터 생성
+        String newArea = "C-3";
+        HubRequest.UpdateStockAreaRequest req = new HubRequest.UpdateStockAreaRequest(
+                stock.getStockId(),
+                newArea
+        );
+
+        // Given
+        when(stockRepository.findById(stock.getStockId())).thenReturn(Optional.of(stock));
+
+        // When
+        StockDTO result = hubService.updateStockArea(req);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(result.area(), newArea);
+        verify(stockRepository, times(1)).findById(stock.getStockId());
+        verify(stockRepository, never()).save(any(Stock.class));
+    }
+    @DisplayName("허브에 상품 삭제 성공")
+    @Test
+    void SUCCESS_deleteStock() {
+        // 데이터 생성
+        UUID stockId = stock.getStockId();
+        HubRequest.DeleteStockRequest req = new HubRequest.DeleteStockRequest(stockId);
+
+        // Given
+        when(stockRepository.findById(stockId)).thenReturn(Optional.of(stock));
+
+        // When
+        hubService.deleteStock(req);
+
+        // Then
+        verify(stockRepository, times(1)).findById(stockId);
+        verify(stockRepository, times(1)).delete(stock);
+    }
+    @DisplayName("허브의 상품 리스트 성공")
+    @Test
+    void SUCCESS_getStocksByHubId() {
+        // 데이터 생성
+        HubRequest.GetStocksByHubIdRequest req = new HubRequest.GetStocksByHubIdRequest(hub1.getHubId());
+
+        // Given
+        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
+        when(stockRepository.findStocksByHubHubId(hub1.getHubId())).thenReturn(List.of(stock));
+
+        // When
+        List<StockDTO> result = hubService.getStocksByHubId(req);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).hubDTO().hubId(), hub1.getHubId());
+        verify(stockRepository, times(1)).findStocksByHubHubId(hub1.getHubId());
+    }
+    @DisplayName("허브의 위치의 상품 리스트 성공")
+    @Test
+    void SUCCESS_getStocksByArea() {
+        // 데이터 생성
+        String area = "A-1";
+        HubRequest.GetStocksByAreaRequest req = new HubRequest.GetStocksByAreaRequest(hub1.getHubId(), area);
+
+        // Given
+        when(hubRepository.findById(hub1.getHubId())).thenReturn(Optional.of(hub1));
+        when(stockRepository.findStocksByHubHubIdAndArea(hub1.getHubId(), area)).thenReturn(List.of(stock));
+
+        // When
+        List<StockDTO> result = hubService.getStocksByArea(req);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).area(), area);
+        verify(stockRepository, times(1)).findStocksByHubHubIdAndArea(hub1.getHubId(), area);
+    }
+    //Fail
+    @DisplayName("재고 추가 실패: 허브가 존재하지 않음")
+    @Test
+    void FAIL_addStock_not_found_hub() {
+        // 데이터 생성
+        HubRequest.AddStockRequest req = new HubRequest.AddStockRequest(
+                UUID.randomUUID(),
+                UUID.randomUUID(),
+                "B-2",
+                UUID.randomUUID() // 잘못된 허브 ID
+        );
+
+        // Given
+        when(hubRepository.findById(req.hubId())).thenReturn(Optional.empty());
+
+        // When
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.addStock(req));
+
+        // Then
+        assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
+        verify(hubRepository, times(1)).findById(req.hubId());
+        verify(stockRepository, never()).save(any(Stock.class));
+    }
+    @DisplayName("재고 수정 실패: 재고가 존재하지 않음")
+    @Test
+    void FAIL_updateStock_not_found() {
+        // 데이터 생성
+        HubRequest.UpdateStockAreaRequest req = new HubRequest.UpdateStockAreaRequest(
+                UUID.randomUUID(), // 잘못된 재고 ID
+                "C-3"
+        );
+
+        // Given
+        when(stockRepository.findById(req.stockId())).thenReturn(Optional.empty());
+
+        // When
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.updateStockArea(req));
+
+        // Then
+        assertEquals(ErrorStatus._STOCK_ID_NOT_FOUND, exception.getCode());
+        verify(stockRepository, times(1)).findById(req.stockId());
+        verify(stockRepository, never()).save(any(Stock.class));
+    }
+    @DisplayName("재고 조회 실패: 재고가 존재하지 않음")
+    @Test
+    void FAIL_getStock_not_found() {
+        // 데이터 생성
+        HubRequest.GetStockByUsedProductIdRequest req = new HubRequest.GetStockByUsedProductIdRequest(
+                UUID.randomUUID() // 잘못된 Used Product ID
+        );
+
+        // Given
+        when(stockRepository.findStockByUsedProductId(req.usedProductId())).thenReturn(Optional.empty());
+
+        // When
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.getStockByUsedProductId(req));
+
+        // Then
+        assertEquals(ErrorStatus._STOCK_ID_NOT_FOUND, exception.getCode());
+        verify(stockRepository, times(1)).findStockByUsedProductId(req.usedProductId());
+
+    }
+    @DisplayName("재고 삭제 실패: 재고가 존재하지 않음")
+    @Test
+    void FAIL_deleteStock_not_found() {
+        // 데이터 생성
+        HubRequest.DeleteStockRequest req = new HubRequest.DeleteStockRequest(
+                UUID.randomUUID() // 잘못된 재고 ID
+        );
+
+        // Given
+        when(stockRepository.findById(req.stockId())).thenReturn(Optional.empty());
+
+        // When
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.deleteStock(req));
+
+        // Then
+        assertEquals(ErrorStatus._STOCK_ID_NOT_FOUND, exception.getCode());
+        verify(stockRepository, times(1)).findById(req.stockId());
+        verify(stockRepository, never()).delete(any(Stock.class));
+    }
+    @DisplayName("허브 재고 리스트 실패: 허브가 존재하지 않음")
+    @Test
+    void FAIL_getStocksByHub_not_found_hub() {
+        // 데이터 생성
+        HubRequest.GetStocksByHubIdRequest req = new HubRequest.GetStocksByHubIdRequest(
+                UUID.randomUUID() // 잘못된 허브 ID
+        );
+
+        // Given
+        when(hubRepository.findById(req.hubId())).thenReturn(Optional.empty());
+
+        // When
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.getStocksByHubId(req));
+
+        // Then
+        assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
+        verify(hubRepository, times(1)).findById(req.hubId());
+        verify(stockRepository, never()).findStocksByHubHubId(any());
+    }
+    @DisplayName("허브 위치 재고 리스트 실패: 허브가 존재하지 않음")
+    @Test
+    void FAIL_getStocksByArea_not_found_hub() {
+        // 데이터 생성
+        HubRequest.GetStocksByAreaRequest req = new HubRequest.GetStocksByAreaRequest(
+                UUID.randomUUID(), // 잘못된 허브 ID
+                "A-1"
+        );
+
+        // Given
+        when(hubRepository.findById(req.hubId())).thenReturn(Optional.empty());
+
+        // When
+        GeneralException exception = assertThrows(GeneralException.class, () -> hubService.getStocksByArea(req));
+
+        // Then
+        assertEquals(ErrorStatus._HUB_ID_NOT_FOUND, exception.getCode());
+        verify(hubRepository, times(1)).findById(req.hubId());
+        verify(stockRepository, never()).findStocksByHubHubIdAndArea(any(), any());
+    }
+    @DisplayName("허브 위치 재고 리스트 실패: 존재하지 않는 위치")
+    @Test
+    void FAIL_getStocksByArea_not_found_area() {
+        // 데이터 생성
+        HubRequest.GetStocksByAreaRequest req = new HubRequest.GetStocksByAreaRequest(
+                hub1.getHubId(),
+                "Non-Existent-Area" // 잘못된 위치
+        );
+
+        // Given
+        when(hubRepository.findById(req.hubId())).thenReturn(Optional.of(hub1));
+        when(stockRepository.findStocksByHubHubIdAndArea(hub1.getHubId(), req.area())).thenReturn(List.of());
+
+        // When
+        List<StockDTO> result = hubService.getStocksByArea(req);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(0, result.size()); // 결과가 빈 리스트여야 함
+        verify(stockRepository, times(1)).findStocksByHubHubIdAndArea(hub1.getHubId(), req.area());
+    }
 }

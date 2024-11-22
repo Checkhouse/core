@@ -4,7 +4,9 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.OriginProductRequest;
+import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.OriginProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OriginProductService {
     private OriginProductRepository originProductRepository;
+    private CategoryRepository categoryRepository;
 
     public OriginProductDTO addOriginProduct(
             OriginProductRequest.AddOriginProductRequest request
@@ -29,14 +32,16 @@ public class OriginProductService {
                 }
         );
 
-        // todo 카테고리 유효성 검사
+        Category category = categoryRepository.findById(request.categoryId()).orElseThrow(
+                () -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND)
+        );
 
-        // todo 카테고리 연결
 
         OriginProduct savedOriginProduct = originProductRepository.save(
                 OriginProduct.builder()
                         .name(request.name())
                         .company(request.company())
+                        .category(category)
                         .build()
         );
 
@@ -86,6 +91,9 @@ public class OriginProductService {
     }
 
     public List<OriginProductDTO> getOriginProductsWithCategory( UUID categoryId ) {
+        categoryRepository.findById(categoryId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND)
+        );
         return originProductRepository.findByCategoryId(categoryId)
                 .stream().map(OriginProduct::toDto).toList();
     }

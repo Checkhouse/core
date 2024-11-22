@@ -11,10 +11,10 @@ import java.util.UUID;
 public class CategoryRequest {
 
     @Builder
-    public record AddCategoryRequest(String name){}
+    public record AddCategoryRequest(@NotNull String name){}
 
     @Builder
-    public record UpdateCategoryByIdRequest (UUID categoryId, String name){ }
+    public record UpdateCategoryByIdRequest (@NotNull UUID categoryId, @NotNull String name){ }
 
     @Builder
     public record DeleteCategoryRequest (UUID categoryId) {}

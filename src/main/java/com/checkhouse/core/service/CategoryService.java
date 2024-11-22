@@ -31,13 +31,13 @@ public class CategoryService {
                         .build()
         );
 
-        return savedCategory.toDTO();
+        return savedCategory.toDto();
     }
 
     CategoryDTO getCategory(CategoryRequest.GetCategoryByIdRequest req) {
         Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
-        return category.toDTO();
+        return category.toDto();
     }
 
     CategoryDTO updateCategoryById(CategoryRequest.UpdateCategoryByIdRequest req) {
@@ -49,7 +49,7 @@ public class CategoryService {
             throw new GeneralException(ErrorStatus._CATEGORY_ALREADY_EXIST);
         });
         category.updateName(req.name());
-        return category.toDTO();
+        return category.toDto();
     }
 
 
@@ -64,7 +64,7 @@ public class CategoryService {
     List<CategoryDTO> getCategories() {
         return categoryRepository.findAll()
                 .stream()
-                .map(Category::toDTO)
+                .map(Category::toDto)
                 .toList();
     }
 }

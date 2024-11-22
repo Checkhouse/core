@@ -3,11 +3,14 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.HubDTO;
+import com.checkhouse.core.dto.StockDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
+import com.checkhouse.core.entity.Stock;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.HubRepository;
 import com.checkhouse.core.dto.request.HubRequest;
+import com.checkhouse.core.repository.mysql.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,15 +23,16 @@ import java.util.List;
 public class HubService {
     private final HubRepository hubRepository;
     private final AddressRepository addressRepository;
+    private final StockRepository stockRepository;
 
-    HubDTO AddHub(HubRequest.AddHubRequest req) {
+    HubDTO addHub(HubRequest.AddHubRequest req) {
         hubRepository.findHubByName(req.name()).ifPresent(hub -> {
             throw new GeneralException(ErrorStatus._HUB_ALREADY_EXISTS);
         });
         hubRepository.findHubByClusteredId(req.clusteredId()).ifPresent(hub -> {
             throw new GeneralException(ErrorStatus._HUB_CLUSTERED_ID_ALREADY_EXISTS);
         });
-        Address addr = addressRepository.findById(req.address().getAddressId()).orElseThrow(
+        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
         );
 
@@ -40,9 +44,9 @@ public class HubService {
                         .clusteredId(req.clusteredId())
                         .build()
         );
-        return savedHub.toDTO();
+        return savedHub.toDto();
     }
-    HubDTO UpdateHub(HubRequest.UpdateHubRequest req) {
+    HubDTO updateHub(HubRequest.UpdateHubRequest req) {
         Hub hub = hubRepository.findById(req.hubId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND)
         );
@@ -52,29 +56,78 @@ public class HubService {
         hubRepository.findHubByClusteredId(req.clusteredId()).ifPresent(h -> {
             throw new GeneralException(ErrorStatus._HUB_CLUSTERED_ID_ALREADY_EXISTS);
         });
-        Address addr = addressRepository.findById(req.address().getAddressId()).orElseThrow(
+        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
         );
         hub.UpdateAddress(addr);
         hub.UpdateName(req.name());
         hub.UpdateClusteredId(req.clusteredId());
-        return hub.toDTO();
+        return hub.toDto();
     }
-    void DeleteHub(HubRequest.DeleteHubRequest req) {
+    void deleteHub(HubRequest.DeleteHubRequest req) {
         Hub hub = hubRepository.findById(req.hubId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND)
         );
         hubRepository.delete(hub);
     }
-    List<HubDTO> GetHubs() {
+    List<HubDTO> getHubs() {
         return hubRepository.findAll()
                 .stream()
-                .map(Hub::toDTO)
+                .map(Hub::toDto)
                 .toList();
     }
 
 
     //TODO: ALLOCate 구현
-    HubDTO AllocateHub(HubRequest.AllocateHubRequest req) {return null;}
+    HubDTO allocateHub(HubRequest.AllocateHubRequest req) {return null;}
+
+    //Stock
+    StockDTO addStock(HubRequest.AddStockRequest req) {
+        Hub hub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+
+        Stock stock = Stock.builder()
+                .stockId(req.stockId())
+                .usedProductId(req.usedProductId())
+                .area(req.area())
+                .hub(hub)
+                .build();
+
+        Stock savedStock = stockRepository.save(stock);
+        return savedStock.toDto();
+    }
+    StockDTO updateStockArea(HubRequest.UpdateStockAreaRequest req) {
+        Stock stock = stockRepository.findById(req.stockId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._STOCK_ID_NOT_FOUND));
+
+        stock.updateArea(req.area());
+        return  stock.toDto();
+    }
+    StockDTO getStockByUsedProductId(HubRequest.GetStockByUsedProductIdRequest req) {
+        Stock stock = stockRepository.findStockByUsedProductId(req.usedProductId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._STOCK_ID_NOT_FOUND));
+
+        return stock.toDto();
+    }
+    List<StockDTO> getStocksByHubId(HubRequest.GetStocksByHubIdRequest req) {
+        Hub hub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+
+        List<Stock> stocks = stockRepository.findStocksByHubHubId(hub.getHubId());
+        return stocks.stream().map(Stock::toDto).toList();
+    }
+    List<StockDTO> getStocksByArea(HubRequest.GetStocksByAreaRequest req) {
+        Hub hub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+
+        List<Stock> stocks = stockRepository.findStocksByHubHubIdAndArea(hub.getHubId(), req.area());
+        return stocks.stream().map(Stock::toDto).toList();
+    }
+    void deleteStock(HubRequest.DeleteStockRequest req) {
+        Stock stock = stockRepository.findById(req.stockId())
+            .orElseThrow(() -> new GeneralException(ErrorStatus._STOCK_ID_NOT_FOUND));
+
+        stockRepository.delete(stock);
+    }
 
 }

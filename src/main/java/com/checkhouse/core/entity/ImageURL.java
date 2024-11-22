@@ -15,8 +15,6 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update image_url t set t.deleted_at = now() where t.image_id = :image_id")
-@SQLRestriction("deleted_at IS NULL")
 public class ImageURL extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,7 +41,7 @@ public class ImageURL extends BaseTimeEntity {
 
     }
 
-    public ImageDTO toDTO() {
+    public ImageDTO toDto() {
         return new ImageDTO(imageId, imageURL);
     }
 }

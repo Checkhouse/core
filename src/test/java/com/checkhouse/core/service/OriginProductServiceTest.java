@@ -1,10 +1,12 @@
 package com.checkhouse.core.service;
 
+import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.OriginProductRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +30,8 @@ public class OriginProductServiceTest {
 
     @Mock
     private OriginProductRepository originProductRepository;
+    @Mock
+    private CategoryRepository categoryRepository;
 
 
     @InjectMocks
@@ -64,6 +68,7 @@ public class OriginProductServiceTest {
                 List.of()
         );
 
+        when(categoryRepository.findById(any())).thenReturn(Optional.of(mockedCategory));
         when(originProductRepository.findByName(any())).thenReturn(Optional.empty());
         when(originProductRepository.save(any())).thenReturn(mockedOriginProduct);
 
@@ -123,7 +128,7 @@ public class OriginProductServiceTest {
         OriginProductDTO result = originProductService.updateOriginProductCategory(request);
 
         // then
-        assertEquals(newCategory.getName(), result.category().getName());
+        assertEquals(newCategory.getName(), result.categoryDTO().name());
 
     }
 
@@ -167,6 +172,7 @@ public class OriginProductServiceTest {
     void SUCCESS_getOriginProductsByCategory() {
         // given
         UUID categoryId = mockedCategory.getCategoryId();
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(mockedCategory));
         when(originProductRepository.findByCategoryId(categoryId)).thenReturn(List.of(mockedOriginProduct));
 
         // when
@@ -174,6 +180,7 @@ public class OriginProductServiceTest {
 
         // then
         assertEquals(1, result.size());
+        verify(categoryRepository, times(1)).findById(categoryId);
         verify(originProductRepository, times(1)).findByCategoryId(categoryId);
     }
 
@@ -263,6 +270,17 @@ public class OriginProductServiceTest {
     @Test
     void FAIL_getOriginProductsByCategory_not_found() {
         // given
+        UUID categoryId = mockedCategory.getCategoryId();
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+
+        // when
+        GeneralException exception = assertThrows(GeneralException.class, () -> {
+            originProductService.getOriginProductsWithCategory(categoryId);
+        });
+
+        // then
+        assertEquals(ErrorStatus._CATEGORY_ID_NOT_FOUND, exception.getCode());
+        verify(categoryRepository, times(1)).findById(categoryId);
 
     }
 

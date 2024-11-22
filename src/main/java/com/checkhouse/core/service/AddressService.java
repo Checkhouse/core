@@ -3,15 +3,22 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.AddressDTO;
+import com.checkhouse.core.dto.UserAddressDTO;
 import com.checkhouse.core.entity.Address;
+import com.checkhouse.core.entity.Hub;
+import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.UserAddress;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.dto.request.AddressRequest;
+import com.checkhouse.core.repository.mysql.HubRepository;
+import com.checkhouse.core.repository.mysql.UserAddressRepository;
+import com.checkhouse.core.repository.mysql.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,16 +26,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AddressService {
     private final AddressRepository addressRepository;
+    private final UserAddressRepository userAddressRepository;
+    private final UserRepository userRepository;
+    private final HubRepository hubRepository;
 
-    //TODO: API로 경위도 받아오기, Zipcode도 받아올 수 있긴 할듯
-    //TODO: API로 주소 검증 코드 추가 (필요할까?) 경위도 받아오면서 검증도 같이하면 될듯
-    private Point getAddressLocation(String address) {
-        return new Point(0, 0);
-    }
 
     //주소 추가
     AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
-        Point addressLocation = getAddressLocation(req.address());
 
         Address savedAddress = addressRepository.save(
                 Address.builder()
@@ -38,18 +42,18 @@ public class AddressService {
                         .zipcode(req.zipcode())
                         .phone(req.phone())
                         .addressDetail(req.addressDetail())
-                        .location(addressLocation)
+                        .location(req.location())
                         .build()
         );
 
-        return savedAddress.toDTO();
+        return savedAddress.toDto();
     }
 
     //리스트 가져오기
     List<AddressDTO> getAllAddresses() {
         return addressRepository.findAll()
                 .stream()
-                .map(Address::toDTO)
+                .map(Address::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -58,7 +62,7 @@ public class AddressService {
         Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
-        return address.toDTO();
+        return address.toDto();
     }
 
     //Update
@@ -66,26 +70,82 @@ public class AddressService {
         Address modifiedAddress = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
-        Point addressLocation = getAddressLocation(req.address());
 
         modifiedAddress.update(
                 req.name() != null ? req.name() : modifiedAddress.getName(),
-                req.name() != null ? req.name() : modifiedAddress.getAddress(),
+                req.address() != null ? req.address() : modifiedAddress.getAddress(),
                 req.addressDetail() != null ? req.addressDetail() : modifiedAddress.getAddressDetail(),
                 req.zipcode() != 0 ? req.zipcode() : modifiedAddress.getZipcode(), // 0으로 초기화된 int 처리
-                addressLocation,
+                req.location() != null ? req.location() : modifiedAddress.getLocation(),
                 req.phone() != null ? req.phone() : modifiedAddress.getPhone()
         );
 
-        return modifiedAddress.toDTO();
+        return modifiedAddress.toDto();
     }
 
-    //Soft delete (유저 뷰)
     void deleteAddress(AddressRequest.DeleteAddressRequest req) {
         Address address = addressRepository.findById(req.addressId())
-            .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
         addressRepository.delete(address);
+    }
+
+    //UserAddress
+    UserAddressDTO addUserAddress(AddressRequest.AddUserAddressRequest req) {
+        User user = userRepository.findById(req.userId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        Hub hub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+
+        Address address = addressRepository.save(
+                Address.builder()
+                        .addressId(UUID.randomUUID())
+                        .name(req.name())
+                        .address(req.address())
+                        .zipcode(req.zipcode())
+                        .phone(req.phone())
+                        .addressDetail(req.addressDetail())
+                        .location(req.location())
+                        .build()
+        );
+        UserAddress userAddress = userAddressRepository.save(
+                UserAddress.builder()
+                        .userAddressId(req.userAddressId())
+                        .address(address)
+                        .user(user)
+                        .hub(hub)
+                        .build()
+        );
+        return userAddress.toDto();
+    }
+    UserAddressDTO updateUserAddressHub(AddressRequest.UpdateUserAddressHubRequest req) {
+        UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
+        Hub newhub = hubRepository.findById(req.hubId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._HUB_ID_NOT_FOUND));
+        userAddress.UpdateHub(newhub);
+        return userAddress.toDto();
+    }
+    UserAddressDTO getUserAddress(AddressRequest.GetUserAddressRequest req) {
+        UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
+        return userAddress.toDto();
+    }
+    List<UserAddressDTO> getAllUserAddressesById(AddressRequest.GetAllUserAddressesByIdRequest req) {
+        UUID userId = req.userId();
+        userRepository.findById(userId).orElseThrow(
+                () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
+        );
+        return userAddressRepository.findAllByUserUserId(userId)
+                .stream()
+                .map(UserAddress::toDto)
+                .collect(Collectors.toList());
+    }
+    void deleteUserAddress(AddressRequest.DeleteUserAddressRequest req) {
+        UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
+        userAddressRepository.delete(userAddress);
     }
 
 }

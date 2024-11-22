@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.UserAddressDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -50,12 +51,27 @@ public class UserAddress extends BaseTimeEntity {
 
     @Builder
     public UserAddress(
+            UUID userAddressId,
             Address address,
             User user,
             Hub hub
     ) {
+        this.userAddressId = userAddressId;
         this.address = address;
         this.user = user;
         this.hub = hub;
     }
+    public void UpdateHub(Hub newhub) {
+        this.hub = newhub;
+    }
+
+    public UserAddressDTO toDto() {
+        return new UserAddressDTO(
+                this.userAddressId,
+                this.address.toDto(),
+                this.user.toDto(),
+                this.hub.toDto()
+        );
+    }
+
 }
