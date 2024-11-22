@@ -16,10 +16,38 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+
+    // negotiation
+    _NEGOTIATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NEGOTIATION401", "해당 네고를 찾을 수 없습니다."),
+    _NEGOTIATION_USER_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "사용자 정보가 잘못되었습니다."),
+    _NEGOTIATION_ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 취소된 네고입니다."),
+    _NEGOTIATION_ALREADY_ACCEPTED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 승인된 네고입니다."),
+    _NEGOTIATION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 완료된 네고입니다"),
+    _NEGOTIATION_STATE_DUPLICATE(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 해당 상태로 변경되어 있습니다"),
+    _NEGOTIATION_PRICE_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400" ,"가격 설정이 잘못되었습니다"),
+    _NEGOTIATION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "NEGOTIATION403", "해당 상품은 네고를 받지 않습니다"),
+
+    // transaction
+    _TRANSACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "TRANSACTION404", "해당 거래를 찾을 수 없습니다."),
+    _TRANSACTION_ALREADY_EXISTS(HttpStatus.CONFLICT, "TRANSACTION409", "이미 존재하는 거래입니다."),
+    _TRANSACTION_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "거래 상태 변경에 실패하였습니다."),
+    _TRANSACTION_USER_LIST_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "사용자 특정이 불가해 리스트 조회를 실패하였습니다."),
+    
+    // pickup
+    _PICKUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "해당 픽업을 찾을 수 없습니다."),
+    _PICKUP_STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "존재하지 않는 스토어입니다."),
+    _PICKUP_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "PICKUP404", "존재하지 않는 사용자입니다."),
+    _PICKUP_CHECK_FAILED(HttpStatus.BAD_REQUEST, "PICKUP400", "픽업 확인에 실패하였습니다."),
+    _PICKUP_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "PICKUP400", "픽업 상태 변경에 실패하였습니다."),
+    _PICKUP_ALREADY_COMPLETED(HttpStatus.BAD_REQUEST, "PICKUP400", "이미 완료된 픽업입니다."),
+    _PICKUP_CODE_NOT_MATCH(HttpStatus.BAD_REQUEST, "PICKUP400", "확인 코드가 다릅니다."),
+   
+
     // user
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 유저입니다."),
     _USER_ALREADY_EXIST(HttpStatus.CONFLICT, "USER409", "이미 존재하는 사용자입니다."),
     _USER_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4041", "User ID를 찾을 수 없습니다."),
+    _USER_NOT_ADMIN(HttpStatus.BAD_REQUEST, "USER400", "관리자가 아닙니다."),
 
     // origin product
     _ORIGIN_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "OG404", "원본 상품이 존재하지 않습니다."),

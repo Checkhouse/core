@@ -60,13 +60,19 @@ public class Transaction extends BaseTimeEntity {
         this.isCompleted = isCompleted;
     }
 
-    //toDTO
-    public TransactionDTO toDTO() {
+
+    public TransactionDTO toDto() {
         return new TransactionDTO(
                 this.transactionId,
-                this.usedProduct,
-                this.buyer,
+                this.usedProduct.toDto(),
+                this.buyer.toDto(),
                 this.isCompleted
         );
     }
+
+    // 거래 상태 변경
+    public void updateStatus() {
+        this.isCompleted = true;
+    }
 }
+
