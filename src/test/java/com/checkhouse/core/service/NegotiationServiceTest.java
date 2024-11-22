@@ -108,9 +108,9 @@ public class NegotiationServiceTest {
     @Test
     void SUCCESS_addNegotiation() {
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                usedProduct1,
-                seller,
-                buyer,
+                usedProduct1.getUsedProductId(),
+                seller.getUserId(),
+                buyer.getUserId(),
                 negotiation1.getPrice()
         );
 
@@ -128,7 +128,7 @@ public class NegotiationServiceTest {
         NegotiationDTO result = negotiationService.addNegotiation(request);
         
         assertNotNull(result);
-        assertEquals(negotiation1.toDTO(), result);
+        assertEquals(negotiation1.toDto(), result);
     }
 
     @DisplayName("네고 승인 - 수락 or 거절")
@@ -136,7 +136,7 @@ public class NegotiationServiceTest {
     void SUCCESS_approveNegotiation() {
         // 요청
         NegotiationRequest.UpdateNegotiationRequest acceptedRequest = new NegotiationRequest.UpdateNegotiationRequest(
-                negotiation1,
+                negotiation1.getNegotiationId(),
                 NegotiationState.ACCEPTED       // 수락
         );
 
@@ -158,7 +158,7 @@ public class NegotiationServiceTest {
     @Test
     void SUCCESS_getProposedNegotiations() {
         NegotiationRequest.GetNegotiationByBuyerRequest request = new NegotiationRequest.GetNegotiationByBuyerRequest(
-                buyer
+                buyer.getUserId()
         );
 
         //given
@@ -172,7 +172,7 @@ public class NegotiationServiceTest {
         //
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(negotiation1.toDTO(), result.get(0));
+        assertEquals(negotiation1.toDto(), result.get(0));
         verify(negotiationRepository, times(1)).findAllByBuyerId(buyer.getUserId());
     }
 
@@ -180,7 +180,7 @@ public class NegotiationServiceTest {
     @Test
     void SUCCESS_getReceivedNegotiations() {
         NegotiationRequest.GetNegotiationBySellerRequest request = new NegotiationRequest.GetNegotiationBySellerRequest(
-                seller
+                seller.getUserId()
         );
         //when
         when(negotiationRepository.findAllBySellerId(seller.getUserId()))
@@ -192,7 +192,7 @@ public class NegotiationServiceTest {
         List<NegotiationDTO> result = negotiationService.getNegotiationBySeller(request);
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(negotiation1.toDTO(), result.get(0));
+        assertEquals(negotiation1.toDto(), result.get(0));
         verify(negotiationRepository, times(1)).findAllBySellerId(seller.getUserId());
     }
 
@@ -201,7 +201,7 @@ public class NegotiationServiceTest {
     void SUCCESS_cancelNegotiation() {
                 // 요청
         NegotiationRequest.UpdateNegotiationRequest cancelledRequest = new NegotiationRequest.UpdateNegotiationRequest(
-                negotiation1,
+                negotiation1.getNegotiationId(),
                 NegotiationState.CANCELLED       // 취소
         );
 
@@ -233,9 +233,9 @@ public class NegotiationServiceTest {
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                samePriceNegotiation.getUsedProduct(),
-                seller,
-                buyer,
+                samePriceNegotiation.getUsedProduct().getUsedProductId(),
+                seller.getUserId(),
+                buyer.getUserId(),
                 samePriceNegotiation.getPrice() 
         );
         //given
@@ -259,7 +259,7 @@ public class NegotiationServiceTest {
                 .negotiationId(invalidId)
                 .build();
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                invalidNegotiation,
+                invalidNegotiation.getNegotiationId(),
                 NegotiationState.ACCEPTED
         );
 
@@ -287,7 +287,7 @@ public class NegotiationServiceTest {
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                AcceptedNegotiation,
+                AcceptedNegotiation.getNegotiationId(),
                 NegotiationState.ACCEPTED
         );
 
@@ -319,9 +319,9 @@ public class NegotiationServiceTest {
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                deniedUsedProduct,
-                seller,
-                buyer,
+                deniedUsedProduct.getUsedProductId(),
+                seller.getUserId(),
+                buyer.getUserId(),
                 2000
         );      
 
@@ -356,9 +356,9 @@ public class NegotiationServiceTest {
                 .build();
         
         NegotiationRequest.AddNegotiationRequest request = new NegotiationRequest.AddNegotiationRequest(
-                invalidUsedProduct,
-                negotiation.getSeller(),
-                negotiation.getBuyer(),
+                invalidUsedProduct.getUsedProductId(),
+                negotiation.getSeller().getUserId(),
+                negotiation.getBuyer().getUserId(),
                 negotiation.getPrice()
         );
         when(usedProductRepository.findById(invalidUsedProductId))
@@ -386,7 +386,7 @@ public class NegotiationServiceTest {
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                cancelledNegotiation,
+                cancelledNegotiation.getNegotiationId(),
                 NegotiationState.ACCEPTED
         );
 
@@ -414,7 +414,7 @@ public class NegotiationServiceTest {
                 .build();
 
         NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-                approvedNegotiation,
+                approvedNegotiation.getNegotiationId(),
                 NegotiationState.CANCELLED
         );
 

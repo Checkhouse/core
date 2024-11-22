@@ -101,8 +101,8 @@ public class TransactionServiceTest {
     @Test
     void SUCCESS_addTransaction() {
         TransactionRequest.AddTransactionRequest request = new TransactionRequest.AddTransactionRequest(
-                usedProduct1,
-                buyer
+                usedProduct1.getUsedProductId(),
+                buyer.getUserId()
         );
         when(usedProductRepository.findById(usedProduct1.getUsedProductId()))
                 .thenReturn(Optional.of(usedProduct1));
@@ -116,14 +116,14 @@ public class TransactionServiceTest {
         TransactionDTO result = transactionService.addTransaction(request);
 
         assertNotNull(result);
-        assertEquals(transaction1.toDTO(), result);
+        assertEquals(transaction1.toDto(), result);
     }
 
     @DisplayName("거래 상태 조회")
     @Test
     void SUCCESS_getTransactionStatus() {
         TransactionRequest.GetTransactionStatusRequest request = new TransactionRequest.GetTransactionStatusRequest(
-                transaction1
+                transaction1.getTransactionId()
         );
 
         when(transactionRepository.findById(transaction1.getTransactionId()))
@@ -132,14 +132,14 @@ public class TransactionServiceTest {
         TransactionDTO result = transactionService.getTransactionStatus(request);
 
         assertNotNull(result);
-        assertEquals(transaction1.toDTO(), result);
+        assertEquals(transaction1.toDto(), result);
     }
 
     @DisplayName("거래 상태 변경")
     @Test
     void SUCCESS_updateTransactionStatus() {
         TransactionRequest.UpdateTransactionRequest request = new TransactionRequest.UpdateTransactionRequest(
-                transaction1
+                transaction1.getTransactionId()
         );
 
         when(transactionRepository.findById(transaction1.getTransactionId()))
@@ -148,14 +148,14 @@ public class TransactionServiceTest {
         TransactionDTO result = transactionService.updateTransactionStatus(request);
 
         assertNotNull(result);
-        assertEquals(transaction1.toDTO(), result);
+        assertEquals(transaction1.toDto(), result);
     }
 
     @DisplayName("특정 사용자 거래 리스트 조회")
     @Test
     void SUCCESS_getTransactionsByUser() {
         TransactionRequest.GetTransactionsByUserRequest request = new TransactionRequest.GetTransactionsByUserRequest(
-                buyer
+                buyer.getUserId()
         );
 
         when(userRepository.findById(buyer.getUserId()))
@@ -167,7 +167,7 @@ public class TransactionServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(transaction1.toDTO(), result.get(0));
+        assertEquals(transaction1.toDto(), result.get(0));
     }
 
     @DisplayName("관리자 거래 리스트 조회")
@@ -181,7 +181,7 @@ public class TransactionServiceTest {
                 .role(Role.ROLE_ADMIN)
                 .build();
         TransactionRequest.GetTransactionsForAdminRequest request = new TransactionRequest.GetTransactionsForAdminRequest(
-                admin
+                admin.getUserId()
         );
 
         when(userRepository.findById(admin.getUserId()))
@@ -193,7 +193,7 @@ public class TransactionServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(transaction1.toDTO(), result.get(0));
+        assertEquals(transaction1.toDto(), result.get(0));
         verify(transactionRepository, times(1)).findAll();
     }
 
@@ -205,7 +205,7 @@ public class TransactionServiceTest {
                 .transactionId(invalidId)
                 .build();
         TransactionRequest.GetTransactionStatusRequest request = new TransactionRequest.GetTransactionStatusRequest(
-                invalidTransaction
+                invalidTransaction.getTransactionId()
         );
 
         when(transactionRepository.findById(invalidId))
@@ -222,8 +222,8 @@ public class TransactionServiceTest {
     @Test
     void FAIL_addTransaction_already_exists_error() {
         TransactionRequest.AddTransactionRequest request = new TransactionRequest.AddTransactionRequest(
-                usedProduct1,
-                buyer
+                usedProduct1.getUsedProductId(),
+                buyer.getUserId()
         );
         when(usedProductRepository.findById(usedProduct1.getUsedProductId()))
                 .thenReturn(Optional.of(usedProduct1));
@@ -244,11 +244,11 @@ public class TransactionServiceTest {
                 .usedProductId(UUID.randomUUID())
                 .build();
         TransactionRequest.AddTransactionRequest request = new TransactionRequest.AddTransactionRequest(
-                invalidUsedProduct,
-                buyer
+                invalidUsedProduct.getUsedProductId(),
+                buyer.getUserId()
         );
 
-        when(usedProductRepository.findById(request.usedProduct().getUsedProductId()))
+        when(usedProductRepository.findById(request.usedProductId()))
                 .thenReturn(Optional.empty());
 
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.addTransaction(request));
@@ -265,10 +265,10 @@ public class TransactionServiceTest {
                 .transactionId(UUID.randomUUID())
                 .build();
         TransactionRequest.UpdateTransactionRequest request = new TransactionRequest.UpdateTransactionRequest(
-                invalidTransaction
+                invalidTransaction.getTransactionId()
         );
 
-        when(transactionRepository.findById(request.transaction().getTransactionId()))
+        when(transactionRepository.findById(request.transactionId()))
                 .thenReturn(Optional.empty());
 
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.updateTransactionStatus(request));
@@ -285,10 +285,10 @@ public class TransactionServiceTest {
                 .userId(UUID.randomUUID())
                 .build();
         TransactionRequest.GetTransactionsByUserRequest request = new TransactionRequest.GetTransactionsByUserRequest(
-                invalidUser
+                invalidUser.getUserId()
         );
 
-        when(userRepository.findById(request.user().getUserId()))
+        when(userRepository.findById(request.userId()))
                 .thenReturn(Optional.empty());
 
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.getTransactionsByUser(request));
@@ -301,10 +301,10 @@ public class TransactionServiceTest {
     @Test
     void FAIL_getTransactionsForAdmin_user_not_admin() {        
         TransactionRequest.GetTransactionsForAdminRequest request = new TransactionRequest.GetTransactionsForAdminRequest(
-                buyer
+                buyer.getUserId()
         );
 
-        when(userRepository.findById(request.admin().getUserId()))
+        when(userRepository.findById(request.adminId()))
                 .thenReturn(Optional.of(buyer));
 
         GeneralException exception = assertThrows(GeneralException.class, () -> transactionService.getTransactionsForAdmin(request));

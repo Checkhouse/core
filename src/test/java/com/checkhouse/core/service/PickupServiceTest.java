@@ -117,7 +117,7 @@ public class PickupServiceTest {
         store1 = Store.builder()
                 .storeId(UUID.randomUUID())
                 .name("정보섬티맥스")
-                .code("SSUBEST")
+                .code("123456")
                 .address(store1addr)
                 .build();
 
@@ -134,8 +134,8 @@ public class PickupServiceTest {
     @Test
     void SUCCESS_addUserPickupList() {
         PickupRequest.AddPickUpRequest addPickUpRequest = new PickupRequest.AddPickUpRequest(
-                transaction1,
-                store1
+                transaction1.getTransactionId(),
+                store1.getStoreId()
         );
 
         when(transactionRepository.findById(transaction1.getTransactionId()))
@@ -144,11 +144,13 @@ public class PickupServiceTest {
                 .thenReturn(Optional.of(buyer));
         when(storeRepository.findById(store1.getStoreId()))
                 .thenReturn(Optional.of(store1));
+        when(pickupRepository.save(any(Pickup.class)))
+                .thenReturn(pickup1);
 
         PickupDTO result = pickupService.addUserPickupList(addPickUpRequest);
 
         assertNotNull(result);
-        assertEquals(pickup1.toDTO(), result);
+        assertEquals(pickup1.toDto(), result);
         verify(pickupRepository, times(1)).save(any(Pickup.class));
         verify(transactionRepository, times(1)).findById(transaction1.getTransactionId());
         verify(userRepository, times(1)).findById(buyer.getUserId());
@@ -159,7 +161,7 @@ public class PickupServiceTest {
     @Test
     void SUCCESS_getUserPickupList() {
         PickupRequest.GetUserPickupListRequest getUserPickupListRequest = new PickupRequest.GetUserPickupListRequest(
-                buyer
+                buyer.getUserId()
         );
 
         when(userRepository.findById(buyer.getUserId()))
@@ -171,7 +173,7 @@ public class PickupServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(pickup1.toDTO(), result.get(0));
+        assertEquals(pickup1.toDto(), result.get(0));
         verify(pickupRepository, times(1)).findByUserId(buyer.getUserId());
     }
 
@@ -179,8 +181,8 @@ public class PickupServiceTest {
     @Test
     void SUCCESS_getUserPickupDetails() {
         PickupRequest.GetUserPickupDetailsRequest getUserPickupDetailsRequest = new PickupRequest.GetUserPickupDetailsRequest(
-                pickup1,
-                buyer
+                pickup1.getPickupId(),
+                buyer.getUserId()
         );
 
         when(userRepository.findById(buyer.getUserId()))
@@ -191,7 +193,7 @@ public class PickupServiceTest {
         PickupDTO result = pickupService.getUserPickupDetails(getUserPickupDetailsRequest);
 
         assertNotNull(result);
-        assertEquals(pickup1.toDTO(), result);
+        assertEquals(pickup1.toDto(), result);
         verify(userRepository, times(1)).findById(buyer.getUserId());
         verify(pickupRepository, times(1)).findById(pickup1.getPickupId());
     }
@@ -203,11 +205,28 @@ public class PickupServiceTest {
         // qr 서비스 추가
     }
 
-    @DisplayName("픽업 확인 - 관리자 id 입력해서")
-    @Test
-    void SUCCESS_verifyPickupWithAdminId() {
-        // 관리자 id가 맞는지
-    }
+//    @DisplayName("픽업 확인 - 관리자 id 입력해서")
+//    @Test
+//    void SUCCESS_verifyPickupWithAdminId() {
+//        // 관리자 id가 맞는지
+//        PickupRequest.UpdatePickUpForAdminRequest updatePickUpForAdminRequest = new PickupRequest.UpdatePickUpForAdminRequest(
+//                pickup1.getPickupId(),
+//                store1.getStoreId(),
+//                "123456"
+//        );
+//
+//        when(storeRepository.findById(store1.getStoreId()))
+//                .thenReturn(Optional.of(store1));
+//        when(pickupRepository.findById(pickup1.getPickupId()))
+//                .thenReturn(Optional.of(pickup1));
+//        when(transactionRepository.findById(transaction1.getTransactionId()))
+//                .thenReturn(Optional.of(transaction1));
+//
+//        PickupDTO result = pickupService.updatePickupForAdmin(updatePickUpForAdminRequest);
+//
+//        assertNotNull(result);
+//        assertEquals(pickup1.toDTO(), result);
+//    }
 
     @DisplayName("특정 스토어의 픽업 리스트 조회 성공")
     @Test
@@ -225,8 +244,8 @@ public class PickupServiceTest {
                 .build();
 
         PickupRequest.AddPickUpRequest addPickUpRequest = new PickupRequest.AddPickUpRequest(
-                invalidTransaction,
-                store1
+                invalidTransaction.getTransactionId(),
+                store1.getStoreId()
         );
 
         when(transactionRepository.findById(invalidTransactionId))
@@ -244,8 +263,8 @@ public class PickupServiceTest {
                 .build();
 
         PickupRequest.AddPickUpRequest addPickUpRequest = new PickupRequest.AddPickUpRequest(
-                transaction1,
-                invalidStore
+                transaction1.getTransactionId(),
+                invalidStore.getStoreId()
         );
 
         when(transactionRepository.findById(transaction1.getTransactionId()))
@@ -269,7 +288,7 @@ public class PickupServiceTest {
                 .build();
 
         PickupRequest.GetUserPickupListRequest getUserPickupListRequest = new PickupRequest.GetUserPickupListRequest(
-                invalidUser
+                invalidUser.getUserId()
         );
 
         when(userRepository.findById(invalidUserId))
@@ -289,8 +308,8 @@ public class PickupServiceTest {
                 .build();
 
         PickupRequest.GetUserPickupDetailsRequest getUserPickupDetailsRequest = new PickupRequest.GetUserPickupDetailsRequest(
-                invalidPickup,
-                seller
+                invalidPickup.getPickupId(),
+                seller.getUserId()
         );
 
         when(pickupRepository.findById(invalidPickupId))

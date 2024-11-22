@@ -61,7 +61,7 @@ public class Transaction extends BaseTimeEntity {
     }
 
     //toDTO
-    public TransactionDTO toDTO() {
+    public TransactionDTO toDto() {
         return new TransactionDTO(
                 this.transactionId,
                 this.usedProduct.toDto(),

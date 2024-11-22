@@ -80,7 +80,7 @@ public class Negotiation extends BaseTimeEntity {
     }
 
     //toDTO
-    public NegotiationDTO toDTO() {
+    public NegotiationDTO toDto() {
         return new NegotiationDTO(
                 this.negotiationId,
                 this.usedProduct.toDto(),

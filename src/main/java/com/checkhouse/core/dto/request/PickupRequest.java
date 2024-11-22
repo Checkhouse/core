@@ -1,9 +1,5 @@
 package com.checkhouse.core.dto.request;
 
-import com.checkhouse.core.entity.Pickup;
-import com.checkhouse.core.entity.Transaction;
-import com.checkhouse.core.entity.Store;
-import com.checkhouse.core.entity.User;
 import lombok.Builder;
 
 import java.util.UUID;
@@ -11,23 +7,30 @@ import java.util.UUID;
 public class PickupRequest {
 	@Builder
 	public record AddPickUpRequest(
-			Transaction transaction,
-			Store store
+			UUID transactionId,
+			UUID storeId
 	){ }
 
 	@Builder
 	public record GetUserPickupListRequest(
-			User user
+			UUID userId
 	){ }
 
 	@Builder
 	public record GetUserPickupDetailsRequest(
-			Pickup pickup,
-			User user
+			UUID pickupId,
+			UUID userId
 	){ }
 
 	@Builder
 	public record UpdatePickUpRequest(
-			Pickup pickup
+			UUID pickupId
+	){ }
+
+	@Builder
+	public record UpdatePickUpForAdminRequest(
+			UUID pickupId,
+			UUID storeId,
+			String code
 	){ }
 }
