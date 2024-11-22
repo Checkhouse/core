@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.NegotiationDTO;
 import com.checkhouse.core.entity.enums.NegotiationState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -63,16 +64,39 @@ public class Negotiation extends BaseTimeEntity {
 
     @Builder
     public Negotiation(
+            UUID negotiationId,
             UsedProduct usedProduct,
             User seller,
             User buyer,
             NegotiationState state,
             int price
     ) {
+        this.negotiationId = negotiationId;
         this.usedProduct = usedProduct;
         this.seller = seller;
         this.buyer = buyer;
         this.state = state;
         this.price = price;
     }
+
+    //toDTO
+    public NegotiationDTO toDto() {
+        return new NegotiationDTO(
+                this.negotiationId,
+                this.usedProduct.toDto(),
+                this.seller.toDto(),
+                this.buyer.toDto(),
+                this.state,
+                this.price
+                
+
+        );
+    }
+
+    //update
+    public void updateState(NegotiationState state) {
+        this.state = state;
+    }
+    //get
+    
 }
