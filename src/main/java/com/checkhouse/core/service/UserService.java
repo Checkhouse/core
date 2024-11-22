@@ -20,7 +20,7 @@ import java.util.UUID;
 public class UserService {
     private final UserRepository userRepository;
 
-    UserDTO addUser(UserRequest.AddUserRequest req) {
+    public UserDTO addUser(UserRequest.AddUserRequest req) {
         // 중복 검사
         userRepository.findUserByEmail(req.email()).ifPresent(
                 (a) -> {
@@ -41,14 +41,14 @@ public class UserService {
         // 중복되지 않는 사용자의 경우
         return savedUser.toDto();
     }
-    UserDTO getUserInfo(String userEmail) {
+    public UserDTO getUserInfo(String userEmail) {
         User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );
 
         return user.toDto();
     }
-    UserDTO updateUserInfo(UserRequest.UpdateUserInfo req) {
+    public UserDTO updateUserInfo(UserRequest.UpdateUserInfo req) {
         User user = userRepository.findUserByEmail(req.email()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );
@@ -63,7 +63,7 @@ public class UserService {
 
         return user.toDto();
     }
-    UserDTO updateUserState(UserRequest.UpdateUserState req) {
+    public UserDTO updateUserState(UserRequest.UpdateUserState req) {
         User user = userRepository.findUserByEmail(req.email()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );
@@ -78,7 +78,7 @@ public class UserService {
 
         return user.toDto();
     }
-    List<UserDTO> getUsers() {
+    public List<UserDTO> getUsers() {
         try {
             return userRepository.findAll()
                     .stream().map(User::toDto).toList();
@@ -88,7 +88,7 @@ public class UserService {
     }
 
     // 내부 로직용
-    User findUser(UUID userId){
+    public User findUser(UUID userId){
         return userRepository.findById(userId).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );

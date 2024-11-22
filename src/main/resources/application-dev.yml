@@ -10,19 +10,22 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
+
       repositories:
         enabled: false
-  elasticsearch:
-    uris: ${ES_URIS}
-    username: ${ES_USERNAME}
-    password: ${ES_PASSWORD}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_URL}
     password: ${DB_PASSWORD}
     username: ${DB_USER}
     name: ${DB_NAME}
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_SERVER}
+      auto-offset-reset: earliest
+      group-id: local
+    producer:
+      bootstrap-servers: ${KAFKA_SERVER}
   jpa:
     hibernate:
       ddl-auto: update
