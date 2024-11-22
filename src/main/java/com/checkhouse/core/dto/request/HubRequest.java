@@ -1,10 +1,6 @@
 package com.checkhouse.core.dto.request;
 
-import com.checkhouse.core.entity.Address;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -13,14 +9,14 @@ public class HubRequest {
     @Builder
     public record AddHubRequest(
             UUID hubId,
-            Address address,
+            UUID addressId,
             String name,
             int clusteredId
     ) {}
     @Builder
     public record UpdateHubRequest(
             UUID hubId,
-            Address address,
+            UUID addressId,
             String name,
             int clusteredId
     ) {}
@@ -31,9 +27,42 @@ public class HubRequest {
 
     @Builder
     public record AllocateHubRequest(
-            Address address
+            UUID addressId
     ) {}
 
+    @Builder
+    public record AddStockRequest(
+            UUID stockId,
+            UUID usedProductId,
+            String area,
+            UUID hubId
+    ) {}
+    @Builder
+    public record GetStockByUsedProductIdRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record UpdateStockAreaRequest(
+            UUID stockId,
+            String area
+    ) {}
+
+    @Builder
+    public record DeleteStockRequest(
+            UUID stockId
+    ) {}
+
+    @Builder
+    public record GetStocksByHubIdRequest(
+            UUID hubId
+    ) {}
+
+    @Builder
+    public record GetStocksByAreaRequest(
+            UUID hubId,
+            String area
+    ) {}
 
 
 }

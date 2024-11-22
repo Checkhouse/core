@@ -3,6 +3,7 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.HubDTO;
+import com.checkhouse.core.dto.StockDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
 import com.checkhouse.core.repository.mysql.AddressRepository;
@@ -28,7 +29,7 @@ public class HubService {
         hubRepository.findHubByClusteredId(req.clusteredId()).ifPresent(hub -> {
             throw new GeneralException(ErrorStatus._HUB_CLUSTERED_ID_ALREADY_EXISTS);
         });
-        Address addr = addressRepository.findById(req.address().getAddressId()).orElseThrow(
+        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
         );
 
@@ -52,7 +53,7 @@ public class HubService {
         hubRepository.findHubByClusteredId(req.clusteredId()).ifPresent(h -> {
             throw new GeneralException(ErrorStatus._HUB_CLUSTERED_ID_ALREADY_EXISTS);
         });
-        Address addr = addressRepository.findById(req.address().getAddressId()).orElseThrow(
+        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
         );
         hub.UpdateAddress(addr);
@@ -76,5 +77,13 @@ public class HubService {
 
     //TODO: ALLOCate 구현
     HubDTO allocateHub(HubRequest.AllocateHubRequest req) {return null;}
+
+    //Stock
+    StockDTO addStock(HubRequest.AddStockRequest req) {return null;}
+    StockDTO updateStockArea(HubRequest.UpdateStockAreaRequest req) {return null;}
+    StockDTO getStockByUsedProductId(HubRequest.GetStockByUsedProductIdRequest req) {return null;}
+    List<StockDTO> getStocksByHubId(HubRequest.GetStocksByHubIdRequest req) {return null;}
+    List<StockDTO> getStocksByArea(HubRequest.GetStocksByAreaRequest req) {return null;}
+    void deleteStock(HubRequest.DeleteStockRequest req) {}
 
 }
