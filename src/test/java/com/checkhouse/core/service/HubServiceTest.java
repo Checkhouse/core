@@ -5,6 +5,9 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.HubDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
+import com.checkhouse.core.entity.Stock;
+import com.checkhouse.core.entity.UsedProduct;
+import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.HubRepository;
 import com.checkhouse.core.dto.request.HubRequest;
@@ -42,6 +45,9 @@ public class HubServiceTest {
     private Hub hub1;
     private Hub hub2;
 
+    private UsedProduct usedProduct1;
+    private Stock stock;
+
     @BeforeAll
     public static void onlyOnce() {}
 
@@ -75,6 +81,12 @@ public class HubServiceTest {
                 .address(hub2addr)
                 .name("허브2")
                 .clusteredId(2)
+                .build();
+        stock = Stock.builder()
+                .stockId(UUID.randomUUID())
+                .usedProductId(UUID.randomUUID())
+                .hub(hub1)
+                .area("A-1")
                 .build();
     }
 
@@ -367,4 +379,73 @@ public class HubServiceTest {
     @Test
     void FAIL_allocHub_not_found_zone() {}
 
+
+
+    /* -------------------- STOCK TEST -------------------- */
+    @DisplayName("허브에 상품 추가 성공")
+    @Test
+    void SUCCESS_addStock() {
+
+    }
+    @DisplayName("상품 ID로 조회 성공")
+    @Test
+    void SUCCESS_getStockByUsedProductId() {
+
+    }
+    @DisplayName("허브에 상품 위치 수정 성공")
+    @Test
+    void SUCCESS_updateStockArea() {
+
+    }
+    @DisplayName("허브에 상품 삭제 성공")
+    @Test
+    void SUCCESS_deleteStock() {
+
+    }
+    @DisplayName("허브의 상품 리스트 성공")
+    @Test
+    void SUCCESS_getStocksByHubId() {
+
+    }
+    @DisplayName("허브의 위치의 상품 리스트 성공")
+    @Test
+    void SUCCESS_getStocksByArea() {
+
+    }
+    //Fail
+    @DisplayName("재고 추가 실패: 허브가 존재하지 않음")
+    @Test
+    void FAIL_addStock_not_found_hub() {
+
+    }
+    @DisplayName("재고 수정 실패: 재고가 존재하지 않음")
+    @Test
+    void FAIL_updateStock_not_found() {
+
+    }
+    @DisplayName("재고 조회 실패: 재고가 존재하지 않음")
+    @Test
+    void FAIL_getStock_not_found() {
+
+    }
+    @DisplayName("재고 삭제 실패: 재고가 존재하지 않음")
+    @Test
+    void FAIL_deleteStock_not_found() {
+
+    }
+    @DisplayName("허브 재고 리스트 실패: 허브가 존재하지 않음")
+    @Test
+    void FAIL_getStocksByHub_not_found_hub() {
+
+    }
+    @DisplayName("허브 위치 재고 리스트 실패: 허브가 존재하지 않음")
+    @Test
+    void FAIL_getStocksByArea_not_found_hub() {
+
+    }
+    @DisplayName("허브 위치 재고 리스트 실패: 존재하지 않는 위치")
+    @Test
+    void FAIL_getStocksByArea_not_found_area() {
+
+    }
 }

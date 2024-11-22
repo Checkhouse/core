@@ -85,7 +85,7 @@ public class AddressService {
 
     void deleteAddress(AddressRequest.DeleteAddressRequest req) {
         Address address = addressRepository.findById(req.addressId())
-            .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
         addressRepository.delete(address);
     }
