@@ -46,6 +46,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // user
     _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "존재하지 않는 유저입니다."),
     _USER_ALREADY_EXIST(HttpStatus.CONFLICT, "USER409", "이미 존재하는 사용자입니다."),
+    _USER_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4041", "User ID를 찾을 수 없습니다."),
     _USER_NOT_ADMIN(HttpStatus.BAD_REQUEST, "USER400", "관리자가 아닙니다."),
 
     // origin product
@@ -82,10 +83,53 @@ public enum ErrorStatus implements BaseErrorCode {
     // Hub
     _HUB_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "HUB404", "Hub ID를 찾을 수 없습니다."),
     _HUB_ALREADY_EXISTS(HttpStatus.CONFLICT, "HUB409", "중복된 허브 이름이 존재합니다."),
-    _HUB_CLUSTERED_ID_ALREADY_EXISTS(HttpStatus.CONFLICT, "HUB4091", "중복된 클러스터링 존이 존재합니다.")
+    _HUB_CLUSTERED_ID_ALREADY_EXISTS(HttpStatus.CONFLICT, "HUB4091", "중복된 클러스터링 존이 존재합니다."),
+
+    // Delivery
+    _DELIVERY_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "DELIVERY404", "Delivery ID를 찾을 수 없습니다."),
+    _DELIVERY_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "DELIVERY4041", "배송 상태를 찾을 수 없습니다."),
+    _DELIVERY_TRACKING_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "DELIVERY4042", "송장 번호를 찾을 수 없습니다."),
+    _DELIVERY_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "DELIVERY400", "배송 상태 변경에 실패하였습니다."),
+    // Inspection
+    _INSPECTION_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "INSPECTION404", "Inspection ID를 찾을 수 없습니다."),
+
+    // UsedProduct
+    _USED_PRODUCT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "USED_PRODUCT404", "UsedProduct ID를 찾을 수 없습니다."),
+    _USED_PRODUCT_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "USED_PRODUCT4041", "UsedProduct 상태를 찾을 수 없습니다."),
+
+    // negotiation
+    _NEGOTIATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NEGOTIATION401", "해당 네고를 찾을 수 없습니다."),
+    _NEGOTIATION_USER_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "사용자 정보가 잘못되었습니다."),
+    _NEGOTIATION_ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 취소된 네고입니다."),
+    _NEGOTIATION_ALREADY_ACCEPTED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 승인된 네고입니다."),
+    _NEGOTIATION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 완료된 네고입니다"),
+    _NEGOTIATION_STATE_DUPLICATE(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 해당 상태로 변경되어 있습니다"),
+    _NEGOTIATION_PRICE_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400" ,"가격 설정이 잘못되었습니다"),
+    _NEGOTIATION_NOT_ALLOWED(HttpStatus.FORBIDDEN, "NEGOTIATION403", "해당 상품은 네고를 받지 않습니다"),
+
+    // transaction
+    _TRANSACTION_NOT_FOUND(HttpStatus.NOT_FOUND, "TRANSACTION404", "해당 거래를 찾을 수 없습니다."),
+    _TRANSACTION_ALREADY_EXISTS(HttpStatus.CONFLICT, "TRANSACTION409", "이미 존재하는 거래입니다."),
+    _TRANSACTION_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "거래 상태 변경에 실패하였습니다."),
+    _TRANSACTION_USER_LIST_FAILED(HttpStatus.BAD_REQUEST, "TRANSACTION400", "사용자 특정 실패 시 리스트 조회에 실패하였습니다."),
+    _TRANSACTION_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "TRANSACTION404", "Transaction ID를 찾을 수 없습니다."),
+    // collect
+    _COLLECT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECT404", "Collect ID를 찾을 수 없습니다."),
+    _COLLECT_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECT4041", "수거 상태를 찾을 수 없습니다."),
+    _COLLECT_ALREADY_EXISTS(HttpStatus.CONFLICT, "COLLECT409", "이미 수거 등록이 된 상품입니다."),
+    
+    // send
+    _SEND_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND404", "Send ID를 찾을 수 없습니다."),
+    _SEND_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND4041", "발송 상태를 찾을 수 없습니다."),
+    _SEND_STATE_CHANGE_FAILED(HttpStatus.BAD_REQUEST, "SEND400", "발송 상태 변경에 실패하였습니다."),
+    _SEND_ALREADY_EXISTS(HttpStatus.CONFLICT, "SEND409", "이미 발송 등록이 된 상품입니다."),
+
+    // inspection
+    _INSPECTION_ALREADY_DONE(HttpStatus.BAD_REQUEST, "INSPECTION400", "이미 완료된 검수가 있습니다."),
+    _INSPECTION_ALREADY_EXISTS(HttpStatus.CONFLICT, "INSPECTION409", "이미 검수가 존재하는 상품입니다."),
     ;
 
-
+    
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

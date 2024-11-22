@@ -1,5 +1,6 @@
 package com.checkhouse.core.repository.mysql;
 
+
 import com.checkhouse.core.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 	//findByUsedProduct
 	@Query("SELECT t FROM Transaction t WHERE t.usedProduct.usedProductId = :usedProductId")
 	Optional<Transaction> findByUsedProduct(UUID usedProductId);
+
 }

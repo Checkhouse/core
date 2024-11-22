@@ -60,7 +60,7 @@ public class Transaction extends BaseTimeEntity {
         this.isCompleted = isCompleted;
     }
 
-    //toDTO
+
     public TransactionDTO toDto() {
         return new TransactionDTO(
                 this.transactionId,
@@ -75,3 +75,4 @@ public class Transaction extends BaseTimeEntity {
         this.isCompleted = true;
     }
 }
+
