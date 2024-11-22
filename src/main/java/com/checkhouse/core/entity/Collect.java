@@ -69,8 +69,8 @@ public class Collect extends BaseTimeEntity {
 
     public void updateCollectState(DeliveryState deliveryState) {this.state = deliveryState;}
     
-    public CollectDTO toDTO() {
-        return new CollectDTO(collectId, usedProduct.toDto(), delivery.toDTO(), state);
+    public CollectDTO toDto() {
+        return new CollectDTO(collectId, usedProduct.toDto(), delivery.toDto(), state);
     }
 
 }

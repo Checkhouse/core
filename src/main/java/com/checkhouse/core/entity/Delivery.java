@@ -70,7 +70,7 @@ public class Delivery extends BaseTimeEntity {
     public void UpdateTrackingCode(String trackingCode) {this.trackingCode = trackingCode;}
     public void UpdateDeliveryState(DeliveryState deliveryState) {this.deliveryState = deliveryState;}
 
-    public DeliveryDTO toDTO() {
-        return new DeliveryDTO(deliveryId, trackingCode, deliveryState, address.toDTO());
+    public DeliveryDTO toDto() {
+        return new DeliveryDTO(deliveryId, trackingCode, deliveryState, address.toDto());
     }
 }

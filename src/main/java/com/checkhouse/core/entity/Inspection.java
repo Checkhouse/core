@@ -80,7 +80,7 @@ public class Inspection extends BaseTimeEntity {
         this.description = description;
     }
     
-    public InspectionDTO toDTO() {
+    public InspectionDTO toDto() {
         return new InspectionDTO(inspectionId, isDone, description, usedProduct.toDto(), user.toDto());
     }
 

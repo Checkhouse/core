@@ -48,7 +48,7 @@ public class SendService {
                 .delivery(delivery)
                 .build()
         );
-        return savedSend.toDTO();
+        return savedSend.toDto();
     }
     //발송 상태 수정
     SendDTO updateSendState(SendRequest.UpdateSendStateRequest req) {
@@ -61,7 +61,7 @@ public class SendService {
         }
         //발송 상태 수정
         send.updateSendState(req.deliveryState());
-        SendDTO updatedSend = sendRepository.save(send).toDTO();
+        SendDTO updatedSend = sendRepository.save(send).toDto();
         return updatedSend;
     }
     //발송 삭제

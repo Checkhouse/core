@@ -64,7 +64,7 @@ public class Pickup extends BaseTimeEntity {
         return new PickupDTO(
                 this.pickupId,
                 this.transaction.toDto(),
-                this.store.toDTO(),
+                this.store.toDto(),
                 this.isPicked_up
         );
     }

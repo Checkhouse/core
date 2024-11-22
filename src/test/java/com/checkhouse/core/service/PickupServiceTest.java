@@ -225,7 +225,7 @@ public class PickupServiceTest {
 //        PickupDTO result = pickupService.updatePickupForAdmin(updatePickUpForAdminRequest);
 //
 //        assertNotNull(result);
-//        assertEquals(pickup1.toDTO(), result);
+//        assertEquals(pickup1.toDto(), result);
 //    }
 
     @DisplayName("특정 스토어의 픽업 리스트 조회 성공")

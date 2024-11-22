@@ -50,7 +50,7 @@ public class CollectService {
             .usedProduct(usedProduct)
             .build();
         Collect savedCollect = collectRepository.save(collect);
-        return savedCollect.toDTO();
+        return savedCollect.toDto();
 
     }
     //수거 상태 수정
@@ -60,7 +60,7 @@ public class CollectService {
         .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
         collect.updateCollectState(deliveryState);
         Collect updatedCollect = collectRepository.save(collect);
-        return updatedCollect.toDTO();
+        return updatedCollect.toDto();
     }
 
     //수거 삭제

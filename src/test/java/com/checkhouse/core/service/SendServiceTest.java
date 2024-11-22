@@ -8,6 +8,9 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.checkhouse.core.entity.*;
+import com.checkhouse.core.entity.enums.Role;
+import com.checkhouse.core.entity.enums.UsedProductState;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +23,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.SendDTO;
 import com.checkhouse.core.dto.request.SendRequest;
-import com.checkhouse.core.entity.Address;
-import com.checkhouse.core.entity.Delivery;
-import com.checkhouse.core.entity.Send;
-import com.checkhouse.core.entity.Transaction;
 import com.checkhouse.core.entity.enums.DeliveryState;
 import com.checkhouse.core.repository.mysql.DeliveryRepository;
 import com.checkhouse.core.repository.mysql.SendRepository;
@@ -42,9 +41,13 @@ public class SendServiceTest {
     @Mock
     private DeliveryRepository deliveryRepository;
 
+    private User seller;
+    private User buyer;
+    private OriginProduct originProduct1;
     private Delivery delivery1;
     private Delivery delivery2;
     private Transaction transaction1;
+    private UsedProduct usedProduct1;
     private Transaction transaction2;
     private Send send1;
     private Send send2;
@@ -63,9 +66,46 @@ public class SendServiceTest {
             .deliveryId(UUID.randomUUID())
             .address(address)
             .build();
+        seller = User.builder()
+                .userId(UUID.randomUUID())
+                .username("test user")
+                .email("test@test.com")
+                .nickname("test nickname")
+                .role(Role.ROLE_USER)
+                .build();
 
+        buyer = User.builder()
+                .userId(UUID.randomUUID())
+                .username("test user2")
+                .email("test2@test.com")
+                .nickname("test nickname2")
+                .role(Role.ROLE_USER)
+                .build();
+
+        originProduct1 = OriginProduct.builder()
+                .id(UUID.randomUUID())
+                .name("아이패드")
+                .company("애플")
+                .category(
+                        Category.builder()
+                                .name("category1")
+                                .build()
+                )
+                .build();
+        usedProduct1 = UsedProduct.builder()
+                .usedProductId(UUID.randomUUID())
+                .title("아이패드 떨이")
+                .description("싸다싸 너만오면 고")
+                .price(3000)
+                .isNegoAllow(true)
+                .state(UsedProductState.ON_SALE)
+                .originProduct(originProduct1)
+                .user(seller)
+                .build();
         transaction1 = Transaction.builder()
             .transactionId(UUID.randomUUID())
+                .usedProduct(usedProduct1)
+                .buyer(buyer)
             .build();
 
         send1 = Send.builder()
@@ -110,7 +150,7 @@ public class SendServiceTest {
         SendDTO result = sendService.addSend(req);
 
         // then
-        assertEquals(send1.toDTO(), result);
+        assertEquals(send1.toDto(), result);
     }
 
     @DisplayName("발송 상태 수정")
@@ -132,7 +172,7 @@ public class SendServiceTest {
         SendDTO result = sendService.updateSendState(req);
 
         // then
-        assertEquals(send1.toDTO(), result);
+        assertEquals(send1.toDto(), result);
     }
 
     @DisplayName("존재하지 않는 배송일 경우 등록 실패")

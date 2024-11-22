@@ -79,7 +79,7 @@ public class Negotiation extends BaseTimeEntity {
         this.price = price;
     }
 
-    //toDTO
+    //toDto
     public NegotiationDTO toDto() {
         return new NegotiationDTO(
                 this.negotiationId,

@@ -42,7 +42,7 @@ public class DeliveryService {
                 .address(address)
                 .build()
         );
-        return savedDelivery.toDTO();
+        return savedDelivery.toDto();
     }
     
     /**
@@ -59,12 +59,12 @@ public class DeliveryService {
         
         //배송 상태 업데이트
         delivery.UpdateDeliveryState(req.deliveryState());
-        return delivery.toDTO();
+        return delivery.toDto();
     }
     // 배송 리스트 조회
     public List<DeliveryDTO> getDeliveryList() {
         return deliveryRepository.findAll().stream()
-            .map(Delivery::toDTO)
+            .map(Delivery::toDto)
             .collect(Collectors.toList());
     }
 
@@ -76,7 +76,7 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
         delivery.UpdateTrackingCode(req.trackingCode());
-        return delivery.toDTO();
+        return delivery.toDto();
     }
 
     //배송 삭제

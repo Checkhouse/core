@@ -59,7 +59,7 @@ public class InspectionService {
                     .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND)))
                 .build();
         Inspection savedInspection = inspectionRepository.save(inspection);
-        return savedInspection.toDTO();
+        return savedInspection.toDto();
     }
     // 검수 상태 업데이트
     InspectionDTO updateInspection(UUID inspectionId, InspectionRequest.UpdateInspectionRequest req) {
@@ -69,7 +69,7 @@ public class InspectionService {
             throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
         }
         inspection.updateInspectionState(req.isDone());
-        return inspectionRepository.save(inspection).toDTO();
+        return inspectionRepository.save(inspection).toDto();
     }
     // 검수 사진 등록(상태 업데이트)
     // todo: imageservice에서 사진 가져오기
@@ -78,7 +78,7 @@ public class InspectionService {
     List<InspectionDTO> getInspectionList(UUID usedProductId) {
         return inspectionRepository.findByUsedProduct_UsedProductId(usedProductId)
             .stream()
-            .map(Inspection::toDTO)
+            .map(Inspection::toDto)
             .collect(Collectors.toList());
     }
     // 검수 삭제
@@ -95,6 +95,6 @@ public class InspectionService {
             throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
         }
         inspection.updateDescription(req.description());
-        return inspectionRepository.save(inspection).toDTO();
+        return inspectionRepository.save(inspection).toDto();
     }
 }
