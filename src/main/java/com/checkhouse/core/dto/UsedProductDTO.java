@@ -1,5 +1,6 @@
 package com.checkhouse.core.dto;
 
+
 import com.checkhouse.core.entity.enums.UsedProductState;
 
 import java.util.UUID;
@@ -14,3 +15,4 @@ public record UsedProductDTO(
         UUID userId,
         UUID originProductId
 ) {}
+

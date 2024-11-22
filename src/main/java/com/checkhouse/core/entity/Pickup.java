@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.PickupDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PickUp extends BaseTimeEntity {
+public class Pickup extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="pickup_id")
@@ -47,13 +48,28 @@ public class PickUp extends BaseTimeEntity {
     //----------------------------------------------------------------------------
 
     @Builder
-    public PickUp(
+    public Pickup(
+            UUID pickupId,
             Transaction transaction,
             Store store,
             Boolean isPicked_up
     ) {
+        this.pickupId = pickupId;
         this.transaction = transaction;
         this.store = store;
         this.isPicked_up = isPicked_up;
+    }
+
+    public PickupDTO toDto() {
+        return new PickupDTO(
+                this.pickupId,
+                this.transaction.toDto(),
+                this.store.toDTO(),
+                this.isPicked_up
+        );
+    }
+
+    public void updateState() {
+        this.isPicked_up = true;
     }
 }

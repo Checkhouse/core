@@ -8,6 +8,7 @@ public enum DeliveryState {
     //수거
     COLLECTING, //수거 전
     //발송
-    SENDING, //발송 전
+    SENDING //발송 전
+;
 
 }
