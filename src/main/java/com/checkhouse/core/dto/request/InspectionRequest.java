@@ -21,4 +21,15 @@ public class InspectionRequest {
         boolean isDone,
         UserDTO user
     ) {}
+
+    @Builder
+    public record DeleteInspectionRequest(
+        UUID inspectionId
+    ) {}
+
+    @Builder
+    public record UpdateInspectionDescriptionRequest(
+        UUID inspectionId,
+        String description
+    ) {}
 }

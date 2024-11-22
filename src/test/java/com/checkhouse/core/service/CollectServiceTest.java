@@ -47,6 +47,7 @@ public class CollectServiceTest {
     @InjectMocks
     private CollectService collectService;
 
+    
 
     private static Collect collect1;
     private static UsedProduct usedProduct1;
@@ -119,15 +120,24 @@ public class CollectServiceTest {
             usedProduct1.getUsedProductId()
         );
 
+        Delivery updatedDelivery = Delivery.builder()
+            .deliveryId(delivery1.getDeliveryId())
+            .address(delivery1.getAddress())
+            .deliveryState(DeliveryState.COLLECTING)
+            .build();
+
         when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery1));
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
         when(collectRepository.save(any(Collect.class))).thenReturn(collect1);
+        when(deliveryRepository.save(any(Delivery.class))).thenReturn(updatedDelivery);
+
         // when
         CollectDTO collectDTO = collectService.addCollect(req);
 
         // then
         assertEquals(collect1.getCollectId(), collectDTO.collectId());
         verify(collectRepository).save(any(Collect.class));
+        verify(deliveryRepository).save(any(Delivery.class));
     }
 
     @DisplayName("수거 상태 수정")
@@ -200,5 +210,23 @@ public class CollectServiceTest {
         // when & then
         assertThrows(GeneralException.class, 
             () -> collectService.updateCollectState(collectId, invalidState));
+    }
+
+    @DisplayName("이미 수거 등록이 된 상품은 수거 등록 실패")
+    @Test
+    void FAIL_addCollect_already_collected() {
+        // given
+        AddCollectRequest req = new AddCollectRequest(
+            delivery2.getDeliveryId(),
+            usedProduct1.getUsedProductId()
+        );
+
+        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery2));
+        when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
+        when(collectRepository.findByUsedProduct(usedProduct1)).thenReturn(Optional.of(collect1));
+
+        // when & then
+        assertThrows(GeneralException.class, () -> collectService.addCollect(req));
+        verify(collectRepository).findByUsedProduct(usedProduct1);
     }
 }

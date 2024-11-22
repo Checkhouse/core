@@ -17,4 +17,5 @@ public interface InspectionRepository extends JpaRepository<Inspection, UUID> {
     void update(@Param("inspectionId") UUID inspectionId, @Param("isDone") boolean isDone);
     List<Inspection> findByUsedProduct_UsedProductId(UUID usedProductId);
     Optional<Inspection> findByUsedProductAndIsDone(UsedProduct usedProduct, boolean isDone);
+    Optional<Inspection> findByUsedProduct(UsedProduct usedProduct);
 }

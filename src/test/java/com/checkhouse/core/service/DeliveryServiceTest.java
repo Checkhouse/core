@@ -175,7 +175,35 @@ public class DeliveryServiceTest {
         //then
         assertThrows(GeneralException.class, () -> deliveryService.updateDeliveryState(req));
     }
+    @DisplayName("존재하지 않는 배송 ID 상태 수정 실패")
+    @Test
+    void FAIL_updateDeliveryStatus_invalid_deliveryId() {
+        //given
+        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        
+        //when
+        UUID randomId = UUID.randomUUID();
+        DeliveryRequest.UpdateDeliveryStateRequest req = new DeliveryRequest.UpdateDeliveryStateRequest(
+            randomId,
+            DeliveryState.DELIVERING
+        );
+        
+        //then
+        assertThrows(GeneralException.class, () -> deliveryService.updateDeliveryState(req));
+    }
+    @DisplayName("존재하지 않는 배송 ID 송장 번호 등록 실패 ")
+    @Test
+    void FAIL_registerTrackingNumber_invalid_deliveryId() {
+        //given 
+        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        //when
+        DeliveryRequest.RegisterTrackingCodeRequest req = new DeliveryRequest.RegisterTrackingCodeRequest(
+            UUID.randomUUID(),
+            "1234567890"
+        );
+        //then
+        assertThrows(GeneralException.class, () -> deliveryService.registerTrackingCode(req));
+    }
 
-    // todo 필요한 테스트의 경우 담당자가 재량에 따라 추가
-
+    //todo: 송장 번호 검증 테스트 추가
 }

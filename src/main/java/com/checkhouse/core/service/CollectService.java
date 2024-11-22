@@ -36,11 +36,18 @@ public class CollectService {
         UsedProduct usedProduct = usedProductRepository.findById(req.usedProductId())
         .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
         
+        //이미 수거 등록이 된 상품은 수거 등록 실패
+        if(collectRepository.findByUsedProduct(usedProduct).isPresent()) {
+            throw new GeneralException(ErrorStatus._COLLECT_ALREADY_EXISTS);
+        }
+        //배송 상태 업데이트
+        delivery.UpdateDeliveryState(DeliveryState.COLLECTING);
+        deliveryRepository.save(delivery);
+
         //수거 등록
         Collect collect = Collect.builder()
             .delivery(delivery)
             .usedProduct(usedProduct)
-            .state(DeliveryState.COLLECTING)
             .build();
         Collect savedCollect = collectRepository.save(collect);
         return savedCollect.toDTO();
@@ -54,5 +61,14 @@ public class CollectService {
         collect.updateCollectState(deliveryState);
         Collect updatedCollect = collectRepository.save(collect);
         return updatedCollect.toDTO();
+    }
+
+    //수거 삭제
+    void deleteCollect(CollectRequest.DeleteCollectRequest req) {
+        Collect collect = collectRepository.findById(req.collectId())
+        .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
+
+        collectRepository.delete(collect);
+        
     }
 }

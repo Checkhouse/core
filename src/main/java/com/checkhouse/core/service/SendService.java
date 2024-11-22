@@ -34,12 +34,18 @@ public class SendService {
         //존재하지 않는 거래 정보가 있을 수 있으므로 예외처리
         Transaction transaction = transactionRepository.findById(req.transactionId())
         .orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_ID_NOT_FOUND));
+        //이미 발송 등록이 된 상품은 발송 등록 실패
+        if(sendRepository.findByTransaction(transaction).isPresent()) {
+            throw new GeneralException(ErrorStatus._SEND_ALREADY_EXISTS);
+        }
+        //배송 상태 업데이트
+        delivery.UpdateDeliveryState(DeliveryState.SENDING);
+        deliveryRepository.save(delivery);
 
         Send savedSend = sendRepository.save(
             Send.builder()
                 .transaction(transaction)
                 .delivery(delivery)
-                .state(DeliveryState.PRE_DELIVERY)
                 .build()
         );
         return savedSend.toDTO();
@@ -53,13 +59,15 @@ public class SendService {
         if(!req.deliveryState().equals(DeliveryState.PRE_DELIVERY) && !req.deliveryState().equals(DeliveryState.SENDING)) {
             throw new GeneralException(ErrorStatus._SEND_STATE_CHANGE_FAILED);
         }
-        //존재하지 않는 발송 ID 수정 시 예외처리
-        if(req.sendId() == null) {
-            throw new GeneralException(ErrorStatus._SEND_ID_NOT_FOUND);
-        }
         //발송 상태 수정
         send.updateSendState(req.deliveryState());
         SendDTO updatedSend = sendRepository.save(send).toDTO();
         return updatedSend;
+    }
+    //발송 삭제
+    void deleteSend(SendRequest.DeleteSendRequest req) {
+        Send send = sendRepository.findById(req.sendId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._SEND_ID_NOT_FOUND));
+        sendRepository.delete(send);
     }
 }

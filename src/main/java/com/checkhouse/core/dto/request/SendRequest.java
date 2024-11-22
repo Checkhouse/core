@@ -10,7 +10,8 @@ public class SendRequest {
     public record AddSendRequest(
         UUID sendId,
         UUID transactionId,
-        UUID deliveryId
+        UUID deliveryId,
+        String trackingCode
     ) {}
 
     @Builder
@@ -27,5 +28,10 @@ public class SendRequest {
     @Builder
     public record UpdateSendDeliveryRequest(
         UUID deliveryId
+    ) {}
+
+    @Builder
+    public record DeleteSendRequest(
+        UUID sendId
     ) {}
 }

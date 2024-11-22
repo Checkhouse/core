@@ -20,4 +20,8 @@ public class CollectRequest {
         DeliveryState deliveryState
     ) {}
 
+    @Builder
+    public record DeleteCollectRequest(
+        UUID collectId
+    ) {}
 }

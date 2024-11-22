@@ -49,12 +49,14 @@ public class DeliveryService {
      * 배송 상태 업데이트
      */
     public DeliveryDTO updateDeliveryState(DeliveryRequest.UpdateDeliveryStateRequest req) {
+        //존재하지 않는 배송 ID 예외 처리
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
         //PRE_DELIVERY, DELIVERING, DELIVERED 외의 상태는 예외 처리
         if(!req.deliveryState().equals(DeliveryState.PRE_DELIVERY) && !req.deliveryState().equals(DeliveryState.DELIVERING) && !req.deliveryState().equals(DeliveryState.DELIVERED)) {
             throw new GeneralException(ErrorStatus._DELIVERY_STATE_CHANGE_FAILED);
         }
+        
         //배송 상태 업데이트
         delivery.UpdateDeliveryState(req.deliveryState());
         return delivery.toDTO();
@@ -70,9 +72,17 @@ public class DeliveryService {
      * 송장 번호 등록
      */
         public DeliveryDTO registerTrackingCode(DeliveryRequest.RegisterTrackingCodeRequest req) {
+        //존재하지 않는 배송 ID 예외 처리
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
         delivery.UpdateTrackingCode(req.trackingCode());
         return delivery.toDTO();
+    }
+
+    //배송 삭제
+    void deleteDelivery(DeliveryRequest.DeleteDeliveryRequest req) {
+        Delivery delivery = deliveryRepository.findById(req.deliveryId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
+        deliveryRepository.delete(delivery);
     }
 }

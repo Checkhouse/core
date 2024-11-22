@@ -90,6 +90,12 @@ public class SendServiceTest {
             .deliveryId(deliveryId)
             .build();
 
+        Delivery updatedDelivery = Delivery.builder()
+            .deliveryId(delivery1.getDeliveryId())
+            .address(delivery1.getAddress())
+            .deliveryState(DeliveryState.SENDING)
+            .build();
+
         // given
         when(deliveryRepository.findById(deliveryId))
             .thenReturn(Optional.of(delivery1));
@@ -97,6 +103,8 @@ public class SendServiceTest {
             .thenReturn(Optional.of(transaction1));
         when(sendRepository.save(any(Send.class)))
             .thenReturn(send1);
+        when(deliveryRepository.save(any(Delivery.class)))
+            .thenReturn(updatedDelivery);
 
         // when
         SendDTO result = sendService.addSend(req);
@@ -207,5 +215,24 @@ public class SendServiceTest {
         // when
         assertThrows(GeneralException.class, () -> sendService.updateSendState(req));
         
+    }
+    @DisplayName("이미 발송 등록이 된 상품은 발송 등록 실패")
+    @Test
+    void FAIL_addSend_already_sent() {
+        // given
+        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
+            .transactionId(transaction1.getTransactionId())
+            .deliveryId(delivery1.getDeliveryId())
+            .build();
+
+        when(deliveryRepository.findById(req.deliveryId()))
+            .thenReturn(Optional.of(delivery1));
+        when(transactionRepository.findById(req.transactionId()))
+            .thenReturn(Optional.of(transaction1));
+        when(sendRepository.findByTransaction(transaction1))
+            .thenReturn(Optional.of(send1));
+
+        // when & then
+        assertThrows(GeneralException.class, () -> sendService.addSend(req));   
     }
 }

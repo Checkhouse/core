@@ -219,4 +219,60 @@ public class InspectionServiceTest {
             () -> inspectionService.updateInspection(completedInspection.getInspectionId(), req));
         assertEquals(ErrorStatus._INSPECTION_ALREADY_DONE.getCode(), exception.getErrorReason().getCode());
     }
+
+    @DisplayName("이미 검수가 존재하는 상품은 검수 등록 실패 (완료되지 않은 상태라도)")
+    @Test
+    void FAIL_addInspection_already_exists() {
+        // given
+        Inspection existingInspection = Inspection.builder()
+                .inspectionId(UUID.randomUUID())
+                .isDone(false)  // 완료되지 않은 상태라도
+                .description("existing inspection")
+                .usedProduct(usedProduct1)
+                .user(user1)
+                .build();
+
+        AddInspectionRequest req = AddInspectionRequest.builder()
+                .usedProductId(usedProduct1.getUsedProductId())
+                .description("new inspection")
+                .isDone(false)
+                .userId(user1.getUserId())
+                .build();
+
+        when(usedProductRepository.findById(usedProduct1.getUsedProductId()))
+            .thenReturn(Optional.of(usedProduct1));
+        when(inspectionRepository.findByUsedProduct(usedProduct1))
+            .thenReturn(Optional.of(existingInspection));
+
+        // when & then
+        GeneralException exception = assertThrows(GeneralException.class, 
+            () -> inspectionService.addInspection(req));
+        assertEquals(ErrorStatus._INSPECTION_ALREADY_EXISTS.getCode(), exception.getErrorReason().getCode());
+        verify(inspectionRepository).findByUsedProduct(usedProduct1);
+    }
+
+    @DisplayName("검수 설명 수정")
+    @Test
+    void SUCCESS_updateInspectionDescription() {
+        // given
+        InspectionRequest.UpdateInspectionDescriptionRequest req = InspectionRequest.UpdateInspectionDescriptionRequest.builder()
+                .inspectionId(inspection1.getInspectionId())
+                .description("updated description")
+                .build();
+
+        when(inspectionRepository.findById(inspection1.getInspectionId()))
+            .thenReturn(Optional.of(inspection1));
+        when(inspectionRepository.save(any(Inspection.class)))
+            .thenReturn(inspection1);
+
+        // when
+        InspectionDTO response = inspectionService.updateInspectionDescription(inspection1.getInspectionId(), req); 
+
+        // then
+        assertEquals(inspection1.getInspectionId(), response.inspectionId());
+        assertEquals("updated description", response.description());
+        verify(inspectionRepository).findById(inspection1.getInspectionId());
+        verify(inspectionRepository).save(any(Inspection.class));
+    }
+
 }
