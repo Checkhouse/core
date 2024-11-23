@@ -36,12 +36,15 @@ public class UserService {
                         .provider(req.provider())
                         .providerId(req.providerId())
                         .role(Role.valueOf(req.role()))
+                        .isActive(true)
                         .build()
         );
         // 중복되지 않는 사용자의 경우
         return savedUser.toDto();
     }
-    public UserDTO getUserInfo(String userEmail) {
+    public UserDTO  getUserInfo(String userEmail) {
+        log.info(userEmail);
+
         User user = userRepository.findUserByEmail(userEmail).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
         );

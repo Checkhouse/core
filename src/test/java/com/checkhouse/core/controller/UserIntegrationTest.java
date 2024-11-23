@@ -10,7 +10,9 @@ import com.checkhouse.core.repository.mysql.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URLEncoder;
 import java.util.*;
@@ -19,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserIntegrationTest extends BaseIntegrationTest {
 
-    private static String baseUrl = "/user/";
+    private static String baseUrl = "/user";
 
     @Autowired
     private UserController userController;
@@ -42,14 +44,37 @@ public class UserIntegrationTest extends BaseIntegrationTest {
                 .isActive(true)
                 .build();
         savedUser = userRepository.save(user);
+        System.out.println(savedUser.getEmail());
+    }
+
+    @Test
+    void addUserTest() throws Exception {
+        UserRequest.AddUserRequest request = UserRequest.AddUserRequest.builder()
+                .username("test user")
+                .email("test@email.com")
+                .nickname("test nickname")
+                .role(Role.ROLE_USER.name())
+                .provider("naver")
+                .providerId("random id naver")
+                .build();
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(baseUrl)
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+
+        ).andExpect(status().isOk());
     }
     @Test
     void SUCCESS_getUserInfo() throws Exception {
-        UUID userId = savedUser.getUserId();
+        // 헤더에 있는 값을 기반으로 사용자를 추정할 수 있음
+        // todo 근데 이게 맞아?
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get(baseUrl + URLEncoder.encode(userId.toString())))
+                        MockMvcRequestBuilders.get(baseUrl))
                 .andExpect(status().isOk())
                 .andReturn();
     }
+
 }
