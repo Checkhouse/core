@@ -7,6 +7,7 @@ import com.checkhouse.core.entity.User;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.integration.BaseIntegrationTest;
 import com.checkhouse.core.repository.mysql.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 public class UserIntegrationTest extends BaseIntegrationTest {
 
@@ -44,14 +46,17 @@ public class UserIntegrationTest extends BaseIntegrationTest {
                 .isActive(true)
                 .build();
         savedUser = userRepository.save(user);
-        System.out.println(savedUser.getEmail());
-    }
 
+    }
+    @AfterEach
+    void cleanUp() {
+        userRepository.deleteAll();
+    }
     @Test
     void addUserTest() throws Exception {
         UserRequest.AddUserRequest request = UserRequest.AddUserRequest.builder()
                 .username("test user")
-                .email("test@email.com")
+                .email("test2@email.com")
                 .nickname("test nickname")
                 .role(Role.ROLE_USER.name())
                 .provider("naver")
