@@ -3,6 +3,7 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
+import com.checkhouse.core.dto.InspectionImageDTO;
 import com.checkhouse.core.dto.OriginImageDTO;
 import com.checkhouse.core.dto.UsedImageDTO;
 import com.checkhouse.core.entity.*;
@@ -141,6 +142,11 @@ public class ImageService {
         usedImageRepository.delete(usedImage);
     }
 
-    //TODO: 검수이미지 추가
+    InspectionImageDTO addInspectionImage(ImageRequest.AddInspectionImageRequest req) {return null;}
+    InspectionImageDTO getInspectionImage(ImageRequest.GetInspectionImageRequest req) {return null;}
+    InspectionImageDTO getInspectionImageByUsedImageId(ImageRequest.GetInspectionImageByUsedImageIdRequest req) {return null;}
+    List<InspectionImageDTO> getInspectionImagesByInspectionId(ImageRequest.GetInspectionImagesByInspectionIdRequest req) {return null;}
+    void deleteInspectionImage(ImageRequest.DeleteInspectionImageRequest req) {}
+
 
 }

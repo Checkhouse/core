@@ -79,6 +79,37 @@ public class ImageRequest {
             UUID usedImageId
     ) {}
 
-    //TODO: 검수이미지 추가
+    @Builder
+    public record AddInspectionImageRequest (
+            @NotNull
+            UUID inspectionImageId,
+            @NotNull
+            UUID inspectionId,
+            @NotNull
+            UUID usedImageId,
+            @NotNull
+            String imageURL
+    ) {}
+
+    @Builder
+    public record GetInspectionImageRequest (
+            @NotNull
+            UUID inspectionImageId
+    ) {}
+    @Builder
+    public record GetInspectionImagesByInspectionIdRequest (
+            @NotNull
+            UUID inspectionId
+    ) {}
+    @Builder
+    public record GetInspectionImageByUsedImageIdRequest (
+            @NotNull
+            UUID usedImageId
+    ) {}
+    @Builder
+    public record DeleteInspectionImageRequest (
+            @NotNull
+            UUID inspectionId
+    ) {}
 
 }
