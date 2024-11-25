@@ -1,5 +1,6 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.InspectionImageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,12 +48,23 @@ public class InspectionImage extends BaseTimeEntity {
 
     @Builder
     public InspectionImage(
+            UUID inspectionImageId,
             ImageURL image,
             Inspection inspection,
             UsedImage usedImage
     ) {
+        this.inspectionImageId = inspectionImageId;
         this.image = image;
         this.inspection = inspection;
         this.usedImage = usedImage;
+    }
+    
+    public InspectionImageDTO toDto() {
+        return new InspectionImageDTO(
+                inspectionImageId,
+                image.toDto(),
+                inspection.toDto(),
+                usedImage.toDto()
+        );
     }
 }
