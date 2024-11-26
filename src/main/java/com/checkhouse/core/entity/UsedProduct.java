@@ -66,6 +66,9 @@ public class UsedProduct extends BaseTimeEntity {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name="address_id", nullable = false)
+    private Address address;
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳
@@ -80,7 +83,8 @@ public class UsedProduct extends BaseTimeEntity {
             String title,
             String description,
             int price,
-            boolean isNegoAllow
+            boolean isNegoAllow,
+            Address address
     ) {
         this.usedProductId = usedProductId;
         this.originProduct = originProduct;
@@ -90,6 +94,7 @@ public class UsedProduct extends BaseTimeEntity {
         this.description = description;
         this.price = price;
         this.isNegoAllow = isNegoAllow;
+        this.address = address;
     }
     public UsedProductDTO toDto() {
         return new UsedProductDTO(

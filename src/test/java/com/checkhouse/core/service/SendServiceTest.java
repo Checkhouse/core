@@ -137,8 +137,6 @@ public class SendServiceTest {
             .build();
 
         // given
-        when(deliveryRepository.findById(deliveryId))
-            .thenReturn(Optional.of(delivery1));
         when(transactionRepository.findById(transactionId))
             .thenReturn(Optional.of(transaction1));
         when(sendRepository.save(any(Send.class)))

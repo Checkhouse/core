@@ -25,7 +25,7 @@ public class FavoriteService {
     private final OriginProductService originProductService;
     private final UsedProductService usedProductService;
 
-    FavoriteDTO addFavoriteOrigin(FavoriteRequest.AddToFavoriteRequest request) {
+    public FavoriteDTO addFavoriteOrigin(FavoriteRequest.AddToFavoriteRequest request) {
         OriginProduct originProduct = originProductService.findOriginProduct(request.originProductId());
         User user = userService.findUser(request.userId());
 
@@ -47,7 +47,7 @@ public class FavoriteService {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
     }
-    void removeFavoriteOrigin(FavoriteRequest.RemoveFromFavoriteRequest request) {
+    public void removeFavoriteOrigin(FavoriteRequest.RemoveFromFavoriteRequest request) {
         // 검증
         originProductService.findOriginProduct(request.originProductId());
         userService.findUser(request.userId());
@@ -59,7 +59,7 @@ public class FavoriteService {
         }
     }
 
-    List<FavoriteDTO> getUserFavoriteOrigins(FavoriteRequest.GetUserFavoriteOrigins request) {
+    public List<FavoriteDTO> getUserFavoriteOrigins(FavoriteRequest.GetUserFavoriteOrigins request) {
         User user = userService.findUser(request.userId());
 
         return favoriteOriginRepository.findAllByUserId(user.getUserId())
@@ -71,13 +71,13 @@ public class FavoriteService {
                 )).toList();
     }
 
-    int getOriginProductFavoriteCount(UUID originProductId) {
+    public int getOriginProductFavoriteCount(UUID originProductId) {
         originProductService.findOriginProduct(originProductId);
 
         return favoriteOriginRepository.countByOriginProductOriginProductId(originProductId);
     }
 
-    FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
+    public FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
         UsedProduct usedProduct = usedProductService.findUsedProduct(request.usedProductId());
         User user = userService.findUser(request.userId());
 
@@ -99,7 +99,7 @@ public class FavoriteService {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
     }
-    void removeFavoriteUsed(FavoriteRequest.RemoveUsedProductLikeRequest request) {
+    public void removeFavoriteUsed(FavoriteRequest.RemoveUsedProductLikeRequest request) {
         // 검증
         usedProductService.findUsedProduct(request.usedProductId());
         userService.findUser(request.userId());
@@ -112,7 +112,7 @@ public class FavoriteService {
         }
     }
 
-    List<FavoriteDTO> getUserFavoriteUsed(FavoriteRequest.GetUserFavoriteUsed request) {
+    public List<FavoriteDTO> getUserFavoriteUsed(FavoriteRequest.GetUserFavoriteUsed request) {
         User user = userService.findUser(request.userId());
 
         return favoriteUsedRepository.findAllByUserId(user.getUserId())
@@ -124,7 +124,7 @@ public class FavoriteService {
                 )).toList();
     }
 
-    int getUsedProductFavoriteCount(UUID usedId) {
+    public int getUsedProductFavoriteCount(UUID usedId) {
         usedProductService.findUsedProduct(usedId);
 
         return favoriteUsedRepository.countByUsedProductUsedProductId(usedId);

@@ -36,4 +36,9 @@ public class UsedProductRequest {
             UUID usedProductId,
             UsedProductState status
     ) {}
+
+    @Builder
+    public record DeleteUsedProduct(
+            UUID usedProductId
+    ) {}
 }

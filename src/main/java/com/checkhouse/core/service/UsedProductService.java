@@ -113,7 +113,7 @@ public class UsedProductService {
         return products.stream().map(UsedProduct::toDto).toList();
     }
 
-    UsedProduct findUsedProduct(UUID productId) {
+    public UsedProduct findUsedProduct(UUID productId) {
         return usedProductRepository.findById(productId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
     }

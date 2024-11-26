@@ -29,7 +29,7 @@ public class InspectionService {
     /**
      * 검수 물품 등록
      */
-    InspectionDTO addInspection(InspectionRequest.AddInspectionRequest req) {
+    public InspectionDTO addInspection(InspectionRequest.AddInspectionRequest req) {
         // 판매 등록이 안된 상품은 검수 등록 불가
         if (req.usedProductId() == null) {
             throw new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND);
@@ -62,7 +62,7 @@ public class InspectionService {
         return savedInspection.toDto();
     }
     // 검수 상태 업데이트
-    InspectionDTO updateInspection(UUID inspectionId, InspectionRequest.UpdateInspectionRequest req) {
+    public InspectionDTO updateInspection(UUID inspectionId, InspectionRequest.UpdateInspectionRequest req) {
         Inspection inspection = inspectionRepository.findById(inspectionId)
             .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
         if (inspection.isDone()) {
@@ -75,20 +75,20 @@ public class InspectionService {
     // todo: imageservice에서 사진 가져오기
     
     // 검수 리스트 조회(관리자)
-    List<InspectionDTO> getInspectionList(UUID usedProductId) {
+    public List<InspectionDTO> getInspectionList(UUID usedProductId) {
         return inspectionRepository.findByUsedProduct_UsedProductId(usedProductId)
             .stream()
             .map(Inspection::toDto)
             .collect(Collectors.toList());
     }
     // 검수 삭제
-    void deleteInspection(InspectionRequest.DeleteInspectionRequest req) {
+    public void deleteInspection(InspectionRequest.DeleteInspectionRequest req) {
         Inspection inspection = inspectionRepository.findById(req.inspectionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
         inspectionRepository.delete(inspection);
     }
     // 검수 설명 수정
-    InspectionDTO updateInspectionDescription(UUID inspectionId, InspectionRequest.UpdateInspectionDescriptionRequest req) {
+    public InspectionDTO updateInspectionDescription(UUID inspectionId, InspectionRequest.UpdateInspectionDescriptionRequest req) {
         Inspection inspection = inspectionRepository.findById(inspectionId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
         if (inspection.isDone()) {

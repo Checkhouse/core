@@ -71,16 +71,16 @@ public class DeliveryService {
     /**
      * 송장 번호 등록
      */
-        public DeliveryDTO registerTrackingCode(DeliveryRequest.RegisterTrackingCodeRequest req) {
-        //존재하지 않는 배송 ID 예외 처리
-        Delivery delivery = deliveryRepository.findById(req.deliveryId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
-        delivery.UpdateTrackingCode(req.trackingCode());
-        return delivery.toDto();
+    public DeliveryDTO registerTrackingCode(DeliveryRequest.RegisterTrackingCodeRequest req) {
+    //존재하지 않는 배송 ID 예외 처리
+    Delivery delivery = deliveryRepository.findById(req.deliveryId())
+            .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
+    delivery.UpdateTrackingCode(req.trackingCode());
+    return delivery.toDto();
     }
 
     //배송 삭제
-    void deleteDelivery(DeliveryRequest.DeleteDeliveryRequest req) {
+    public void deleteDelivery(DeliveryRequest.DeleteDeliveryRequest req) {
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
         deliveryRepository.delete(delivery);

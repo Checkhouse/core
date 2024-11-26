@@ -1,6 +1,8 @@
 package com.checkhouse.core.service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -27,19 +29,20 @@ public class SendService {
     private final TransactionRepository transactionRepository;
     private final DeliveryRepository deliveryRepository;
     //발송 등록    
-    SendDTO addSend(SendRequest.AddSendRequest req) {
-        //존재하지 않는 배송 정보가 있을 수 있으므로 예외처리
-        Delivery delivery = deliveryRepository.findById(req.deliveryId())
-        .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
+    public SendDTO addSend(SendRequest.AddSendRequest req) {
         //존재하지 않는 거래 정보가 있을 수 있으므로 예외처리
         Transaction transaction = transactionRepository.findById(req.transactionId())
-        .orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_ID_NOT_FOUND));
+            .orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_ID_NOT_FOUND));
+        
         //이미 발송 등록이 된 상품은 발송 등록 실패
         if(sendRepository.findByTransaction(transaction).isPresent()) {
             throw new GeneralException(ErrorStatus._SEND_ALREADY_EXISTS);
         }
-        //배송 상태 업데이트
-        delivery.UpdateDeliveryState(DeliveryState.SENDING);
+
+        // 새로운 Delivery 생성
+        Delivery delivery = Delivery.builder()
+            .deliveryState(DeliveryState.SENDING)
+            .build();
         deliveryRepository.save(delivery);
 
         Send savedSend = sendRepository.save(
@@ -51,7 +54,7 @@ public class SendService {
         return savedSend.toDto();
     }
     //발송 상태 수정
-    SendDTO updateSendState(SendRequest.UpdateSendStateRequest req) {
+    public SendDTO updateSendState(SendRequest.UpdateSendStateRequest req) {
         //존재하지 않는 발송 정보가 있을 수 있으므로 예외처리
         Send send = sendRepository.findById(req.sendId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._SEND_ID_NOT_FOUND));
@@ -65,9 +68,15 @@ public class SendService {
         return updatedSend;
     }
     //발송 삭제
-    void deleteSend(SendRequest.DeleteSendRequest req) {
+    public void deleteSend(SendRequest.DeleteSendRequest req) {
         Send send = sendRepository.findById(req.sendId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._SEND_ID_NOT_FOUND));
         sendRepository.delete(send);
+    }
+    //발송 리스트 조회
+    public List<SendDTO> getSendList(UUID transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_ID_NOT_FOUND));
+        return sendRepository.findByTransaction(transaction).stream().map(Send::toDto).collect(Collectors.toList());
     }
 }
