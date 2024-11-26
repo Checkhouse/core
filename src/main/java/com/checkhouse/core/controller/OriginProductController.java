@@ -19,50 +19,137 @@ import com.checkhouse.core.service.OriginProductService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Slf4j
-@Tag(name = "origin-product apis")
+@Tag(name = "origin-product apis", description = "원본 상품 관련 API - 원본 상품 등록, 원본 상품 정보 수정, 원본 상품 정보 조회, 원본 상품 목록 조회, 카테고리별 원본 상품 목록 조회, 원본 상품 검색, 원본 상품 삭제")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/origin-product")
+@RequestMapping("api/v1/origin-product")
 public class OriginProductController {
     private final OriginProductService originProductService;
     //원본 상품 등록
+    @Operation(summary = "원본 상품 등록")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "등록 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
     @PostMapping
-    public BaseResponse<OriginProductDTO> addOriginProduct(@RequestBody OriginProductRequest.AddOriginProductRequest req) {
-        return BaseResponse.onSuccess(originProductService.addOriginProduct(req));
+    public BaseResponse<OriginProductDTO> addOriginProduct(
+        @Valid @RequestBody OriginProductRequest.AddOriginProductRequest req) {
+        try {
+            log.info("[원본 상품 등록] request: {}", req);
+            return BaseResponse.onSuccess(originProductService.addOriginProduct(req));
+        } catch (Exception e) {
+            log.error("[원본 상품 등록] request: {}, error: {}", req, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //원본 상품 정보 수정
-    @PutMapping
-    public BaseResponse<OriginProductDTO> updateOriginProductInfo(@RequestBody OriginProductRequest.UpdateOriginProductInfo req) {
-        return BaseResponse.onSuccess(originProductService.updateOriginProductInfo(req));
+    @Operation(summary = "원본 상품 정보 수정")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "수정 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PutMapping("/{originProductId}")
+    public BaseResponse<OriginProductDTO> updateOriginProductInfo(
+        @Valid @RequestBody OriginProductRequest.UpdateOriginProductInfo req) {
+        try {
+            log.info("[원본 상품 정보 수정] request: {}", req);
+            return BaseResponse.onSuccess(originProductService.updateOriginProductInfo(req));
+        } catch (Exception e) {
+            log.error("[원본 상품 정보 수정] request: {}, error: {}", req, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //원본 상품 정보 조회
-    @GetMapping
-    public BaseResponse<OriginProductDTO> getOriginProductInfo(@RequestParam UUID originProductId) {
-        return BaseResponse.onSuccess(originProductService.getOriginProductInfo(originProductId));
+    @Operation(summary = "원본 상품 정보 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/{originProductId}")
+    public BaseResponse<OriginProductDTO> getOriginProductInfo(
+        @RequestParam UUID originProductId) {
+        try {
+            log.info("[원본 상품 정보 조회] request: {}", originProductId);
+            return BaseResponse.onSuccess(originProductService.getOriginProductInfo(originProductId));
+        } catch (Exception e) {
+            log.error("[원본 상품 정보 조회] request: {}, error: {}", originProductId, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //원본 상품 목록 조회
-    @GetMapping("/list")
-    public BaseResponse<List<OriginProductDTO>> getOriginProducts() {
-        return BaseResponse.onSuccess(originProductService.getOriginProducts());
+    @Operation(summary = "원본 상품 목록 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/{originProductId}/list")
+    public BaseResponse<List<OriginProductDTO>> getOriginProducts(
+        @RequestParam UUID originProductId) {
+        try {
+            log.info("[원본 상품 목록 조회] request: {}", originProductId);
+            return BaseResponse.onSuccess(originProductService.getOriginProducts());
+        } catch (Exception e) {
+            log.error("[원본 상품 목록 조회] error: {}", e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //카테고리별 원본 상품 목록 조회
-    @GetMapping("/category")
-    public BaseResponse<List<OriginProductDTO>> getOriginProductsWithCategory(@RequestParam UUID categoryId) {
-        return BaseResponse.onSuccess(originProductService.getOriginProductsWithCategory(categoryId));
+    @Operation(summary = "카테고리별 원본 상품 목록 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/category/{categoryId}/list")
+    public BaseResponse<List<OriginProductDTO>> getOriginProductsWithCategory(
+        @RequestParam UUID categoryId) {
+        try {
+            log.info("[카테고리별 원본 상품 목록 조회] request: {}", categoryId);
+            return BaseResponse.onSuccess(originProductService.getOriginProductsWithCategory(categoryId));
+        } catch (Exception e) {
+            log.error("[카테고리별 원본 상품 목록 조회] request: {}, error: {}", categoryId, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //원본 상품 검색
-    @GetMapping("/search")
-    public BaseResponse<List<OriginProductDTO>> searchOriginProducts(@RequestParam String query) {
-        return BaseResponse.onSuccess(originProductService.searchOriginProducts(query));
+    @Operation(summary = "원본 상품 검색")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/search/{query}") //추후 수정 필요 query로 검색할건지
+    public BaseResponse<List<OriginProductDTO>> searchOriginProducts(
+        @RequestParam String query) {
+        try {
+            log.info("[원본 상품 검색] request: {}", query);
+            return BaseResponse.onSuccess(originProductService.searchOriginProducts(query));
+        } catch (Exception e) {
+            log.error("[원본 상품 검색] request: {}, error: {}", query, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //원본 상품 삭제
-    @DeleteMapping
-    public BaseResponse<Void> deleteOriginProduct(@RequestParam UUID originProductId) {
-        OriginProductRequest.DeleteOriginProduct request = new OriginProductRequest.DeleteOriginProduct(originProductId);
-        originProductService.deleteOriginProduct(request);
-        return BaseResponse.onSuccess(null);
+    @Operation(summary = "원본 상품 삭제")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "삭제 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @DeleteMapping("/{originProductId}")
+    public BaseResponse<Void> deleteOriginProduct(
+        @RequestParam UUID originProductId) {
+        try {
+            log.info("[원본 상품 삭제] request: {}", originProductId);
+            originProductService.deleteOriginProduct(new OriginProductRequest.DeleteOriginProduct(originProductId));
+            return BaseResponse.onSuccess(null);
+        } catch (Exception e) {
+            log.error("[원본 상품 삭제] request: {}, error: {}", originProductId, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
 }

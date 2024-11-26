@@ -17,35 +17,86 @@ import com.checkhouse.core.service.CollectService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Slf4j
-@Tag(name = "collect apis")
+@Tag(name = "collect apis", description = "수거 관련 API - 수거 등록, 수거 상태 업데이트, 수거 리스트 조회, 수거 삭제")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("collect")
+@RequestMapping("api/v1/collect")
 public class CollectController {
     private final CollectService collectService;
 
     //수거 등록
+    @Operation(summary = "수거 등록")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "등록 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
     @PostMapping
-    public BaseResponse<CollectDTO> addCollect(@RequestBody CollectRequest.AddCollectRequest req) {
-        return BaseResponse.onSuccess(collectService.addCollect(req));
+    public BaseResponse<CollectDTO> addCollect(
+        @Valid @RequestBody CollectRequest.AddCollectRequest req) {
+        try {
+            log.info("[수거 등록] request: {}", req);
+            return BaseResponse.onSuccess(collectService.addCollect(req));
+        } catch (Exception e) {
+            log.error("[수거 등록] request: {}, error: {}", req, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //수거 상태 업데이트
-    @PatchMapping
-    public BaseResponse<CollectDTO> updateCollectState(@RequestBody CollectRequest.UpdateCollectRequest req) {
-        return BaseResponse.onSuccess(collectService.updateCollect(req));
+    @Operation(summary = "수거 상태 업데이트")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "수정 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PatchMapping("/{collectId}")
+    public BaseResponse<CollectDTO> updateCollectState(
+        @Valid @RequestBody CollectRequest.UpdateCollectRequest req) {
+        try {
+            log.info("[수거 상태 업데이트] request: {}", req);
+            return BaseResponse.onSuccess(collectService.updateCollect(req));
+        } catch (Exception e) {
+            log.error("[수거 상태 업데이트] request: {}, error: {}", req, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //수거 리스트 조회
-    @GetMapping
+    @Operation(summary = "수거 리스트 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/list")
     public BaseResponse<List<CollectDTO>> getCollectList() {
-        return BaseResponse.onSuccess(collectService.getCollectList());
+        try {
+            log.info("[수거 리스트 조회]");
+            return BaseResponse.onSuccess(collectService.getCollectList());
+        } catch (Exception e) {
+            log.error("[수거 리스트 조회] error: {}", e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
     //수거 삭제
-    @DeleteMapping
-    public BaseResponse<Void> deleteCollect(@RequestBody CollectRequest.DeleteCollectRequest req) {
-        collectService.deleteCollect(req);
-        return BaseResponse.onSuccess(null);
+    @Operation(summary = "수거 삭제")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "삭제 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @DeleteMapping("/{collectId}")
+    public BaseResponse<Void> deleteCollect(
+        @Valid @RequestBody CollectRequest.DeleteCollectRequest req) {
+        try {
+            log.info("[수거 삭제] request: {}", req);
+            collectService.deleteCollect(req);
+            return BaseResponse.onSuccess(null);
+        } catch (Exception e) {
+            log.error("[수거 삭제] request: {}, error: {}", req, e.getMessage());
+            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+        }
     }
 }
