@@ -714,7 +714,7 @@ public class ImageServiceTest {
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addInspectionImage(req));
 
-        assertEquals(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND, exception.getCode());
+        assertEquals(ErrorStatus._INSPECTION_ID_NOT_FOUND, exception.getCode());
         verify(inspectionRepository, times(1)).findById(any());
     }
     @DisplayName("검수 이미지 추가 실패 - 이미 usedimage와 매핑되는 이미지가 존재")
@@ -739,7 +739,7 @@ public class ImageServiceTest {
 
         assertEquals(ErrorStatus._INSPECTION_IMAGE_ALREADY_EXISTS, exception.getCode());
         verify(usedImageRepository, times(1)).findById(usedImage1.getUsedImageId());
-        verify(inspectionImageRepository, times(1)).findInspectionImageByUsedImageUsedImageId(inspectionImage1.getInspectionImageId());
+        verify(inspectionImageRepository, times(1)).findInspectionImageByUsedImageUsedImageId(inspectionImage1.getUsedImage().getUsedImageId());
     }
     @DisplayName("검수 이미지 추가 실패 - inspection과 usedimage의 usedproduct가 다름")
     @Test
@@ -765,7 +765,7 @@ public class ImageServiceTest {
 
         // given
         when(inspectionRepository.findById(inspection1.getInspectionId())).thenReturn(Optional.of(inspection1));
-        when(usedImageRepository.findById(usedImage1.getUsedImageId())).thenReturn(Optional.of(differentUsedImage));
+        when(usedImageRepository.findById(differentUsedImage.getUsedImageId())).thenReturn(Optional.of(differentUsedImage));
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addInspectionImage(req));
