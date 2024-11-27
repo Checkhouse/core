@@ -40,13 +40,8 @@ public class FavoriteController {
     @PostMapping("/origin")
     public BaseResponse<FavoriteDTO> addFavoriteOrigin(
         @Valid @RequestBody FavoriteRequest.AddToFavoriteRequest req) {
-        try {
-            log.info("[origin favorite 등록] request: {}", req);
-            return BaseResponse.onSuccess(favoriteService.addFavoriteOrigin(req));
-        } catch (Exception e) {
-            log.error("[origin favorite 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[origin favorite 등록] request: {}", req);
+        return BaseResponse.onSuccess(favoriteService.addFavoriteOrigin(req));
     }
     //used favorite 등록
     @Operation(summary = "used favorite 등록")
@@ -57,13 +52,8 @@ public class FavoriteController {
     @PostMapping("/used")
     public BaseResponse<FavoriteDTO> addFavoriteUsed(
         @Valid @RequestBody FavoriteRequest.AddUsedProductLikeRequest req) {
-        try {
-            log.info("[used favorite 등록] request: {}", req);
-            return BaseResponse.onSuccess(favoriteService.addFavoriteUsed(req));
-        } catch (Exception e) {
-            log.error("[used favorite 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[used favorite 등록] request: {}", req);
+        return BaseResponse.onSuccess(favoriteService.addFavoriteUsed(req));
     }
     //origin favorite 삭제
     @Operation(summary = "origin favorite 삭제")
@@ -74,14 +64,9 @@ public class FavoriteController {
     @DeleteMapping("/origin/{favoriteId}")
     public BaseResponse<Void> removeFavoriteOrigin(
         @Valid @RequestBody FavoriteRequest.RemoveFromFavoriteRequest req) {
-        try {
-            log.info("[origin favorite 삭제] request: {}", req);
-            favoriteService.removeFavoriteOrigin(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[origin favorite 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[origin favorite 삭제] request: {}", req);
+        favoriteService.removeFavoriteOrigin(req);
+        return BaseResponse.onSuccess(null);
     }
     //used favorite 삭제
     @Operation(summary = "used favorite 삭제")
@@ -92,14 +77,9 @@ public class FavoriteController {
     @DeleteMapping("/used/{favoriteId}")
     public BaseResponse<Void> removeFavoriteUsed(
         @Valid @RequestBody FavoriteRequest.RemoveUsedProductLikeRequest req) {
-        try {
-            log.info("[used favorite 삭제] request: {}", req);
-            favoriteService.removeFavoriteUsed(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[used favorite 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[used favorite 삭제] request: {}", req);
+        favoriteService.removeFavoriteUsed(req);
+        return BaseResponse.onSuccess(null);
     }
     //origin favorite 조회
     @Operation(summary = "origin favorite 조회")
@@ -110,13 +90,8 @@ public class FavoriteController {
     @GetMapping("/origin/list")
     public BaseResponse<List<FavoriteDTO>> getUserFavoriteOrigins(
         @Valid @RequestBody FavoriteRequest.GetUserFavoriteOrigins req) {
-        try {
-            log.info("[origin favorite 조회] request: {}", req);
-            return BaseResponse.onSuccess(favoriteService.getUserFavoriteOrigins(req));
-        } catch (Exception e) {
-            log.error("[origin favorite 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[origin favorite 조회] request: {}", req);
+        return BaseResponse.onSuccess(favoriteService.getUserFavoriteOrigins(req));
     }
     //used favorite 조회
     @Operation(summary = "used favorite 조회")
@@ -127,13 +102,8 @@ public class FavoriteController {
     @GetMapping("/used/list")
     public BaseResponse<List<FavoriteDTO>> getUserFavoriteUsed(
         @Valid @RequestBody FavoriteRequest.GetUserFavoriteUsed req) {
-        try {
-            log.info("[used favorite 조회] request: {}", req);
-            return BaseResponse.onSuccess(favoriteService.getUserFavoriteUsed(req));
-        } catch (Exception e) {
-            log.error("[used favorite 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[used favorite 조회] request: {}", req);
+        return BaseResponse.onSuccess(favoriteService.getUserFavoriteUsed(req));
     }
     //origin favorite 개수 조회
     @Operation(summary = "origin favorite 개수 조회")
@@ -144,13 +114,8 @@ public class FavoriteController {
     @GetMapping("/origin/count")
     public BaseResponse<Integer> getOriginProductFavoriteCount(
         @RequestParam UUID originProductId) {
-        try {
-            log.info("[origin favorite 개수 조회] request: {}", originProductId);
-            return BaseResponse.onSuccess(favoriteService.getOriginProductFavoriteCount(originProductId));
-        } catch (Exception e) {
-            log.error("[origin favorite 개수 조회] request: {}, error: {}", originProductId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[origin favorite 개수 조회] request: {}", originProductId);
+        return BaseResponse.onSuccess(favoriteService.getOriginProductFavoriteCount(originProductId));
     }
     //used favorite 개수 조회
     @Operation(summary = "used favorite 개수 조회")
@@ -161,12 +126,7 @@ public class FavoriteController {
     @GetMapping("/used/count")
     public BaseResponse<Integer> getUsedProductFavoriteCount(
         @RequestParam UUID usedId) {
-        try {
-            log.info("[used favorite 개수 조회] request: {}", usedId);
-            return BaseResponse.onSuccess(favoriteService.getUsedProductFavoriteCount(usedId));
-        } catch (Exception e) {
-            log.error("[used favorite 개수 조회] request: {}, error: {}", usedId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[used favorite 개수 조회] request: {}", usedId);
+        return BaseResponse.onSuccess(favoriteService.getUsedProductFavoriteCount(usedId));
     }
 }

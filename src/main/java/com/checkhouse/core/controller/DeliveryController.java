@@ -3,6 +3,7 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,14 +41,9 @@ public class DeliveryController {
     })
     @PostMapping
     public BaseResponse<DeliveryDTO> addDelivery(
-        @Valid @RequestBody DeliveryRequest.AddDeliveryRequest req) {
-        try {
-            log.info("[배송 등록] request: {}", req);
-            return BaseResponse.onSuccess(deliveryService.addDelivery(req));
-        } catch (Exception e) {
-            log.error("[배송 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        @RequestBody DeliveryRequest.AddDeliveryRequest req) {
+        DeliveryDTO delivery = deliveryService.addDelivery(req);
+        return BaseResponse.onSuccess(delivery);
     }
     //배송 상태 업데이트
     @Operation(summary = "배송 상태 업데이트")
@@ -55,15 +51,11 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "업데이트 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping
-    public BaseResponse<DeliveryDTO> updateDeliveryState(@RequestBody DeliveryRequest.UpdateDeliveryStateRequest req) {
-        try {   
-            log.info("[배송 상태 업데이트] request: {}", req);
-            return BaseResponse.onSuccess(deliveryService.updateDeliveryState(req));
-        } catch (Exception e) {
-            log.error("[배송 상태 업데이트] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+    @PatchMapping("/{deliveryId}")
+    public BaseResponse<DeliveryDTO> updateDeliveryState(
+        @RequestBody DeliveryRequest.UpdateDeliveryStateRequest req) {
+        DeliveryDTO delivery = deliveryService.updateDeliveryState(req);
+        return BaseResponse.onSuccess(delivery);
     }
     //배송 리스트 조회
     @Operation(summary = "배송 리스트 조회")
@@ -71,7 +63,7 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping
+    @GetMapping("/list")
     public BaseResponse<List<DeliveryDTO>> getDeliveryList() {
         log.info("[배송 리스트 조회]");
         return BaseResponse.onSuccess(deliveryService.getDeliveryList());
@@ -82,16 +74,11 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "등록 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PostMapping("/tracking-code")
+    @PostMapping("/tracking-code/{deliveryId}")
     public BaseResponse<DeliveryDTO> registerTrackingCode(
-        @Valid @RequestBody DeliveryRequest.RegisterTrackingCodeRequest req) {
-        try {
-            log.info("[송장 번호 등록] request: {}", req);
-            return BaseResponse.onSuccess(deliveryService.registerTrackingCode(req));
-        } catch (Exception e) {
-            log.error("[송장 번호 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        @RequestBody DeliveryRequest.RegisterTrackingCodeRequest req) {
+        DeliveryDTO delivery = deliveryService.registerTrackingCode(req);
+        return BaseResponse.onSuccess(delivery);
     }
     //배송 삭제
     @Operation(summary = "배송 삭제")
@@ -99,16 +86,11 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping
+    @DeleteMapping("/{deliveryId}")
     public BaseResponse<Void> deleteDelivery(
-        @Valid @RequestBody DeliveryRequest.DeleteDeliveryRequest req) {
-        try {
-            log.info("[배송 삭제] request: {}", req);
-            deliveryService.deleteDelivery(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[배송 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        @RequestBody DeliveryRequest.DeleteDeliveryRequest req) {
+        log.info("[배송 삭제] request: {}", req);
+        deliveryService.deleteDelivery(req);
+        return BaseResponse.onSuccess(null);
     }
 }

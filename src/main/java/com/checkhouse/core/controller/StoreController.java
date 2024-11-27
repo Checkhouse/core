@@ -40,13 +40,8 @@ public class StoreController {
     @PostMapping
     public BaseResponse<StoreDTO> addStore(
         @Valid @RequestBody StoreRequest.AddStoreRequest req) {
-        try {
-            log.info("[스토어 추가] request: {}", req);
-            return BaseResponse.onSuccess(storeService.addStore(req));
-        } catch (Exception e) {
-            log.error("[스토어 추가] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 추가] request: {}", req);
+        return BaseResponse.onSuccess(storeService.addStore(req));
     }
     //스토어 이름으로 조회
     @Operation(summary = "스토어 이름으로 조회")
@@ -56,13 +51,8 @@ public class StoreController {
     })
     @GetMapping("/name")
     public BaseResponse<StoreDTO> getStoreByName(String name) {
-        try {
-            log.info("[스토어 이름으로 조회] name: {}", name);
-            return BaseResponse.onSuccess(storeService.getStoreByName(name));
-        } catch (Exception e) {
-            log.error("[스토어 이름으로 조회] name: {}, error: {}", name, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 이름으로 조회] name: {}", name);
+        return BaseResponse.onSuccess(storeService.getStoreByName(name));
     }
     //스토어 조회
     @Operation(summary = "스토어 조회")
@@ -73,13 +63,8 @@ public class StoreController {
     @GetMapping("/{storeId}")
     public BaseResponse<StoreDTO> getStore(
         @Valid @RequestBody StoreRequest.GetStoreRequest req) {
-        try {
-            log.info("[스토어 조회] request: {}", req);
-            return BaseResponse.onSuccess(storeService.getStore(req));
-        } catch (Exception e) {
-            log.error("[스토어 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 조회] request: {}", req);
+        return BaseResponse.onSuccess(storeService.getStore(req));
     }
     //스토어 리스트 조회
     @Operation(summary = "스토어 리스트 조회")
@@ -89,13 +74,8 @@ public class StoreController {
     })
     @GetMapping("/list")
     public BaseResponse<List<StoreDTO>> getStores() {
-        try {
-            log.info("[스토어 리스트 조회]");
-            return BaseResponse.onSuccess(storeService.getStores());
-        } catch (Exception e) {
-            log.error("[스토어 리스트 조회] error: {}", e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 리스트 조회]");
+        return BaseResponse.onSuccess(storeService.getStores());
     }
     //스토어 정보 수정
     @Operation(summary = "스토어 정보 수정")
@@ -106,13 +86,8 @@ public class StoreController {
     @PutMapping("/{storeId}")
     public BaseResponse<StoreDTO> updateStore(
         @Valid @RequestBody StoreRequest.UpdateStoreRequest req) {
-        try {
-            log.info("[스토어 정보 수정] request: {}", req);
-            return BaseResponse.onSuccess(storeService.updateStore(req));
-        } catch (Exception e) {
-            log.error("[스토어 정보 수정] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 정보 수정] request: {}", req);
+        return BaseResponse.onSuccess(storeService.updateStore(req));
     }
     //스토어 코드 수정
     @Operation(summary = "스토어 코드 수정")
@@ -123,13 +98,8 @@ public class StoreController {
     @PutMapping("/code/{storeId}")
     public BaseResponse<StoreDTO> updateStoreCode(
         @Valid @RequestBody StoreRequest.UpdateStoreCodeRequest req) {
-        try {
-            log.info("[스토어 코드 수정] request: {}", req);
-            return BaseResponse.onSuccess(storeService.updateStoreCode(req));
-        } catch (Exception e) {
-            log.error("[스토어 코드 수정] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 코드 수정] request: {}", req);
+        return BaseResponse.onSuccess(storeService.updateStoreCode(req));
     }
     //스토어 코드 확인
     @Operation(summary = "스토어 코드 확인")
@@ -140,13 +110,8 @@ public class StoreController {
     @GetMapping("/code/{storeId}")
     public BaseResponse<Boolean> verifyCode(
         @Valid @RequestBody StoreRequest.VerifyCodeRequest req) {
-        try {
-            log.info("[스토어 코드 확인] request: {}", req);
-            return BaseResponse.onSuccess(storeService.verifyCode(req));
-        } catch (Exception e) {
-            log.error("[스토어 코드 확인] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 코드 확인] request: {}", req);
+        return BaseResponse.onSuccess(storeService.verifyCode(req));
     }
     //스토어 삭제
     @Operation(summary = "스토어 삭제")
@@ -157,13 +122,8 @@ public class StoreController {
     @DeleteMapping("/{storeId}")
     public BaseResponse<Void> deleteStore(
         @Valid @RequestBody StoreRequest.DeleteStoreRequest req) {
-        try {
-            log.info("[스토어 삭제] request: {}", req);
-            storeService.deleteStore(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[스토어 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[스토어 삭제] request: {}", req);
+        storeService.deleteStore(req);
+        return BaseResponse.onSuccess(null);
     }
 }

@@ -10,7 +10,10 @@ import com.checkhouse.core.entity.Send;
 import com.checkhouse.core.entity.Transaction;
 
 public interface SendRepository extends JpaRepository<Send, UUID> {
+
     Optional<Send> findBySendId(UUID sendId);
-    Optional<Send> findByTransaction(Transaction transaction);
-    List<Send> findByTransaction(UUID transactionId);
+
+    Optional<Send> findByTransactionTransactionId(UUID transactionId);
+
+    List<Send> findAllByTransactionTransactionId(UUID transactionId);
 }

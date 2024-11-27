@@ -40,13 +40,8 @@ public class CollectController {
     @PostMapping
     public BaseResponse<CollectDTO> addCollect(
         @Valid @RequestBody CollectRequest.AddCollectRequest req) {
-        try {
-            log.info("[수거 등록] request: {}", req);
-            return BaseResponse.onSuccess(collectService.addCollect(req));
-        } catch (Exception e) {
-            log.error("[수거 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[수거 등록] request: {}", req);
+        return BaseResponse.onSuccess(collectService.addCollect(req));
     }
     //수거 상태 업데이트
     @Operation(summary = "수거 상태 업데이트")
@@ -57,13 +52,8 @@ public class CollectController {
     @PatchMapping("/{collectId}")
     public BaseResponse<CollectDTO> updateCollectState(
         @Valid @RequestBody CollectRequest.UpdateCollectRequest req) {
-        try {
-            log.info("[수거 상태 업데이트] request: {}", req);
-            return BaseResponse.onSuccess(collectService.updateCollect(req));
-        } catch (Exception e) {
-            log.error("[수거 상태 업데이트] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[수거 상태 업데이트] request: {}", req);
+        return BaseResponse.onSuccess(collectService.updateCollect(req));
     }
     //수거 리스트 조회
     @Operation(summary = "수거 리스트 조회")
@@ -73,13 +63,8 @@ public class CollectController {
     })
     @GetMapping("/list")
     public BaseResponse<List<CollectDTO>> getCollectList() {
-        try {
-            log.info("[수거 리스트 조회]");
-            return BaseResponse.onSuccess(collectService.getCollectList());
-        } catch (Exception e) {
-            log.error("[수거 리스트 조회] error: {}", e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[수거 리스트 조회]");
+        return BaseResponse.onSuccess(collectService.getCollectList());
     }
     //수거 삭제
     @Operation(summary = "수거 삭제")
@@ -90,13 +75,8 @@ public class CollectController {
     @DeleteMapping("/{collectId}")
     public BaseResponse<Void> deleteCollect(
         @Valid @RequestBody CollectRequest.DeleteCollectRequest req) {
-        try {
-            log.info("[수거 삭제] request: {}", req);
-            collectService.deleteCollect(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[수거 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[수거 삭제] request: {}", req);
+        collectService.deleteCollect(req);
+        return BaseResponse.onSuccess(null);
     }
 }

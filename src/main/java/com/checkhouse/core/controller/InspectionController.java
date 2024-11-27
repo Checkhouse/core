@@ -42,13 +42,8 @@ public class InspectionController {
     @PostMapping
     public BaseResponse<InspectionDTO> addInspection(
         @Valid @RequestBody InspectionRequest.AddInspectionRequest req) {
-        try {
-            log.info("[검수 등록] request: {}", req);
-            return BaseResponse.onSuccess(inspectionService.addInspection(req));
-        } catch (Exception e) {
-            log.error("[검수 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[검수 등록] request: {}", req);
+        return BaseResponse.onSuccess(inspectionService.addInspection(req));
     }
     //검수 상태 업데이트
     @Operation(summary = "검수 상태 업데이트")
@@ -59,13 +54,8 @@ public class InspectionController {
     @PatchMapping("/state/{inspectionId}")
     public BaseResponse<InspectionDTO> updateInspection(
         @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req) {
-        try {
-            log.info("[검수 상태 업데이트] request: {}", req);
-            return BaseResponse.onSuccess(inspectionService.updateInspection(req.inspectionId(), req));
-        } catch (Exception e) {
-            log.error("[검수 상태 업데이트] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[검수 상태 업데이트] request: {}", req);
+        return BaseResponse.onSuccess(inspectionService.updateInspection(req.inspectionId(), req));
     }
     //검수 삭제
     @Operation(summary = "검수 삭제")
@@ -76,14 +66,9 @@ public class InspectionController {
     @DeleteMapping("/{inspectionId}")
     public BaseResponse<Void> deleteInspection(
         @Valid @RequestBody InspectionRequest.DeleteInspectionRequest req) {
-        try {
-            log.info("[검수 삭제] request: {}", req);
-            inspectionService.deleteInspection(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[검수 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[검수 삭제] request: {}", req);
+        inspectionService.deleteInspection(req);
+        return BaseResponse.onSuccess(null);
     }
     //검수 설명 수정
     @Operation(summary = "검수 설명 수정")
@@ -94,13 +79,8 @@ public class InspectionController {
     @PatchMapping("/description/{inspectionId}")
     public BaseResponse<InspectionDTO> updateInspectionDescription(
         @Valid @RequestBody InspectionRequest.UpdateInspectionDescriptionRequest req) {
-        try {
-            log.info("[검수 설명 수정] request: {}", req);
-            return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(req.inspectionId(), req));
-        } catch (Exception e) {
-            log.error("[검수 설명 수정] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[검수 설명 수정] request: {}", req);
+        return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(req.inspectionId(), req));
     }
     //검수 리스트 조회
     @Operation(summary = "검수 리스트 조회")
@@ -108,16 +88,11 @@ public class InspectionController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list/{usedProductId}")
+    @GetMapping("/list")
     public BaseResponse<List<InspectionDTO>> getInspectionList(
         @RequestParam UUID usedProductId) {
-        try {
-            log.info("[검수 리스트 조회] request: {}", usedProductId);
-            return BaseResponse.onSuccess(inspectionService.getInspectionList(usedProductId));
-        } catch (Exception e) {
-            log.error("[검수 리스트 조회] request: {}, error: {}", usedProductId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[검수 리스트 조회] request: {}", usedProductId);
+        return BaseResponse.onSuccess(inspectionService.getInspectionList(usedProductId));
     }
     //todo: 검수 사진 등록
 }

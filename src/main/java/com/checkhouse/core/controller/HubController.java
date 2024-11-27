@@ -42,13 +42,8 @@ public class HubController {
     @PostMapping
     public BaseResponse<HubDTO> addHub(
         @Valid @RequestBody HubRequest.AddHubRequest req) {
-        try {
-            log.info("[허브 추가] request: {}", req);
-            return BaseResponse.onSuccess(hubService.addHub(req));
-        } catch (Exception e) {
-            log.error("[허브 추가] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[허브 추가] request: {}", req);
+        return BaseResponse.onSuccess(hubService.addHub(req));
     }
     //허브 수정
     @Operation(summary = "허브 수정")
@@ -59,13 +54,8 @@ public class HubController {
     @PutMapping("/{hubId}")
     public BaseResponse<HubDTO> updateHub(
         @Valid @RequestBody HubRequest.UpdateHubRequest req) {
-        try {
-            log.info("[허브 수정] request: {}", req);
-            return BaseResponse.onSuccess(hubService.updateHub(req));
-        } catch (Exception e) {
-            log.error("[허브 수정] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[허브 수정] request: {}", req);
+        return BaseResponse.onSuccess(hubService.updateHub(req));
     }
     //허브 삭제
     @Operation(summary = "허브 삭제")
@@ -76,14 +66,9 @@ public class HubController {
     @DeleteMapping("/{hubId}")
     public BaseResponse<Void> deleteHub(
         @Valid @RequestBody HubRequest.DeleteHubRequest req) {
-        try {
-            log.info("[허브 삭제] request: {}", req);
-            hubService.deleteHub(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[허브 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[허브 삭제] request: {}", req);
+        hubService.deleteHub(req);
+        return BaseResponse.onSuccess(null);
     }
     //허브 조회
     @Operation(summary = "허브 조회")
@@ -93,13 +78,8 @@ public class HubController {
     })
     @GetMapping
     public BaseResponse<List<HubDTO>> getHubs() {
-        try {
-            log.info("[허브 조회]");
-            return BaseResponse.onSuccess(hubService.getHubs());
-        } catch (Exception e) {
-            log.error("[허브 조회] error: {}", e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[허브 조회]");
+        return BaseResponse.onSuccess(hubService.getHubs());
     }
     // todo: 허브 할당
     // @Operation(summary = "허브 할당")
@@ -128,13 +108,8 @@ public class HubController {
     @PostMapping("/stock")
     public BaseResponse<StockDTO> addStock(
         @Valid @RequestBody HubRequest.AddStockRequest req) {
-        try {
-            log.info("[재고 추가] request: {}", req);
-            return BaseResponse.onSuccess(hubService.addStock(req));
-        } catch (Exception e) {
-            log.error("[재고 추가] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[재고 추가] request: {}", req);
+        return BaseResponse.onSuccess(hubService.addStock(req));
     }
     // 재고 수정
     @Operation(summary = "재고 수정")
@@ -145,13 +120,8 @@ public class HubController {
     @PutMapping("/stock/{stockId}")
     public BaseResponse<StockDTO> updateStock(
         @Valid @RequestBody HubRequest.UpdateStockAreaRequest req) {
-        try {
-            log.info("[재고 수정] request: {}", req);
-            return BaseResponse.onSuccess(hubService.updateStockArea(req));
-        } catch (Exception e) {
-            log.error("[재고 수정] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[재고 수정] request: {}", req);
+        return BaseResponse.onSuccess(hubService.updateStockArea(req));
     }
     // 재고 조회
     @Operation(summary = "재고 조회")
@@ -162,13 +132,8 @@ public class HubController {
     @GetMapping("/stock/{usedProductId}")
     public BaseResponse<StockDTO> getStock(
         @Valid @RequestBody HubRequest.GetStockByUsedProductIdRequest req) {
-        try {
-            log.info("[재고 조회] request: {}", req);
-            return BaseResponse.onSuccess(hubService.getStockByUsedProductId(req));
-        } catch (Exception e) {
-            log.error("[재고 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[재고 조회] request: {}", req);
+        return BaseResponse.onSuccess(hubService.getStockByUsedProductId(req));
     }
     // 재고 조회(허브별)
     @Operation(summary = "재고 조회(허브별)")
@@ -179,13 +144,8 @@ public class HubController {
     @GetMapping("/stock/{hubId}")
     public BaseResponse<List<StockDTO>> getStocksByHubId(
         @Valid @RequestBody HubRequest.GetStocksByHubIdRequest req) {
-        try {
-            log.info("[재고 조회(허브별)] request: {}", req);
-            return BaseResponse.onSuccess(hubService.getStocksByHubId(req));
-        } catch (Exception e) {
-            log.error("[재고 조회(허브별)] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[재고 조회(허브별)] request: {}", req);
+        return BaseResponse.onSuccess(hubService.getStocksByHubId(req));
     }
     // 재고 조회(지역별)
     @Operation(summary = "재고 조회(지역별)")
@@ -196,13 +156,8 @@ public class HubController {
     @GetMapping("/stock/{area}")
     public BaseResponse<List<StockDTO>> getStocksByArea(
         @Valid @RequestBody HubRequest.GetStocksByAreaRequest req) {
-        try {
-            log.info("[재고 조회(지역별)] request: {}", req);
-            return BaseResponse.onSuccess(hubService.getStocksByArea(req));
-        } catch (Exception e) {
-            log.error("[재고 조회(지역별)] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[재고 조회(지역별)] request: {}", req);
+        return BaseResponse.onSuccess(hubService.getStocksByArea(req));
     }
     // 재고 삭제
     @Operation(summary = "재고 삭제")
@@ -213,13 +168,8 @@ public class HubController {
     @DeleteMapping("/stock/{stockId}")
     public BaseResponse<Void> deleteStock(
         @Valid @RequestBody HubRequest.DeleteStockRequest req) {
-        try {
-            log.info("[재고 삭제] request: {}", req);
-            hubService.deleteStock(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[재고 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[재고 삭제] request: {}", req);
+        hubService.deleteStock(req);
+        return BaseResponse.onSuccess(null);
     }
 }

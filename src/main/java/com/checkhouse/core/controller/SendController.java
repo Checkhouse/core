@@ -40,13 +40,8 @@ public class SendController {
     @PostMapping
     public BaseResponse<SendDTO> addSend(
         @RequestBody SendRequest.AddSendRequest req) {
-        try {
-            log.info("[발송 등록] request: {}", req);
-            return BaseResponse.onSuccess(sendService.addSend(req));
-        } catch (Exception e) {
-            log.error("[발송 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[발송 등록] request: {}", req);
+        return BaseResponse.onSuccess(sendService.addSend(req));
     }
     //발송 상태 업데이트
     @Operation(summary = "발송 상태 업데이트")
@@ -57,13 +52,8 @@ public class SendController {
     @PatchMapping("/{sendId}")
     public BaseResponse<SendDTO> updateSendState(
         @RequestBody SendRequest.UpdateSendStateRequest req) {
-        try {
-            log.info("[발송 상태 업데이트] request: {}", req);
-            return BaseResponse.onSuccess(sendService.updateSendState(req));
-        } catch (Exception e) {
-            log.error("[발송 상태 업데이트] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[발송 상태 업데이트] request: {}", req);
+        return BaseResponse.onSuccess(sendService.updateSendState(req));
     }
     //발송 삭제
     @Operation(summary = "발송 삭제")
@@ -74,14 +64,9 @@ public class SendController {
     @DeleteMapping("/{sendId}")
     public BaseResponse<Void> deleteSend(
         @RequestBody SendRequest.DeleteSendRequest req) {
-        try {
-            log.info("[발송 삭제] request: {}", req);
-            sendService.deleteSend(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[발송 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[발송 삭제] request: {}", req);
+        sendService.deleteSend(req);
+        return BaseResponse.onSuccess(null);
     }
     //발송 리스트 조회
     @Operation(summary = "발송 리스트 조회")
@@ -92,12 +77,7 @@ public class SendController {
     @GetMapping("/list/{transactionId}")
     public BaseResponse<List<SendDTO>> getSendList(
         @RequestParam UUID transactionId) {
-        try {
-            log.info("[발송 리스트 조회] request: {}", transactionId);
-            return BaseResponse.onSuccess(sendService.getSendList(transactionId));
-        } catch (Exception e) {
-            log.error("[발송 리스트 조회] request: {}, error: {}", transactionId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[발송 리스트 조회] request: {}", transactionId);
+        return BaseResponse.onSuccess(sendService.getSendList(transactionId));
     }
 }

@@ -12,33 +12,45 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.checkhouse.core.dto.request.DeliveryRequest;
+import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Delivery;
+import com.checkhouse.core.entity.enums.DeliveryState;
 import com.checkhouse.core.integration.BaseIntegrationTest;
 import com.checkhouse.core.service.DeliveryService;
 
-@WebMvcTest(DeliveryController.class)
-@AutoConfigureMockMvc
+
+@WebMvcTest(controllers = DeliveryController.class)
 public class DeliveryControllerTest extends BaseIntegrationTest {
     private static final String BASE_URL = "/delivery";
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mvc;
 
     @MockBean
     private DeliveryService deliveryService;
 
     @BeforeEach
-    void setup() {}
+    void setup() {
+        Delivery delivery = Delivery.builder()
+            .deliveryId(UUID.randomUUID())
+            .address(Address.builder()
+                .address("test address")
+                .build())
+            .trackingCode("test tracking code")
+            .deliveryState(DeliveryState.PRE_DELIVERY)
+            .build();
+    }
     @Test
     @DisplayName("배송 등록 성공")
-    void SUCCESS_addDelivery() throws Exception {
-        
+    public void SUCCESS_addDelivery() throws Exception {
     }
     @Test
     @DisplayName("배송 수정 성공")
-    void SUCCESS_updateDelivery() throws Exception {
+    public void SUCCESS_updateDelivery() throws Exception {
         
     }
     @Test

@@ -46,13 +46,8 @@ public class UsedProductController {
     public BaseResponse<UsedProductDTO> addUsedProduct(
         @Valid @RequestBody UsedProductRequest.AddUsedProductRequest req
     ) {
-        try {
-            log.info("[중고 상품 등록] request: {}", req);
-            return BaseResponse.onSuccess(usedProductService.addUsedProduct(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 등록] request: {}", req);
+        return BaseResponse.onSuccess(usedProductService.addUsedProduct(req));
     }
     //중고 상품 정보 수정
     @Operation(summary = "중고 상품 정보 수정")
@@ -66,13 +61,8 @@ public class UsedProductController {
         @PathVariable UUID productId,
         @Valid @RequestBody UsedProductRequest.UpdateUsedProductInfo req
     ) {
-        try {
-            log.info("[중고 상품 수정] productId: {}, request: {}", productId, req);
-            return BaseResponse.onSuccess(usedProductService.updateUsedProductInfo(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 수정] productId: {}, request: {}, error: {}", productId, req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 수정] productId: {}, request: {}", productId, req);
+        return BaseResponse.onSuccess(usedProductService.updateUsedProductInfo(req));
     }
     //중고 상품 네고 상태 수정
     @Operation(summary = "중고 상품 네고 상태 수정")
@@ -86,13 +76,8 @@ public class UsedProductController {
         @PathVariable UUID productId,
         @Valid @RequestBody UsedProductRequest.UpdateUsedProductNegoState req
     ) {
-        try {
-            log.info("[중고 상품 네고 상태 수정] productId: {}, request: {}", productId, req);
-            return BaseResponse.onSuccess(usedProductService.updateUsedProductNegoState(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 네고 상태 수정] productId: {}, request: {}, error: {}", productId, req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 네고 상태 수정] productId: {}, request: {}", productId, req);
+        return BaseResponse.onSuccess(usedProductService.updateUsedProductNegoState(req));
     }
     //중고 상품 상태 수정
     @Operation(summary = "중고 상품 상태 수정")
@@ -106,13 +91,8 @@ public class UsedProductController {
         @PathVariable UUID productId,
         @Valid @RequestBody UsedProductRequest.UpdateUsedProductState req
     ) {
-        try {
-            log.info("[중고 상품 상태 수정] productId: {}, request: {}", productId, req);
-            return BaseResponse.onSuccess(usedProductService.updateUsedProductStatus(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 상태 수정] productId: {}, request: {}, error: {}", productId, req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 상태 수정] productId: {}, request: {}", productId, req);
+        return BaseResponse.onSuccess(usedProductService.updateUsedProductStatus(req));
     }
     //중고 상품 취소
     @Operation(summary = "중고 상품 취소")
@@ -124,15 +104,10 @@ public class UsedProductController {
     @DeleteMapping("/{productId}")
     public BaseResponse<Void> cancelUsedProduct(
         @PathVariable UUID usedProductId
-    ) { 
-        try {
-            log.info("[중고 상품 취소] productId: {}", usedProductId);
-            usedProductService.cancelAddUsedProduct(usedProductId);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[중고 상품 취소] productId: {}, error: {}", usedProductId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+    ) {
+        log.info("[중고 상품 취소] productId: {}", usedProductId);
+        usedProductService.cancelAddUsedProduct(usedProductId);
+        return BaseResponse.onSuccess(null);
     }
     //중고 상품 상세 조회
     @Operation(summary = "중고 상품 상세 조회")
@@ -145,13 +120,8 @@ public class UsedProductController {
     public BaseResponse<UsedProductDTO> getUsedProductDetails(
         @PathVariable UUID usedProductId
     ) {
-        try {
-            log.info("[중고 상품 상세 조회] productId: {}", usedProductId);
-            return BaseResponse.onSuccess(usedProductService.getUsedProductDetails(usedProductId));
-        } catch (Exception e) {
-            log.error("[중고 상품 상세 조회] productId: {}, error: {}", usedProductId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 상세 조회] productId: {}", usedProductId);
+        return BaseResponse.onSuccess(usedProductService.getUsedProductDetails(usedProductId));
     }
     //중고 상품 상태별 목록 조회
     @Operation(summary = "중고 상품 상태별 목록 조회")
@@ -160,17 +130,12 @@ public class UsedProductController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청"),
         @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @GetMapping("/status/{status}")
+    @GetMapping("/search/{status}")
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByStatus(
         @PathVariable UsedProductState status
     ) {
-        try {
-            log.info("[중고 상품 상태별 목록 조회] status: {}", status);
-            return BaseResponse.onSuccess(usedProductService.getUsedProductsByStatus(status.name()));
-        } catch (Exception e) {
-            log.error("[중고 상품 상태별 목록 조회] status: {}, error: {}", status, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 상태별 목록 조회] status: {}", status);
+        return BaseResponse.onSuccess(usedProductService.getUsedProductsByStatus(status.name()));
     }
     //중고 상품 유저별 목록 조회
     @Operation(summary = "중고 상품 유저별 목록 조회")
@@ -179,17 +144,12 @@ public class UsedProductController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청"),
         @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
     })
-    @GetMapping("/user/{userId}")
+    @GetMapping("/search/{userId}")
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByUser(
         @PathVariable UUID userId
     ) {
-        try {
-            log.info("[중고 상품 유저별 목록 조회] userId: {}", userId);
-            return BaseResponse.onSuccess(usedProductService.getUsedProductsByUser(userId));
-        } catch (Exception e) {
-            log.error("[중고 상품 유저별 목록 조회] userId: {}, error: {}", userId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 유저별 목록 조회] userId: {}", userId);
+        return BaseResponse.onSuccess(usedProductService.getUsedProductsByUser(userId));
     }
     //중고 상품 유저별 중고상품 유저id 확인
     @Operation(summary = "중고 상품 유저별 중고상품 유저id 확인")
@@ -202,12 +162,7 @@ public class UsedProductController {
     public BaseResponse<UUID> getUserIdByUsedProduct(
         @PathVariable UUID usedProductId
     ) {
-        try {
-            log.info("[중고 상품 유저별 중고상품 유저id 확인] usedProductId: {}", usedProductId);
-            return BaseResponse.onSuccess(usedProductService.findUsedProduct(usedProductId).getUser().getUserId());
-        } catch (Exception e) {
-            log.error("[중고 상품 유저별 중고상품 유저id 확인] usedProductId: {}, error: {}", usedProductId, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 유저별 중고상품 유저id 확인] usedProductId: {}", usedProductId);
+        return BaseResponse.onSuccess(usedProductService.findUsedProduct(usedProductId).getUser().getUserId());
     }
 }

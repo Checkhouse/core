@@ -42,13 +42,8 @@ public class ImageConroller {
     @PostMapping
     public BaseResponse<ImageDTO> addImage(
         @Valid @RequestBody ImageRequest.AddImageRequest req) {
-        try {
-            log.info("[이미지 추가] request: {}", req);
-            return BaseResponse.onSuccess(imageService.addImage(req));
-        } catch (Exception e) {
-            log.error("[이미지 추가] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[이미지 추가] request: {}", req);
+        return BaseResponse.onSuccess(imageService.addImage(req));
     }
     //이미지 조회
     @Operation(summary = "이미지 조회")
@@ -59,13 +54,8 @@ public class ImageConroller {
     @GetMapping("/{imageId}")
     public BaseResponse<ImageDTO> getImage(
         @Valid @RequestBody ImageRequest.GetImageRequest req) {
-        try {
-            log.info("[이미지 조회] request: {}", req);
-            return BaseResponse.onSuccess(imageService.getImage(req));
-        } catch (Exception e) {
-            log.error("[이미지 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[이미지 조회] request: {}", req);
+        return BaseResponse.onSuccess(imageService.getImage(req));
     }
     //이미지 삭제
     @Operation(summary = "이미지 삭제")
@@ -76,14 +66,9 @@ public class ImageConroller {
     @DeleteMapping("/{imageId}")
     public BaseResponse<Void> deleteImage(
         @Valid @RequestBody ImageRequest.DeleteImageRequest req) {
-        try {
-            log.info("[이미지 삭제] request: {}", req);
-            imageService.deleteImage(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[이미지 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[이미지 삭제] request: {}", req);
+        imageService.deleteImage(req);
+        return BaseResponse.onSuccess(null);
     }
     //원본 이미지 추가
     @Operation(summary = "원본 이미지 추가")
@@ -94,13 +79,8 @@ public class ImageConroller {
     @PostMapping("/origin")
     public BaseResponse<OriginImageDTO> addOriginImage(
         @Valid @RequestBody ImageRequest.AddOriginImageRequest req) {
-        try {
-            log.info("[원본 이미지 추가] request: {}", req);
-            return BaseResponse.onSuccess(imageService.addOriginImage(req));
-        } catch (Exception e) {
-            log.error("[원본 이미지 추가] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[원본 이미지 추가] request: {}", req);
+        return BaseResponse.onSuccess(imageService.addOriginImage(req));
     }
     //원본 이미지 조회
     @Operation(summary = "원본 이미지 조회")
@@ -111,13 +91,8 @@ public class ImageConroller {
     @GetMapping("/origin/{originImageId}")
     public BaseResponse<OriginImageDTO> getOriginImage(
         @Valid @RequestBody ImageRequest.GetOriginImageRequest req) {
-        try {
-            log.info("[원본 이미지 조회] request: {}", req);
-            return BaseResponse.onSuccess(imageService.getOriginImage(req));
-        } catch (Exception e) {
-            log.error("[원본 이미지 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[원본 이미지 조회] request: {}", req);
+        return BaseResponse.onSuccess(imageService.getOriginImage(req));
     }
     //원본 이미지 삭제
     @Operation(summary = "원본 이미지 삭제")
@@ -128,14 +103,9 @@ public class ImageConroller {
     @DeleteMapping("/origin/{originImageId}")
     public BaseResponse<Void> deleteOriginImage(
         @Valid @RequestBody ImageRequest.DeleteOriginImageRequest req) {
-        try {
-            log.info("[원본 이미지 삭제] request: {}", req);
-            imageService.deleteOriginImage(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[원본 이미지 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[원본 이미지 삭제] request: {}", req);
+        imageService.deleteOriginImage(req);
+        return BaseResponse.onSuccess(null);
     }
     //원본 상품 이미지 조회
     @Operation(summary = "원본 상품 이미지 조회")
@@ -146,13 +116,8 @@ public class ImageConroller {
     @GetMapping("/origin/{originProductId}")
     public BaseResponse<List<OriginImageDTO>> getOriginImagesByOriginId(
         @Valid @RequestBody ImageRequest.GetOriginImagesByOriginIdRequest req) {
-        try {
-            log.info("[원본 상품 이미지 조회] request: {}", req);
-            return BaseResponse.onSuccess(imageService.getOriginImagesByOriginId(req));
-        } catch (Exception e) {
-            log.error("[원본 상품 이미지 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[원본 상품 이미지 조회] request: {}", req);
+        return BaseResponse.onSuccess(imageService.getOriginImagesByOriginId(req));
     }
     //중고 상품 이미지 추가
     @Operation(summary = "중고 상품 이미지 추가")
@@ -163,13 +128,8 @@ public class ImageConroller {
     @PostMapping("/used")
     public BaseResponse<UsedImageDTO> addUsedImage(
         @Valid @RequestBody ImageRequest.AddUsedImageRequest req) {
-        try {
-            log.info("[중고 상품 이미지 추가] request: {}", req);
-            return BaseResponse.onSuccess(imageService.addUsedImage(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 이미지 추가] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 이미지 추가] request: {}", req);
+        return BaseResponse.onSuccess(imageService.addUsedImage(req));
     }
     //중고 상품 이미지 조회
     @Operation(summary = "중고 상품 이미지 조회")
@@ -180,13 +140,8 @@ public class ImageConroller {
     @GetMapping("/used/{usedImageId}")
     public BaseResponse<UsedImageDTO> getUsedImage(
         @Valid @RequestBody ImageRequest.GetUsedImageRequest req) {
-        try {
-            log.info("[중고 상품 이미지 조회] request: {}", req);
-            return BaseResponse.onSuccess(imageService.getUsedImage(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 이미지 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 이미지 조회] request: {}", req);
+        return BaseResponse.onSuccess(imageService.getUsedImage(req));
     }
     //중고 상품 리스트 조회
     @Operation(summary = "중고 상품 리스트 조회")
@@ -197,13 +152,8 @@ public class ImageConroller {
     @GetMapping("/used/{usedProductId}")
     public BaseResponse<List<UsedImageDTO>> getUsedImagesByUsedId(
         @Valid @RequestBody ImageRequest.GetUsedImagesByUsedIdRequest req) {
-        try {
-            log.info("[중고 상품 리스트 조회] request: {}", req);
-            return BaseResponse.onSuccess(imageService.getUsedImagesByUsedId(req));
-        } catch (Exception e) {
-            log.error("[중고 상품 리스트 조회] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 리스트 조회] request: {}", req);
+        return BaseResponse.onSuccess(imageService.getUsedImagesByUsedId(req));
     }
     //중고 상품 이미지 삭제
     @Operation(summary = "중고 상품 이미지 삭제")
@@ -214,14 +164,9 @@ public class ImageConroller {
     @DeleteMapping("/used/{usedImageId}")
     public BaseResponse<Void> deleteUsedImage(
         @Valid @RequestBody ImageRequest.DeleteUsedImageRequest req) {
-        try {
-            log.info("[중고 상품 이미지 삭제] request: {}", req);
-            imageService.deleteUsedImage(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[중고 상품 이미지 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[중고 상품 이미지 삭제] request: {}", req);
+        imageService.deleteUsedImage(req);
+        return BaseResponse.onSuccess(null);
     }
     // todo: 검수 이미지 추가
 }

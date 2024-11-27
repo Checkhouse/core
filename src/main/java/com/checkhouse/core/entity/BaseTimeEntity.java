@@ -27,7 +27,7 @@ public class BaseTimeEntity {
     @Column(name = "updated_at")
     protected LocalDateTime lastModifiedDate; //수정시간
 
-    @LastModifiedDate
+
     @Column(
             name = "deleted_at",
             updatable = false

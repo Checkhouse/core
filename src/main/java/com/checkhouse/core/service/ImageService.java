@@ -28,7 +28,7 @@ public class ImageService {
 
     void checkURL(String URL) {}
 
-    ImageDTO addImage(ImageRequest.AddImageRequest req) {
+    public ImageDTO addImage(ImageRequest.AddImageRequest req) {
         // URL 유효성 검사
         try {
             new URL(req.imageURL()).toURI();
@@ -44,13 +44,13 @@ public class ImageService {
         return imageURL.toDto();
     }
 
-    ImageDTO getImage(ImageRequest.GetImageRequest req) {
+    public ImageDTO getImage(ImageRequest.GetImageRequest req) {
         ImageURL imageURL = imageRepository.findById(req.imageId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._IMAGE_ID_NOT_FOUND)
         );
         return imageURL.toDto();
     }
-    void deleteImage(ImageRequest.DeleteImageRequest req) {
+    public void deleteImage(ImageRequest.DeleteImageRequest req) {
         ImageURL imageURL = imageRepository.findById(req.imageId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._IMAGE_ID_NOT_FOUND)
         );
@@ -58,7 +58,7 @@ public class ImageService {
     }
 
     //원본 이미지
-    OriginImageDTO addOriginImage(ImageRequest.AddOriginImageRequest req) {
+    public OriginImageDTO addOriginImage(ImageRequest.AddOriginImageRequest req) {
         OriginProduct originProduct = originProductRepository.findById(req.originProductId()).orElseThrow(
                 () -> {throw new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND);}
         );
@@ -77,13 +77,13 @@ public class ImageService {
         );
         return originImage.toDto();
     }
-    OriginImageDTO getOriginImage(ImageRequest.GetOriginImageRequest req) {
+    public OriginImageDTO getOriginImage(ImageRequest.GetOriginImageRequest req) {
         OriginImage originImage = originImageRepository.findById(req.originImageId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ORIGIN_IMAGE_ID_NOT_FOUND)
         );
         return originImage.toDto();
     }
-    List<OriginImageDTO> getOriginImagesByOriginId(ImageRequest.GetOriginImagesByOriginIdRequest req) {
+    public List<OriginImageDTO> getOriginImagesByOriginId(ImageRequest.GetOriginImagesByOriginIdRequest req) {
         originProductRepository.findById(req.originProductId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND)
         );
@@ -92,7 +92,7 @@ public class ImageService {
                 .map(OriginImage::toDto)
                 .toList();
     }
-    void deleteOriginImage(ImageRequest.DeleteOriginImageRequest req) {
+    public void deleteOriginImage(ImageRequest.DeleteOriginImageRequest req) {
         OriginImage originImage = originImageRepository.findById(req.originImageId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ORIGIN_IMAGE_ID_NOT_FOUND)
         );
@@ -100,7 +100,7 @@ public class ImageService {
     }
 
     //중고 이미지
-    UsedImageDTO addUsedImage(ImageRequest.AddUsedImageRequest req) {
+    public UsedImageDTO addUsedImage(ImageRequest.AddUsedImageRequest req) {
         UsedProduct usedProduct = usedProductRepository.findById(req.usedProductId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND)
         );
@@ -119,13 +119,13 @@ public class ImageService {
         );
         return usedImage.toDto();
     }
-    UsedImageDTO getUsedImage(ImageRequest.GetUsedImageRequest req) {
+    public UsedImageDTO getUsedImage(ImageRequest.GetUsedImageRequest req) {
         UsedImage usedImage = usedImageRepository.findById(req.usedImageId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USED_IMAGE_ID_NOT_FOUND)
         );
         return usedImage.toDto();
     }
-    List<UsedImageDTO> getUsedImagesByUsedId(ImageRequest.GetUsedImagesByUsedIdRequest req) {
+    public List<UsedImageDTO> getUsedImagesByUsedId(ImageRequest.GetUsedImagesByUsedIdRequest req) {
         usedProductRepository.findById(req.usedProductId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND)
         );
@@ -134,7 +134,7 @@ public class ImageService {
                 .map(UsedImage::toDto)
                 .toList();
     }
-    void deleteUsedImage(ImageRequest.DeleteUsedImageRequest req) {
+    public void deleteUsedImage(ImageRequest.DeleteUsedImageRequest req) {
         UsedImage usedImage = usedImageRepository.findById(req.usedImageId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USED_IMAGE_ID_NOT_FOUND)
         );

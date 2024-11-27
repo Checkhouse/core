@@ -38,14 +38,9 @@ public class CategoryController {
     })
     @PostMapping
     public BaseResponse<CategoryDTO> addCategory(
-       @Valid @RequestBody CategoryRequest.AddCategoryRequest req) {
-        try {
-            log.info("[카테고리 등록] request: {}", req);
-            return BaseResponse.onSuccess(categoryService.addCategory(req));
-        } catch (Exception e) {
-            log.error("[카테고리 등록] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        @Valid @RequestBody CategoryRequest.AddCategoryRequest req) {
+        log.info("[카테고리 등록] request: {}", req);
+        return BaseResponse.onSuccess(categoryService.addCategory(req));
     }
     //카테고리 상세보기
     @Operation(summary = "카테고리 상세보기")
@@ -56,13 +51,8 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public BaseResponse<CategoryDTO> getCategory(
         @Valid @RequestBody CategoryRequest.GetCategoryByIdRequest req) {
-        try {
-            log.info("[카테고리 상세보기] request: {}", req);
-            return BaseResponse.onSuccess(categoryService.getCategory(req));
-        } catch (Exception e) {
-            log.error("[카테고리 상세보기] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[카테고리 상세보기] request: {}", req);
+        return BaseResponse.onSuccess(categoryService.getCategory(req));
     }
     //카테고리 수정
     @Operation(summary = "카테고리 수정")
@@ -73,13 +63,8 @@ public class CategoryController {
     @PutMapping("/{categoryId}")
     public BaseResponse<CategoryDTO> updateCategory(
         @Valid @RequestBody CategoryRequest.UpdateCategoryByIdRequest req) {
-        try {
-            log.info("[카테고리 수정] request: {}", req);
-            return BaseResponse.onSuccess(categoryService.updateCategoryById(req));
-        } catch (Exception e) {
-            log.error("[카테고리 수정] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[카테고리 수정] request: {}", req);
+        return BaseResponse.onSuccess(categoryService.updateCategoryById(req));
     }
     //카테고리 삭제
     @Operation(summary = "카테고리 삭제")
@@ -90,14 +75,9 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public BaseResponse<Void> deleteCategory(
         @Valid @RequestBody CategoryRequest.DeleteCategoryRequest req) {
-        try {
-            log.info("[카테고리 삭제] request: {}", req);
-            categoryService.deleteCategory(req);
-            return BaseResponse.onSuccess(null);
-        } catch (Exception e) {
-            log.error("[카테고리 삭제] request: {}, error: {}", req, e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[카테고리 삭제] request: {}", req);
+        categoryService.deleteCategory(req);
+        return BaseResponse.onSuccess(null);
     }
     //카테고리 조회
     @Operation(summary = "카테고리 조회")
@@ -107,13 +87,8 @@ public class CategoryController {
     })
     @GetMapping("/list")
     public BaseResponse<List<CategoryDTO>> getCategoryList() {
-        try {
-            log.info("[카테고리 조회]");
-            return BaseResponse.onSuccess(categoryService.getCategories());
-        } catch (Exception e) {
-            log.error("[카테고리 조회] error: {}", e.getMessage());
-            return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
-        }
+        log.info("[카테고리 조회]");
+        return BaseResponse.onSuccess(categoryService.getCategories());
     }
     
 }

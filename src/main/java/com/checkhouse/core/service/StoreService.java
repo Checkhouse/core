@@ -24,7 +24,7 @@ public class StoreService {
     private final AddressRepository addressRepository;
 
     //스토어 저장
-    StoreDTO addStore(StoreRequest.AddStoreRequest req) {
+    public StoreDTO addStore(StoreRequest.AddStoreRequest req) {
         storeRepository.findStoreByName(req.name()).ifPresent(store -> {
             throw new GeneralException(ErrorStatus._STORE_ALREADY_EXISTS);
         });
@@ -43,24 +43,24 @@ public class StoreService {
         return savedStore.toDto();
     }
     //스토어 이름으로 조회
-    StoreDTO getStoreByName(String name) {
+    public StoreDTO getStoreByName(String name) {
         Store store = storeRepository.findStoreByName(name).orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         return store.toDto();
     }
     //스토어 조회
-    StoreDTO getStore(StoreRequest.GetStoreRequest req) {
+    public StoreDTO getStore(StoreRequest.GetStoreRequest req) {
         Store store = storeRepository.findById(req.storeId()).orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         return store.toDto();
     }
     //스토어 리스트 조회
-    List<StoreDTO> getStores() {
+    public List<StoreDTO> getStores() {
         return storeRepository.findAll()
                 .stream()
                 .map(Store::toDto)
                 .toList();
     }
     //스토어 정보 수정
-    StoreDTO updateStore(StoreRequest.UpdateStoreRequest req) {
+    public StoreDTO updateStore(StoreRequest.UpdateStoreRequest req) {
         Store store = storeRepository.findById(req.storeId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         storeRepository.findStoreByName(req.name()).ifPresent((a) -> {
@@ -75,20 +75,20 @@ public class StoreService {
         return store.toDto();
     }
     //스토어 코드 수정
-    StoreDTO updateStoreCode(StoreRequest.UpdateStoreCodeRequest req) {
+    public StoreDTO updateStoreCode(StoreRequest.UpdateStoreCodeRequest req) {
         Store store = storeRepository.findById(req.storeId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         store.updateCode(req.code());
         return store.toDto();
     }
     //스토어 코드 확인
-    boolean verifyCode(StoreRequest.VerifyCodeRequest req) {
+    public boolean verifyCode(StoreRequest.VerifyCodeRequest req) {
         Store store = storeRepository.findById(req.storeId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         return (store.getCode().equals(req.code()));
     }
     //스토어 삭제
-    void deleteStore(StoreRequest.DeleteStoreRequest req) {
+    public void deleteStore(StoreRequest.DeleteStoreRequest req) {
         Store store = storeRepository.findById(req.storeId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         storeRepository.delete(store);
