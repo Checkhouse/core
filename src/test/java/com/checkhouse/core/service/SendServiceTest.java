@@ -185,14 +185,10 @@ public class SendServiceTest {
     @Test
     void FAIL_addSend_not_found() {
         // 데이터 생성
-        UUID deliveryId = delivery1.getDeliveryId();
         UUID transactionId = UUID.randomUUID();
-        UUID sendId = send1.getSendId();
 
         SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
-            .sendId(sendId)
             .transactionId(transactionId)
-            .deliveryId(deliveryId)
             .build();
 
         // given

@@ -48,7 +48,7 @@ public class SendService {
         Delivery delivery = Delivery.builder()
             .deliveryId(UUID.randomUUID())
             .deliveryState(DeliveryState.COLLECTING)
-            .address(usedProduct.getAddress())  // 중고상품의 주소 직접 사용
+            .address(usedProduct.getAddress())
             .build();
         delivery = deliveryRepository.save(delivery);
 
@@ -82,9 +82,9 @@ public class SendService {
         sendRepository.delete(send);
     }
     //발송 리스트 조회
-    public List<SendDTO> getSendList(UUID transactionId) {
-        Transaction transaction = transactionRepository.findById(transactionId)
-            .orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_ID_NOT_FOUND));
-        return sendRepository.findAllByTransactionTransactionId(transaction.getTransactionId()).stream().map(Send::toDto).collect(Collectors.toList());
+    public List<SendDTO> getSendList() {
+        return sendRepository.findAll().stream()
+            .map(Send::toDto)
+            .collect(Collectors.toList());
     }
 }

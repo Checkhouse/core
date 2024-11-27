@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,8 +43,8 @@ public class InspectionController {
     @PostMapping
     public BaseResponse<InspectionDTO> addInspection(
         @Valid @RequestBody InspectionRequest.AddInspectionRequest req) {
-        log.info("[검수 등록] request: {}", req);
-        return BaseResponse.onSuccess(inspectionService.addInspection(req));
+        InspectionDTO inspection = inspectionService.addInspection(req);
+        return BaseResponse.onSuccess(inspection);
     }
     //검수 상태 업데이트
     @Operation(summary = "검수 상태 업데이트")
@@ -53,9 +54,10 @@ public class InspectionController {
     })
     @PatchMapping("/state/{inspectionId}")
     public BaseResponse<InspectionDTO> updateInspection(
+        @PathVariable UUID inspectionId,
         @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req) {
-        log.info("[검수 상태 업데이트] request: {}", req);
-        return BaseResponse.onSuccess(inspectionService.updateInspection(req.inspectionId(), req));
+        InspectionDTO inspection = inspectionService.updateInspection(inspectionId, req);
+        return BaseResponse.onSuccess(inspection);
     }
     //검수 삭제
     @Operation(summary = "검수 삭제")
@@ -65,8 +67,8 @@ public class InspectionController {
     })
     @DeleteMapping("/{inspectionId}")
     public BaseResponse<Void> deleteInspection(
+        @PathVariable UUID inspectionId,
         @Valid @RequestBody InspectionRequest.DeleteInspectionRequest req) {
-        log.info("[검수 삭제] request: {}", req);
         inspectionService.deleteInspection(req);
         return BaseResponse.onSuccess(null);
     }
@@ -78,9 +80,10 @@ public class InspectionController {
     })
     @PatchMapping("/description/{inspectionId}")
     public BaseResponse<InspectionDTO> updateInspectionDescription(
+        @PathVariable UUID inspectionId,
         @Valid @RequestBody InspectionRequest.UpdateInspectionDescriptionRequest req) {
-        log.info("[검수 설명 수정] request: {}", req);
-        return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(req.inspectionId(), req));
+        InspectionDTO inspection = inspectionService.updateInspectionDescription(inspectionId, req);
+        return BaseResponse.onSuccess(inspection);
     }
     //검수 리스트 조회
     @Operation(summary = "검수 리스트 조회")
@@ -90,9 +93,9 @@ public class InspectionController {
     })
     @GetMapping("/list")
     public BaseResponse<List<InspectionDTO>> getInspectionList(
-        @RequestParam UUID usedProductId) {
-        log.info("[검수 리스트 조회] request: {}", usedProductId);
-        return BaseResponse.onSuccess(inspectionService.getInspectionList(usedProductId));
+        @PathVariable UUID usedProductId) {
+        List<InspectionDTO> inspectionList = inspectionService.getInspectionList(usedProductId);
+        return BaseResponse.onSuccess(inspectionList);
     }
     //todo: 검수 사진 등록
 }

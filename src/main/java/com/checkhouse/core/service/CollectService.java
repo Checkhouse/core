@@ -43,7 +43,7 @@ public class CollectService {
         Delivery delivery = Delivery.builder()
             .deliveryId(UUID.randomUUID())
             .deliveryState(DeliveryState.COLLECTING)
-            .address(usedProduct.getAddress())  // 중고상품의 주소 직접 사용
+            .address(usedProduct.getAddress())
             .build();
         delivery = deliveryRepository.save(delivery);
 
@@ -69,6 +69,7 @@ public class CollectService {
     public void deleteCollect(CollectRequest.DeleteCollectRequest req) {
         Collect collect = collectRepository.findById(req.collectId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
+            
 
         collectRepository.delete(collect);
         

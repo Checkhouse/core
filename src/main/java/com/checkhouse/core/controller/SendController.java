@@ -77,9 +77,9 @@ public class SendController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list/{transactionId}")
-    public BaseResponse<List<SendDTO>> getSendList(
-        @PathVariable UUID transactionId) {
-        return BaseResponse.onSuccess(sendService.getSendList(transactionId));
+    @GetMapping("/list")
+    public BaseResponse<List<SendDTO>> getSendList() {
+        log.info("[발송 리스트 조회]");
+        return BaseResponse.onSuccess(sendService.getSendList());
     }
 }

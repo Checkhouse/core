@@ -151,18 +151,4 @@ public class UsedProductController {
         log.info("[중고 상품 유저별 목록 조회] userId: {}", userId);
         return BaseResponse.onSuccess(usedProductService.getUsedProductsByUser(userId));
     }
-    //중고 상품 유저별 중고상품 유저id 확인
-    @Operation(summary = "중고 상품 유저별 중고상품 유저id 확인")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
-    })
-    @GetMapping("/products/{productId}/user")
-    public BaseResponse<UUID> getUserIdByUsedProduct(
-        @PathVariable UUID usedProductId
-    ) {
-        log.info("[중고 상품 유저별 중고상품 유저id 확인] usedProductId: {}", usedProductId);
-        return BaseResponse.onSuccess(usedProductService.findUsedProduct(usedProductId).getUser().getUserId());
-    }
 }
