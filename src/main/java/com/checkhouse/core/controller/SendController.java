@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Slf4j
 @Tag(name = "send apis", description = "발송 관련 API - 발송 등록, 발송 상태 업데이트, 발송 삭제, 발송 리스트 조회")
@@ -39,9 +41,9 @@ public class SendController {
     })
     @PostMapping
     public BaseResponse<SendDTO> addSend(
-        @RequestBody SendRequest.AddSendRequest req) {
-        log.info("[발송 등록] request: {}", req);
-        return BaseResponse.onSuccess(sendService.addSend(req));
+        @Valid @RequestBody SendRequest.AddSendRequest req) {
+        SendDTO send = sendService.addSend(req);
+        return BaseResponse.onSuccess(send);
     }
     //발송 상태 업데이트
     @Operation(summary = "발송 상태 업데이트")
@@ -51,9 +53,10 @@ public class SendController {
     })
     @PatchMapping("/{sendId}")
     public BaseResponse<SendDTO> updateSendState(
-        @RequestBody SendRequest.UpdateSendStateRequest req) {
-        log.info("[발송 상태 업데이트] request: {}", req);
-        return BaseResponse.onSuccess(sendService.updateSendState(req));
+        @PathVariable UUID sendId,
+        @Valid @RequestBody SendRequest.UpdateSendStateRequest req) {
+        SendDTO send = sendService.updateSendState(req);
+        return BaseResponse.onSuccess(send);
     }
     //발송 삭제
     @Operation(summary = "발송 삭제")
@@ -63,8 +66,8 @@ public class SendController {
     })
     @DeleteMapping("/{sendId}")
     public BaseResponse<Void> deleteSend(
-        @RequestBody SendRequest.DeleteSendRequest req) {
-        log.info("[발송 삭제] request: {}", req);
+        @PathVariable UUID sendId,
+        @Valid @RequestBody SendRequest.DeleteSendRequest req) {
         sendService.deleteSend(req);
         return BaseResponse.onSuccess(null);
     }
@@ -76,8 +79,7 @@ public class SendController {
     })
     @GetMapping("/list/{transactionId}")
     public BaseResponse<List<SendDTO>> getSendList(
-        @RequestParam UUID transactionId) {
-        log.info("[발송 리스트 조회] request: {}", transactionId);
+        @PathVariable UUID transactionId) {
         return BaseResponse.onSuccess(sendService.getSendList(transactionId));
     }
 }

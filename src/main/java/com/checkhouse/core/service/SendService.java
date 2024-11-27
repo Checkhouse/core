@@ -31,7 +31,7 @@ public class SendService {
     private final TransactionRepository transactionRepository;
     private final DeliveryRepository deliveryRepository;
     private final UsedProductRepository usedProductRepository;
-    //발송 등록    
+    //발송 등록
     public SendDTO addSend(SendRequest.AddSendRequest req) {
         //존재하지 않는 거래 정보가 있을 수 있으므로 예외처리
         Transaction transaction = transactionRepository.findById(req.transactionId())

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ public class DeliveryController {
     })
     @PostMapping
     public BaseResponse<DeliveryDTO> addDelivery(
-        @RequestBody DeliveryRequest.AddDeliveryRequest req) {
+        @Valid @RequestBody DeliveryRequest.AddDeliveryRequest req) {
         DeliveryDTO delivery = deliveryService.addDelivery(req);
         return BaseResponse.onSuccess(delivery);
     }
@@ -53,7 +54,9 @@ public class DeliveryController {
     })
     @PatchMapping("/{deliveryId}")
     public BaseResponse<DeliveryDTO> updateDeliveryState(
-        @RequestBody DeliveryRequest.UpdateDeliveryStateRequest req) {
+        @PathVariable UUID deliveryId,
+        @Valid @RequestBody DeliveryRequest.UpdateDeliveryStateRequest req
+    ) {
         DeliveryDTO delivery = deliveryService.updateDeliveryState(req);
         return BaseResponse.onSuccess(delivery);
     }
@@ -76,7 +79,8 @@ public class DeliveryController {
     })
     @PostMapping("/tracking-code/{deliveryId}")
     public BaseResponse<DeliveryDTO> registerTrackingCode(
-        @RequestBody DeliveryRequest.RegisterTrackingCodeRequest req) {
+        @PathVariable UUID deliveryId,
+        @Valid @RequestBody DeliveryRequest.RegisterTrackingCodeRequest req) {
         DeliveryDTO delivery = deliveryService.registerTrackingCode(req);
         return BaseResponse.onSuccess(delivery);
     }
@@ -88,8 +92,8 @@ public class DeliveryController {
     })
     @DeleteMapping("/{deliveryId}")
     public BaseResponse<Void> deleteDelivery(
-        @RequestBody DeliveryRequest.DeleteDeliveryRequest req) {
-        log.info("[배송 삭제] request: {}", req);
+        @PathVariable UUID deliveryId,
+        @Valid @RequestBody DeliveryRequest.DeleteDeliveryRequest req) {
         deliveryService.deleteDelivery(req);
         return BaseResponse.onSuccess(null);
     }

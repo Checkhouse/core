@@ -59,6 +59,7 @@ public class DeliveryService {
         
         //배송 상태 업데이트
         delivery.UpdateDeliveryState(req.deliveryState());
+        deliveryRepository.save(delivery);
         return delivery.toDto();
     }
     // 배송 리스트 조회
