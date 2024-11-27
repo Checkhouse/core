@@ -24,13 +24,13 @@ public class PickupRequest {
 
 	@Builder
 	public record UpdatePickUpRequest(
-			UUID pickupId
-	){ }
-
-	@Builder
-	public record UpdatePickUpForAdminRequest(
 			UUID pickupId,
 			UUID storeId,
 			String code
+	){ }
+
+	@Builder
+	public record GetPickUpListForAdminRequest(
+			UUID storeID
 	){ }
 }

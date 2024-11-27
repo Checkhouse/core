@@ -82,7 +82,7 @@ public class StoreService {
         return store.toDto();
     }
     //스토어 코드 확인
-    boolean verifyCode(StoreRequest.VerifyCodeRequest req) {
+    public boolean verifyCode(StoreRequest.VerifyCodeRequest req) {
         Store store = storeRepository.findById(req.storeId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
         return (store.getCode().equals(req.code()));

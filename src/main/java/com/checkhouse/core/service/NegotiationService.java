@@ -31,7 +31,7 @@ public class NegotiationService {
     private final UsedProductRepository usedProductRepository;
 
 // 네고 등록
-    NegotiationDTO addNegotiation(NegotiationRequest.AddNegotiationRequest request){
+    public NegotiationDTO addNegotiation(NegotiationRequest.AddNegotiationRequest request){
         // 중고 상품 확인
         UsedProduct usedProduct = usedProductRepository
                 .findById(request.usedProductId())
@@ -74,8 +74,8 @@ public class NegotiationService {
     }
 
     // 네고 상태 변경 (승인, 거절, 취소)
-    NegotiationDTO updateNegotiationState(NegotiationRequest.UpdateNegotiationRequest request){
-        //toDo 네고가 WAITING 일경우에만 수정 가능하도록 로직 변경, 승인시 트랜잭션 생성
+    public NegotiationDTO updateNegotiationState(NegotiationRequest.UpdateNegotiationRequest request){
+        //toDo 네고가 WAITING 일경우에만 수정 가능하도록 로직 변경
 
         // 네고 조회
         Negotiation negotiation = negotiationRepository.findById(request.negotiationId())
@@ -104,7 +104,7 @@ public class NegotiationService {
     }
 
     // 제안한 네고 조회
-    List<NegotiationDTO> getNegotiationByBuyer(NegotiationRequest.GetNegotiationByBuyerRequest request){
+    public List<NegotiationDTO> getNegotiationByBuyer(NegotiationRequest.GetNegotiationByBuyerRequest request){
             User buyer = userRepository.findById(request.buyerId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
@@ -113,7 +113,7 @@ public class NegotiationService {
     }
 
     // 받은 네고 조회
-    List<NegotiationDTO> getNegotiationBySeller(NegotiationRequest.GetNegotiationBySellerRequest request){
+    public List<NegotiationDTO> getNegotiationBySeller(NegotiationRequest.GetNegotiationBySellerRequest request){
         User seller = userRepository.findById(request.sellerId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
