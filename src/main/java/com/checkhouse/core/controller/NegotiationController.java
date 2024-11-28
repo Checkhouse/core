@@ -43,13 +43,8 @@ public class NegotiationController {
 	public BaseResponse<NegotiationDTO> addNegotiation(
 		@Valid @RequestBody NegotiationRequest.AddNegotiationRequest req
 	) {
-		try {
-			log.info("[네고 등록] request: {}", req);
-			return BaseResponse.onSuccess(negotiationService.addNegotiation(req));
-		} catch (GeneralException e) {
-			log.error("[네고 등록] request: {}, error: {}", req, e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
-		}
+		log.info("[네고 등록] request: {}", req);
+		return BaseResponse.onSuccess(negotiationService.addNegotiation(req));
 	}
 	// 네고 상태 변경
 	@Operation(summary = "네고 상태 변경")
@@ -62,30 +57,25 @@ public class NegotiationController {
 		@PathVariable UUID negotiationId,
 		@Valid @RequestBody NegotiationRequest.UpdateNegotiationRequest req
 	) {
-		try {
-			log.info("[네고 상태 변경] request: {}", req);
-			// jwt 토큰에서 유저 아이디 추출
-			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-			UUID userId = userService.getUserInfo(userEmail).userId();
-			NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-				negotiationId,
-				req.state()
-			);
+		log.info("[네고 상태 변경] request: {}", req);
+		// jwt 토큰에서 유저 아이디 추출
+		String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		UUID userId = userService.getUserInfo(userEmail).userId();
+		NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
+			negotiationId,
+			req.state()
+		);
 
-			switch (req.state()) {
-				case ACCEPTED: // 네고 승인, 거래 생성
-					NegotiationDTO negotiation = negotiationService.updateNegotiationState(request);
-					transactionService.addTransaction(new TransactionRequest.AddTransactionRequest(
-							negotiation.usedProduct().usedProductId(),
-							negotiation.buyer().userId()
-					));
-					return BaseResponse.onSuccess(negotiation);
-				default:
-					return BaseResponse.onSuccess(negotiationService.updateNegotiationState(request));
-			}
-		} catch (GeneralException e) {
-			log.error("[네고 상태 변경] request: {}, error: {}", req, e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
+		switch (req.state()) {
+			case ACCEPTED: // 네고 승인, 거래 생성
+				NegotiationDTO negotiation = negotiationService.updateNegotiationState(request);
+				transactionService.addTransaction(new TransactionRequest.AddTransactionRequest(
+					negotiation.usedProduct().usedProductId(),
+					negotiation.buyer().userId()
+				));
+				return BaseResponse.onSuccess(negotiation);
+			default:
+				return BaseResponse.onSuccess(negotiationService.updateNegotiationState(request));
 		}
 	}
 	// 제안한 네고 조회
@@ -96,17 +86,12 @@ public class NegotiationController {
 	})
 	@GetMapping("/buy")
 	public BaseResponse<List<NegotiationDTO>> getNegotiationByBuyer() {
-		try {
-			// jwt 토큰에서 유저 아이디 추출
-			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-			UUID buyerId = userService.getUserInfo(userEmail).userId();
-			log.info("[제안한 네고 조회] buyerId: {}", buyerId.toString());
-			NegotiationRequest.GetNegotiationByBuyerRequest getNegotiationByBuyerRequest = new NegotiationRequest.GetNegotiationByBuyerRequest(buyerId);
-			return BaseResponse.onSuccess(negotiationService.getNegotiationByBuyer(getNegotiationByBuyerRequest));
-		} catch (GeneralException e) {
-			log.error("[제안한 네고 조회] error: {}", e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
-		}
+		// jwt 토큰에서 유저 아이디 추출
+		String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		UUID buyerId = userService.getUserInfo(userEmail).userId();
+		log.info("[제안한 네고 조회] buyerId: {}", buyerId.toString());
+		NegotiationRequest.GetNegotiationByBuyerRequest getNegotiationByBuyerRequest = new NegotiationRequest.GetNegotiationByBuyerRequest(buyerId);
+		return BaseResponse.onSuccess(negotiationService.getNegotiationByBuyer(getNegotiationByBuyerRequest));
 	}
 	// 받은 네고 조회
 	@Operation(summary = "받은 네고 조회")
@@ -116,16 +101,11 @@ public class NegotiationController {
 	})
 	@GetMapping("/sell")
 	public BaseResponse<List<NegotiationDTO>> getNegotiationBySeller() {
-		try {
-			// jwt 토큰에서 유저 아이디 추출
-			String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-			UUID sellerId = userService.getUserInfo(userEmail).userId();
-			log.info("[받은 네고 조회] sellerId: {}", sellerId.toString());
-			NegotiationRequest.GetNegotiationBySellerRequest getNegotiationBySellerRequest = new NegotiationRequest.GetNegotiationBySellerRequest(sellerId);
-			return BaseResponse.onSuccess(	negotiationService.getNegotiationBySeller(getNegotiationBySellerRequest));
-		} catch (GeneralException e) {
-			log.error("[받은 네고 조회] error: {}", e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
-		}
+		// jwt 토큰에서 유저 아이디 추출
+		String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		UUID sellerId = userService.getUserInfo(userEmail).userId();
+		log.info("[받은 네고 조회] sellerId: {}", sellerId.toString());
+		NegotiationRequest.GetNegotiationBySellerRequest getNegotiationBySellerRequest = new NegotiationRequest.GetNegotiationBySellerRequest(sellerId);
+		return BaseResponse.onSuccess(negotiationService.getNegotiationBySeller(getNegotiationBySellerRequest));
 	}
 }

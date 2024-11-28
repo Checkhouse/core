@@ -38,14 +38,9 @@ public class TransactionController {
         @Valid @RequestBody TransactionRequest.AddTransactionRequest req
     ) 
 	{
-		try {
-			log.info("[거래 등록] request: {}", req);
-			TransactionDTO transaction = transactionService.addTransaction(req);
-			return BaseResponse.onSuccess(transaction);
-		} catch (GeneralException e) {
-			log.error("[거래 등록] request: {}, error: {}", req, e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
-		}
+		log.info("[거래 등록] request: {}", req);
+		TransactionDTO transaction = transactionService.addTransaction(req);
+		return BaseResponse.onSuccess(transaction);
     }
 
 	@Operation(summary = "거래 조회")
@@ -57,14 +52,9 @@ public class TransactionController {
 	public BaseResponse<TransactionDTO> getTransaction(
 		@Valid @RequestBody TransactionRequest.GetTransactionStatusRequest req
 	) {
-		try {
-			log.info("[거래 조회] request: {}", req);
-			TransactionDTO transaction = transactionService.getTransactionStatus(req);
-			return BaseResponse.onSuccess(transaction);
-		} catch (GeneralException e) {
-			log.error("[거래 조회] request: {}, error: {}", req, e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
-		}
+		log.info("[거래 조회] request: {}", req);
+		TransactionDTO transaction = transactionService.getTransactionStatus(req);
+		return BaseResponse.onSuccess(transaction);
 	}
 
 	@Operation(summary = "거래 상태 변경")
@@ -76,13 +66,8 @@ public class TransactionController {
 	public BaseResponse<TransactionDTO> updateTransaction(
 		@Valid @RequestBody TransactionRequest.UpdateTransactionRequest req
 	) {
-		try {
-			log.info("[거래 상태 변경] request: {}", req);
-			TransactionDTO transaction = transactionService.updateTransactionStatus(req);
-			return BaseResponse.onSuccess(transaction);
-		} catch (GeneralException e) {
-			log.error("[거래 상태 변경] request: {}, error: {}", req, e.getMessage());
-			return BaseResponse.onFailure(e.getCode().toString(), e.getMessage(), null);
-		}
+		log.info("[거래 상태 변경] request: {}", req);
+		TransactionDTO transaction = transactionService.updateTransactionStatus(req);
+		return BaseResponse.onSuccess(transaction);
 	}
 }
