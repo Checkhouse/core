@@ -96,7 +96,6 @@ public class InspectionServiceTest {
         AddInspectionRequest req = AddInspectionRequest.builder()
                 .usedProductId(usedProduct1.getUsedProductId())
                 .description("test description")
-                .isDone(false)
                 .userId(user1.getUserId())
                 .build();
 
@@ -146,7 +145,6 @@ public class InspectionServiceTest {
         AddInspectionRequest req = AddInspectionRequest.builder()
                 .usedProductId(null)
                 .description("test description")
-                .isDone(false)
                 .userId(user1.getUserId())
                 .build();
 
@@ -165,7 +163,6 @@ public class InspectionServiceTest {
         AddInspectionRequest req = AddInspectionRequest.builder()
                 .usedProductId(usedProduct1.getUsedProductId())
                 .description("test description")
-                .isDone(false)
                 .userId(nonExistentUserId)
                 .build();
 
@@ -179,7 +176,6 @@ public class InspectionServiceTest {
         AddInspectionRequest req = AddInspectionRequest.builder()
                 .usedProductId(usedProduct1.getUsedProductId())
                 .description("new inspection")
-                .isDone(false)
                 .userId(user1.getUserId())
                 .build();
 
@@ -189,7 +185,7 @@ public class InspectionServiceTest {
             .thenReturn(Optional.of(inspection1));  // 이미 완료된 검수가 있다고 가정
 
         // when & then
-        GeneralException exception = assertThrows(GeneralException.class, 
+        GeneralException exception = assertThrows(GeneralException.class,
             () -> inspectionService.addInspection(req));
         assertEquals("INSPECTION400", exception.getErrorReason().getCode());
     }
@@ -235,7 +231,6 @@ public class InspectionServiceTest {
         AddInspectionRequest req = AddInspectionRequest.builder()
                 .usedProductId(usedProduct1.getUsedProductId())
                 .description("new inspection")
-                .isDone(false)
                 .userId(user1.getUserId())
                 .build();
 

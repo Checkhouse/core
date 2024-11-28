@@ -50,11 +50,11 @@ public class InspectionService {
                 throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_EXISTS);
             });
 
-        // 검수 등록
+        // 검수 등록 - isDone은 항상 false로 시작
         Inspection inspection = Inspection.builder()
                 .usedProduct(usedProduct)
                 .description(req.description())
-                .isDone(req.isDone())
+                .isDone(false)  // 항상 false로 설정
                 .user(userRepository.findById(req.userId())
                     .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND)))
                 .build();
@@ -68,7 +68,7 @@ public class InspectionService {
         if (inspection.isDone()) {
             throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
         }
-        inspection.updateInspectionState(req.isDone());
+        inspection.updateInspectionState(true);
         return inspectionRepository.save(inspection).toDto();
     }
     // 검수 사진 등록(상태 업데이트)

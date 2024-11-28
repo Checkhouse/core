@@ -11,15 +11,13 @@ public class InspectionRequest {
     public record AddInspectionRequest(
         UUID usedProductId,
         String description,
-        boolean isDone,
         UUID userId
     ) {}
 
     @Builder
     public record UpdateInspectionRequest(
         UUID inspectionId,
-        boolean isDone,
-        UserDTO user
+        boolean isDone
     ) {}
 
     @Builder

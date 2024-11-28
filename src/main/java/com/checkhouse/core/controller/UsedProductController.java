@@ -10,11 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
+import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
+import com.checkhouse.core.dto.DeliveryDTO;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.request.CollectRequest;
+import com.checkhouse.core.dto.request.DeliveryRequest;
+import com.checkhouse.core.dto.request.InspectionRequest;
+import com.checkhouse.core.dto.request.SendRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
+import com.checkhouse.core.service.AddressService;
+import com.checkhouse.core.service.CollectService;
+import com.checkhouse.core.service.DeliveryService;
+import com.checkhouse.core.service.InspectionService;
+import com.checkhouse.core.service.SendService;
 import com.checkhouse.core.service.UsedProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +35,14 @@ import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.entity.User;
+import com.checkhouse.core.service.UserService;
+import com.checkhouse.core.apiPayload.exception.GeneralException;
 
 @Slf4j
 @Tag(name = "used-product apis", description = "중고 상품 관련 API - 중고 상품 등록, 수정, 삭제, 조회")
@@ -35,120 +52,154 @@ import com.checkhouse.core.entity.enums.UsedProductState;
 @Validated
 public class UsedProductController {
     private final UsedProductService usedProductService;
-    //중고 상품 등록
+    private final DeliveryService deliveryService;
+    private final InspectionService inspectionService;
+    private final CollectService collectService;
+
+    // 중고 상품 등록
     @Operation(summary = "중고 상품 등록")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
+    @Transactional
     @PostMapping
     public BaseResponse<UsedProductDTO> addUsedProduct(
         @Valid @RequestBody UsedProductRequest.AddUsedProductRequest req
     ) {
         log.info("[중고 상품 등록] request: {}", req);
-        return BaseResponse.onSuccess(usedProductService.addUsedProduct(req));
+        // 1. 중고 상품 등록
+        UsedProductDTO savedProduct = usedProductService.addUsedProduct(req);
+
+        // 2. 배송 정보 생성 - 프론트에서 받은 주소 ID 사용
+        DeliveryDTO delivery = deliveryService.addDelivery(
+            DeliveryRequest.AddDeliveryRequest.builder()
+                .addressId(UUID.fromString(req.addressId()))
+                .build()
+        );
+
+        // 3. 검수 정보 생성
+        inspectionService.addInspection(
+            InspectionRequest.AddInspectionRequest.builder()
+                .usedProductId(savedProduct.usedProductId())
+                .userId(req.userId())
+                .build()
+        );
+
+        // 4. 수거 정보 생성
+        collectService.addCollect(
+            CollectRequest.AddCollectRequest.builder()
+                .usedProductId(savedProduct.usedProductId())
+                .build()
+        );
+
+        return BaseResponse.onSuccess(savedProduct);
     }
-    //중고 상품 정보 수정
+    
+    // 중고 상품 등록 상태 변경
+    @Operation(summary = "중고 상품 등록 상태 변경")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "변경 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PutMapping("/{usedProductId}/state")
+    public BaseResponse<UsedProductDTO> updateUsedProductState(
+        @PathVariable UUID usedProductId,
+        @Valid @RequestBody UsedProductRequest.UpdateUsedProductState req
+    ) {
+        if(!usedProductId.equals(req.usedProductId())) {
+            throw new GeneralException(ErrorStatus._BAD_REQUEST);
+        }
+        log.info("[중고 상품 등록 상태 변경] request: {}", req);
+        UsedProductDTO updatedProduct = usedProductService.updateUsedProductStatus(req);
+        return BaseResponse.onSuccess(updatedProduct);
+    }
+
+    // 중고 상품 정보 조회
+    @Operation(summary = "중고 상품 정보 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/{usedProductId}")
+    public BaseResponse<UsedProductDTO> getUsedProduct(
+        @PathVariable UUID usedProductId
+    ) {
+        UsedProductDTO product = usedProductService.getUsedProductDetails(usedProductId);
+        return BaseResponse.onSuccess(product);
+    }
+
+    // 중고 상품 네고 상태 변경
+    @Operation(summary = "중고 상품 네고 상태 변경")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "변경 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PatchMapping("/{usedProductId}/nego")
+    public BaseResponse<UsedProductDTO> updateUsedProductNegoState(
+        @PathVariable UUID usedProductId,
+        @Valid @RequestBody UsedProductRequest.UpdateUsedProductNegoState req
+    ) {
+        log.info("[중고 상품 네고 상태 변경] request: {}", req);
+        UsedProductDTO updatedProduct = usedProductService.updateUsedProductNegoState(req);
+        return BaseResponse.onSuccess(updatedProduct);
+    }
+
+    // 중고 상품 정보 수정
     @Operation(summary = "중고 상품 정보 수정")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/{productId}")
-    public BaseResponse<UsedProductDTO> updateUsedProduct(
-        @PathVariable UUID productId,
-        @Valid @RequestBody UsedProductRequest.UpdateUsedProductInfo req
+    @PatchMapping("/{usedProductId}")
+    public BaseResponse<UsedProductDTO> updateUsedProductInfo(
+        @PathVariable UUID usedProductId,
+        @RequestBody UsedProductRequest.UpdateUsedProductInfo req
     ) {
-        log.info("[중고 상품 수정] productId: {}, request: {}", productId, req);
-        return BaseResponse.onSuccess(usedProductService.updateUsedProductInfo(req));
+        log.info("[중고 상품 정보 수정] request: {}", req);
+        UsedProductDTO updatedProduct = usedProductService.updateUsedProductInfo(req);
+        return BaseResponse.onSuccess(updatedProduct);
     }
-    //중고 상품 네고 상태 수정
-    @Operation(summary = "중고 상품 네고 상태 수정")
+
+    // 중고 상품 삭제
+    @Operation(summary = "중고 상품 삭제")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+        @ApiResponse(responseCode = "200", description = "삭제 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/nego/{productId}")
-    public BaseResponse<UsedProductDTO> updateUsedProductNegoState(
-        @PathVariable UUID productId,
-        @Valid @RequestBody UsedProductRequest.UpdateUsedProductNegoState req
-    ) {
-        log.info("[중고 상품 네고 상태 수정] productId: {}, request: {}", productId, req);
-        return BaseResponse.onSuccess(usedProductService.updateUsedProductNegoState(req));
-    }
-    //중고 상품 상태 수정
-    @Operation(summary = "중고 상품 상태 수정")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
-    })
-    @PutMapping("/state/{productId}")
-    public BaseResponse<UsedProductDTO> updateUsedProductStatus(
-        @PathVariable UUID productId,
-        @Valid @RequestBody UsedProductRequest.UpdateUsedProductState req
-    ) {
-        log.info("[중고 상품 상태 수정] productId: {}, request: {}", productId, req);
-        return BaseResponse.onSuccess(usedProductService.updateUsedProductStatus(req));
-    }
-    //중고 상품 취소
-    @Operation(summary = "중고 상품 취소")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "취소 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
-    })
-    @DeleteMapping("/{productId}")
-    public BaseResponse<Void> cancelUsedProduct(
+    @DeleteMapping("/{usedProductId}")
+    public BaseResponse<Void> deleteUsedProduct(
         @PathVariable UUID usedProductId
     ) {
-        log.info("[중고 상품 취소] productId: {}", usedProductId);
         usedProductService.cancelAddUsedProduct(usedProductId);
         return BaseResponse.onSuccess(null);
     }
-    //중고 상품 상세 조회
-    @Operation(summary = "중고 상품 상세 조회")
+    
+    // 중고 상품 목록 조회(상태)
+    @Operation(summary = "중고 상품 목록 조회(상태)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/{productId}")
-    public BaseResponse<UsedProductDTO> getUsedProductDetails(
-        @PathVariable UUID usedProductId
-    ) {
-        log.info("[중고 상품 상세 조회] productId: {}", usedProductId);
-        return BaseResponse.onSuccess(usedProductService.getUsedProductDetails(usedProductId));
-    }
-    //중고 상품 상태별 목록 조회
-    @Operation(summary = "중고 상품 상태별 목록 조회")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
-    })
-    @GetMapping("/search/{status}")
+    @GetMapping("/list/{status}")
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByStatus(
         @PathVariable UsedProductState status
     ) {
-        log.info("[중고 상품 상태별 목록 조회] status: {}", status);
-        return BaseResponse.onSuccess(usedProductService.getUsedProductsByStatus(status.name()));
+        List<UsedProductDTO> products = usedProductService.getUsedProductsByStatus(status.name());
+        return BaseResponse.onSuccess(products);
     }
-    //중고 상품 유저별 목록 조회
-    @Operation(summary = "중고 상품 유저별 목록 조회")
+
+    // 중고 상품 목록 조회(유저)
+    @Operation(summary = "중고 상품 목록 조회(유저)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-        @ApiResponse(responseCode = "404", description = "상품을 찾을 수 없음")
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/search/{userId}")
+    @GetMapping("/list/user/{userId}")
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByUser(
         @PathVariable UUID userId
     ) {
-        log.info("[중고 상품 유저별 목록 조회] userId: {}", userId);
-        return BaseResponse.onSuccess(usedProductService.getUsedProductsByUser(userId));
+        List<UsedProductDTO> products = usedProductService.getUsedProductsByUser(userId);
+        return BaseResponse.onSuccess(products);
     }
 }

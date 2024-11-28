@@ -89,14 +89,14 @@ public class UsedProductServiceTest {
     @DisplayName("중고 상품 등록")
     @Test
     void SUCCESS_addUsedProduct() {
-        UsedProductRequest.AddUsedProductRequest request = new UsedProductRequest.AddUsedProductRequest(
-                "Used Product Name",
-                "shit",
-                189000,
-                true,
-                mockedUser.getUserId(),
-                mockedOriginProduct.getOriginProductId()
-        );
+        UsedProductRequest.AddUsedProductRequest request = UsedProductRequest.AddUsedProductRequest.builder()
+                .title("Used Product Name")
+                .description("shit")
+                .price(189000)
+                .isNegoAllow(true)
+                .userId(mockedUser.getUserId())
+                .originProductId(mockedOriginProduct.getOriginProductId())
+                .build();
 
         when(originProductService.findOriginProduct(request.originProductId())).thenReturn(mockedOriginProduct);
         when(userService.findUser(request.userId())).thenReturn(mockedUser);
@@ -245,14 +245,14 @@ public class UsedProductServiceTest {
     @DisplayName("존재하지 않는 사용자에 대한 즁고 상품 등록은 실패")
     @Test
     void FAIL_addUsedProduct_not_exist() {
-        UsedProductRequest.AddUsedProductRequest request = new UsedProductRequest.AddUsedProductRequest(
-                "Used Product Name",
-                "shit",
-                189000,
-                true,
-                UUID.randomUUID(),
-                mockedOriginProduct.getOriginProductId()
-        );
+        UsedProductRequest.AddUsedProductRequest request = UsedProductRequest.AddUsedProductRequest.builder()
+                .title("Used Product Name")
+                .description("shit")
+                .price(189000)
+                .isNegoAllow(true)
+                .userId(UUID.randomUUID())
+                .originProductId(mockedOriginProduct.getOriginProductId())
+                .build();
 
         when(userService.findUser(request.userId())).thenThrow(GeneralException.class);
 

@@ -53,7 +53,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _USED_PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "UP404", "중고 상품이 존재하지 않습니다."),
     _USED_PRODUCT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "USED_PRODUCT404", "UsedProduct ID를 찾을 수 없습니다."),
     _USED_PRODUCT_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "USED_PRODUCT4041", "UsedProduct 상태를 찾을 수 없습니다."),
-
+    _USED_PRODUCT_CANCEL_FAILED(HttpStatus.BAD_REQUEST, "USED_PRODUCT400", "중고 상품 등록 취소에 실패하였습니다."),
     //favorite
     _FAVORITE_NOT_FOUND(HttpStatus.NOT_FOUND, "FAV404", "찾을 수 없습니다."),
     // token

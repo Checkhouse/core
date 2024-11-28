@@ -17,6 +17,7 @@ import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.dto.InspectionDTO;
 import com.checkhouse.core.dto.request.InspectionRequest;
 import com.checkhouse.core.service.InspectionService;
+import com.checkhouse.core.service.ImageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,75 +28,58 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Slf4j
-@Tag(name = "inspection apis", description = "검수 관련 API - 검수 등록, 검수 상태 업데이트, 검수 삭제, 검수 설명 수정, 검수 리스트 조회, 검수 사진 등록")
+@Tag(name = "inspection apis", description = "검수 관련 API")
 @RestController
 @RequestMapping("api/v1/inspection")
 @RequiredArgsConstructor
 public class InspectionController {
     private final InspectionService inspectionService;
+    private final ImageService imageService;
 
-    //검수 등록
-    @Operation(summary = "검수 등록")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @PostMapping
-    public BaseResponse<InspectionDTO> addInspection(
-        @Valid @RequestBody InspectionRequest.AddInspectionRequest req) {
-        InspectionDTO inspection = inspectionService.addInspection(req);
-        return BaseResponse.onSuccess(inspection);
+    // QR 스캔 후 검수 시작
+    @Operation(summary = "검수 등록 (QR 스캔 후)")
+    @PostMapping("/start")
+    public BaseResponse<InspectionDTO> startInspection(
+        @Valid @RequestBody InspectionRequest.AddInspectionRequest req
+    ) {
+        return BaseResponse.onSuccess(inspectionService.addInspection(req));
     }
-    //검수 상태 업데이트
-    @Operation(summary = "검수 상태 업데이트")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "업데이트 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @PatchMapping("/state/{inspectionId}")
-    public BaseResponse<InspectionDTO> updateInspection(
-        @PathVariable UUID inspectionId,
-        @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req) {
-        InspectionDTO inspection = inspectionService.updateInspection(inspectionId, req);
-        return BaseResponse.onSuccess(inspection);
-    }
-    //검수 삭제
-    @Operation(summary = "검수 삭제")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "삭제 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @DeleteMapping("/{inspectionId}")
-    public BaseResponse<Void> deleteInspection(
-        @PathVariable UUID inspectionId,
-        @Valid @RequestBody InspectionRequest.DeleteInspectionRequest req) {
-        inspectionService.deleteInspection(req);
-        return BaseResponse.onSuccess(null);
-    }
-    //검수 설명 수정
-    @Operation(summary = "검수 설명 수정")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @PatchMapping("/description/{inspectionId}")
+
+    // todo: 검수 이미지 등록
+    // @Operation(summary = "검수 이미지 등록")
+    // @PostMapping("/{inspectionId}/images")
+    // public BaseResponse<InspectionDTO> addInspectionImages(
+    //     @PathVariable UUID inspectionId,
+    //     @Valid @RequestBody InspectionRequest.AddInspectionImagesRequest req
+    // ) {
+    //     return BaseResponse.onSuccess(inspectionService.addInspectionImages(inspectionId, req));
+    // }
+
+    // 검수 노트(설명) 작성
+    @Operation(summary = "검수완료 후 노트 작성")
+    @PatchMapping("/{inspectionId}/description")
     public BaseResponse<InspectionDTO> updateInspectionDescription(
         @PathVariable UUID inspectionId,
-        @Valid @RequestBody InspectionRequest.UpdateInspectionDescriptionRequest req) {
-        InspectionDTO inspection = inspectionService.updateInspectionDescription(inspectionId, req);
-        return BaseResponse.onSuccess(inspection);
+        @Valid @RequestBody InspectionRequest.UpdateInspectionDescriptionRequest req
+    ) {
+        return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(inspectionId, req));
     }
-    //검수 리스트 조회
+    // 검수 완료 후 상태 업데이트
+    @Operation(summary = "검수 완료 후 상태 업데이트")
+    @PatchMapping("/{inspectionId}/complete")
+    public BaseResponse<InspectionDTO> updateInspectionState(
+        @PathVariable UUID inspectionId,
+        @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req
+    ) {
+        return BaseResponse.onSuccess(inspectionService.updateInspection(inspectionId, req));
+    }
+
+    // 검수 리스트 조회
     @Operation(summary = "검수 리스트 조회")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/list")
+    @GetMapping("/list/{usedProductId}")
     public BaseResponse<List<InspectionDTO>> getInspectionList(
-        @PathVariable UUID usedProductId) {
-        List<InspectionDTO> inspectionList = inspectionService.getInspectionList(usedProductId);
-        return BaseResponse.onSuccess(inspectionList);
+        @PathVariable UUID usedProductId
+    ) {
+        return BaseResponse.onSuccess(inspectionService.getInspectionList(usedProductId));
     }
-    //todo: 검수 사진 등록
 }
