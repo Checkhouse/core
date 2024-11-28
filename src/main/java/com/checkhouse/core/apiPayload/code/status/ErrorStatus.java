@@ -22,6 +22,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _NEGOTIATION_USER_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "사용자 정보가 잘못되었습니다."),
     _NEGOTIATION_ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 취소된 네고입니다."),
     _NEGOTIATION_ALREADY_ACCEPTED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 승인된 네고입니다."),
+    _NEGOTIATION_ALREADY_DENIED(HttpStatus.BAD_REQUEST, "NEGOTIATION400", "이미 거절된 네고입니다."),
     _NEGOTIATION_ALREADY_COMPLETED(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 완료된 네고입니다"),
     _NEGOTIATION_STATE_DUPLICATE(HttpStatus.CONFLICT, "NEGOTIATION409", "이미 해당 상태로 변경되어 있습니다"),
     _NEGOTIATION_PRICE_ERROR(HttpStatus.BAD_REQUEST, "NEGOTIATION400" ,"가격 설정이 잘못되었습니다"),
