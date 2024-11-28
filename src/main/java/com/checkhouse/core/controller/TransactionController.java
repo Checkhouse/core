@@ -30,8 +30,7 @@ public class TransactionController {
 
     @Operation(summary = "거래 등록")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "등록 성공")
     })
     @PostMapping
     public BaseResponse<TransactionDTO> addTransaction(
@@ -45,8 +44,7 @@ public class TransactionController {
 
 	@Operation(summary = "거래 조회")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "조회 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping
 	public BaseResponse<TransactionDTO> getTransaction(
@@ -59,8 +57,7 @@ public class TransactionController {
 
 	@Operation(summary = "거래 상태 변경")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "변경 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "변경 성공")
 	})
 	@PutMapping
 	public BaseResponse<TransactionDTO> updateTransaction(

@@ -36,8 +36,7 @@ public class NegotiationController {
 
 	@Operation(summary = "네고 등록")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "등록 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "등록 성공")
 	})
 	@PostMapping
 	public BaseResponse<NegotiationDTO> addNegotiation(
@@ -49,8 +48,7 @@ public class NegotiationController {
 	// 네고 상태 변경
 	@Operation(summary = "네고 상태 변경")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "변경 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "변경 성공")
 	})
 	@PatchMapping("/{negotiationId}")
 	public BaseResponse<NegotiationDTO> updateNegotiation(
@@ -81,8 +79,7 @@ public class NegotiationController {
 	// 제안한 네고 조회
 	@Operation(summary = "제안한 네고 조회")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "조회 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/buy")
 	public BaseResponse<List<NegotiationDTO>> getNegotiationByBuyer() {
@@ -96,8 +93,7 @@ public class NegotiationController {
 	// 받은 네고 조회
 	@Operation(summary = "받은 네고 조회")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "조회 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	@GetMapping("/sell")
 	public BaseResponse<List<NegotiationDTO>> getNegotiationBySeller() {

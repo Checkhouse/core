@@ -43,8 +43,7 @@ public class PickupController {
 	@PostMapping
 	@Operation(summary = "픽업 등록")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "등록 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "등록 성공")
 	})
 	public BaseResponse<PickupDTO> addPickup(
 		@Valid @RequestBody PickupRequest.AddPickUpRequest req
@@ -56,8 +55,7 @@ public class PickupController {
 	@GetMapping("/{userId}")
 	@Operation(summary = "사용자 픽업 조회")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "조회 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	public BaseResponse<List<PickupDTO>> getPickupList(
 		@PathVariable UUID userId
@@ -70,8 +68,7 @@ public class PickupController {
 	@GetMapping("/{pickupId}")
 	@Operation(summary = "특정 픽업 조회")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "조회 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	public BaseResponse<PickupDTO> getPickupDetails(
 		@PathVariable UUID pickupId
@@ -89,8 +86,7 @@ public class PickupController {
 	@PatchMapping("/{pickupId}")
 	@Operation(summary = "픽업 상태 변경")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "변경 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "변경 성공")
 	})
 	public BaseResponse<PickupDTO> verifyPickup(
 		@Valid @RequestBody PickupRequest.UpdatePickUpRequest req
@@ -112,8 +108,7 @@ public class PickupController {
 	@PatchMapping("/admin")
 	@Operation(summary = "관리자 픽업 확인")
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "확인 성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청")
+		@ApiResponse(responseCode = "200", description = "확인 성공")
 	})
 	public BaseResponse<List<PickupDTO>> getStorePickup(
 		@Valid @RequestBody PickupRequest.GetPickUpListForAdminRequest req
