@@ -28,7 +28,7 @@ import java.util.UUID;
 @Tag(name = "negotiation apis", description = "네고 관련 API - 네고 등록, 수정, 삭제, 조회")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/negotiation")
+@RequestMapping("api/v1/negotiation")
 public class NegotiationController {
     private final NegotiationService negotiationService;
 	private final TransactionService transactionService;

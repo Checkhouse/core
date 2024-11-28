@@ -32,7 +32,7 @@ import java.util.UUID;
 @Slf4j
 @Tag(name = "pickup apis", description = "픽업 관련 API - 픽업 등록, 조회")
 @RestController
-@RequestMapping("api/pickup")
+@RequestMapping("api/v1/pickup")
 @RequiredArgsConstructor
 public class PickupController {
 	private final PickupService pickupService;

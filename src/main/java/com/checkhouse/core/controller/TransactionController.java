@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "transaction apis", description = "거래 관련 API - 거래 조회")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/transaction")
+@RequestMapping("api/v1/transaction")
 public class TransactionController {
     private final TransactionService transactionService;
 
