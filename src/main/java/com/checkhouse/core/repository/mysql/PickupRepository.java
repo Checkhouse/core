@@ -10,4 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface PickupRepository extends JpaRepository<Pickup, UUID> {
 	@Query("SELECT p FROM Pickup p WHERE p.transaction.buyer.userId = :userId")
 	List<Pickup> findByUserId(UUID userId);
+	
+	@Query("SELECT p FROM Pickup p WHERE p.store.storeId = :storeId")
+	List<Pickup> findByStoreId(UUID storeId);
 }

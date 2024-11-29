@@ -35,7 +35,7 @@ public class PickupService {
 	private final StoreRepository storeRepository;
 	private final UserRepository userRepository;
 
-	public PickupDTO addUserPickupList(PickupRequest.AddPickUpRequest request) {
+	public PickupDTO addUserPickup(PickupRequest.AddPickUpRequest request) {
 		// 거래 존재 여부 확인
 		Transaction transaction = transactionRepository.findById(request.transactionId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_NOT_FOUND));
@@ -83,7 +83,7 @@ public class PickupService {
 		return pickup.toDto();
 	}
 
-	private PickupDTO updatePickup(PickupRequest.UpdatePickUpRequest request) {
+	public PickupDTO updatePickup(PickupRequest.UpdatePickUpRequest request) {
 		// 픽업 존재 여부 확인
 		Pickup pickup = pickupRepository.findById(request.pickupId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._PICKUP_NOT_FOUND));
@@ -94,33 +94,18 @@ public class PickupService {
 		if (pickup.getIsPicked_up()) {
 			throw new GeneralException(ErrorStatus._PICKUP_ALREADY_COMPLETED);
 		}
-
 		// 픽업 상태 변경
 		pickup.updateState();
-
-		// Transaction.isCompleted = true 로 변경
-//		transactionService.updateTransactionStatus(new TransactionRequest.UpdateTransactionRequest(
-//				transaction
-//		));
-
 		// Pickup 저장
 		pickupRepository.save(pickup);
 
 		return pickup.toDto();
 	}
 
-	// toDo 관리자 픽업 확인
-//	 public PickupDTO updatePickupForAdmin(PickupRequest.UpdatePickUpForAdminRequest request) {
-//		StoreRequest.VerifyCodeRequest storeRequest = new StoreRequest.VerifyCodeRequest(request.storeId(), request.code());
-//		try {
-//			if (storeService.verifyCode(storeRequest)) {
-//				return updatePickup(new PickupRequest.UpdatePickUpRequest(request.pickupId()));
-//			}
-//			else {
-//				throw new GeneralException(ErrorStatus._PICKUP_CODE_NOT_MATCH);
-//			}
-//		} catch (GeneralException e) {
-//			throw e;
-//		}
-//	 }
+	 public List<PickupDTO> getPickupListForAdmin(PickupRequest.GetPickUpListForAdminRequest request) {
+		return pickupRepository.findByStoreId(request.storeID())
+				.stream()
+				.map(Pickup::toDto)
+				.collect(Collectors.toList());
+	}
 }
