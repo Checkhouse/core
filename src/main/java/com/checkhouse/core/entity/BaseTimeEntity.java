@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -26,7 +27,6 @@ public class BaseTimeEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     protected LocalDateTime lastModifiedDate; //수정시간
-
 
     @Column(
             name = "deleted_at",
