@@ -53,7 +53,7 @@ public class CollectController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{collectId}")
+    @PatchMapping
     public BaseResponse<CollectDTO> updateCollectState(
         @Valid @RequestBody CollectRequest.UpdateCollectRequest req) {
         log.info("[수거 상태 업데이트] request: {}", req);
@@ -67,7 +67,7 @@ public class CollectController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list")
+    @GetMapping
     public BaseResponse<List<CollectDTO>> getCollectList() {
         log.info("[수거 리스트 조회]");
         List<CollectDTO> collectList = collectService.getCollectList();
@@ -79,7 +79,7 @@ public class CollectController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{collectId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteCollect(
         @Valid @RequestBody CollectRequest.DeleteCollectRequest req) {
         log.info("[수거 삭제] request: {}", req);
@@ -92,11 +92,11 @@ public class CollectController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/state/{collectId}")
+    @GetMapping("/state")
     public BaseResponse<DeliveryState> getCollectState(
-        @PathVariable UUID collectId) {
-        log.info("[수거 상태 조회] collectId: {}", collectId);
-        DeliveryState collectState = collectService.getCollectState(collectId);
+        @Valid @RequestBody CollectRequest.GetCollectStateRequest req) {
+        log.info("[수거 상태 조회] request: {}", req);
+        DeliveryState collectState = collectService.getCollectState(req.collectId());
         return BaseResponse.onSuccess(collectState);
     }
 }

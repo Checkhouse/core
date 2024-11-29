@@ -23,4 +23,9 @@ public class CollectRequest {
     public record DeleteCollectRequest(
         UUID collectId
     ) {}
+
+    @Builder
+    public record GetCollectStateRequest(
+        UUID collectId
+    ) {}
 }

@@ -52,9 +52,8 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "업데이트 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{deliveryId}")
+    @PatchMapping
     public BaseResponse<DeliveryDTO> updateDeliveryState(
-        @PathVariable UUID deliveryId,
         @Valid @RequestBody DeliveryRequest.UpdateDeliveryStateRequest req
     ) {
         DeliveryDTO delivery = deliveryService.updateDeliveryState(req);
@@ -66,14 +65,12 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list/{userId}")
+    @GetMapping
     public BaseResponse<List<DeliveryDTO>> getDeliveryList(
-        @PathVariable UUID userId
+        @Valid @RequestBody DeliveryRequest.GetDeliveryListRequest req
     ) {
-        log.info("[배송 리스트 조회] userId: {}", userId);
-        List<DeliveryDTO> deliveryList = deliveryService.getDeliveryList(
-            new DeliveryRequest.GetDeliveryListRequest(userId)
-        );
+        log.info("[배송 리스트 조회] request: {}", req);
+        List<DeliveryDTO> deliveryList = deliveryService.getDeliveryList(req);
         return BaseResponse.onSuccess(deliveryList);
     }
     //송장 번호 등록
@@ -82,9 +79,8 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "등록 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PostMapping("/tracking-code/{deliveryId}")
+    @PostMapping("/tracking-code")
     public BaseResponse<DeliveryDTO> registerTrackingCode(
-        @PathVariable UUID deliveryId,
         @Valid @RequestBody DeliveryRequest.RegisterTrackingCodeRequest req) {
         DeliveryDTO delivery = deliveryService.registerTrackingCode(req);
         return BaseResponse.onSuccess(delivery);
@@ -95,9 +91,8 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{deliveryId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteDelivery(
-        @PathVariable UUID deliveryId,
         @Valid @RequestBody DeliveryRequest.DeleteDeliveryRequest req) {
         deliveryService.deleteDelivery(req);
         return BaseResponse.onSuccess(null);

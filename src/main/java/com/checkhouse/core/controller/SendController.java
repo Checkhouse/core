@@ -42,6 +42,7 @@ public class SendController {
     @PostMapping
     public BaseResponse<SendDTO> addSend(
         @Valid @RequestBody SendRequest.AddSendRequest req) {
+        log.info("[발송 등록] request: {}", req);
         SendDTO send = sendService.addSend(req);
         return BaseResponse.onSuccess(send);
     }
@@ -51,9 +52,8 @@ public class SendController {
         @ApiResponse(responseCode = "200", description = "업데이트 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{sendId}")
+    @PatchMapping
     public BaseResponse<SendDTO> updateSendState(
-        @PathVariable UUID sendId,
         @Valid @RequestBody SendRequest.UpdateSendStateRequest req) {
         SendDTO send = sendService.updateSendState(req);
         return BaseResponse.onSuccess(send);
@@ -64,9 +64,8 @@ public class SendController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{sendId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteSend(
-        @PathVariable UUID sendId,
         @Valid @RequestBody SendRequest.DeleteSendRequest req) {
         sendService.deleteSend(req);
         return BaseResponse.onSuccess(null);
@@ -77,7 +76,7 @@ public class SendController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list")
+    @GetMapping
     public BaseResponse<List<SendDTO>> getSendList() {
         log.info("[발송 리스트 조회]");
         return BaseResponse.onSuccess(sendService.getSendList());

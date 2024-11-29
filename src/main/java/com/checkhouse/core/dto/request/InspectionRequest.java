@@ -2,6 +2,8 @@ package com.checkhouse.core.dto.request;
 
 import java.util.UUID;
 
+import org.springframework.lang.Nullable;
+
 import com.checkhouse.core.dto.UserDTO;
 
 import lombok.Builder;
@@ -10,6 +12,7 @@ public class InspectionRequest {
     @Builder
     public record AddInspectionRequest(
         UUID usedProductId,
+        @Nullable
         String description,
         UUID userId
     ) {}

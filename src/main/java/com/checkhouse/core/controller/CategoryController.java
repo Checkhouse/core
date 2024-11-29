@@ -51,7 +51,7 @@ public class CategoryController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{categoryId}")
+    @PatchMapping
     public BaseResponse<CategoryDTO> updateCategory(
         @Valid @RequestBody CategoryRequest.UpdateCategoryByIdRequest req) {
         log.info("[카테고리 수정] request: {}", req);
@@ -63,7 +63,7 @@ public class CategoryController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteCategory(
         @Valid @RequestBody CategoryRequest.DeleteCategoryRequest req) {
         log.info("[카테고리 삭제] request: {}", req);
@@ -76,7 +76,7 @@ public class CategoryController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list")
+    @GetMapping
     public BaseResponse<List<CategoryDTO>> getCategoryList() {
         log.info("[카테고리 조회]");
         return BaseResponse.onSuccess(categoryService.getCategories());

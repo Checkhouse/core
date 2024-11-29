@@ -55,7 +55,7 @@ public class HubController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{hubId}")
+    @PatchMapping
     public BaseResponse<HubDTO> updateHub(
         @Valid @RequestBody HubRequest.UpdateHubRequest req) {
         HubDTO updatedHub = hubService.updateHub(req);
@@ -68,7 +68,7 @@ public class HubController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{hubId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteHub(
         @Valid @RequestBody HubRequest.DeleteHubRequest req) {
         log.info("[허브 삭제] request: {}", req);
@@ -81,7 +81,7 @@ public class HubController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list")
+    @GetMapping
     public BaseResponse<List<HubDTO>> getHubs() {
         log.info("[허브 조회]");
         return BaseResponse.onSuccess(hubService.getHubs());

@@ -59,7 +59,7 @@ public class TransactionController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "변경 성공")
 	})
-	@PutMapping
+	@PatchMapping
 	public BaseResponse<TransactionDTO> updateTransaction(
 		@Valid @RequestBody TransactionRequest.UpdateTransactionRequest req
 	) {

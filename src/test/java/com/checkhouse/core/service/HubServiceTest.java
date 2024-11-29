@@ -99,7 +99,6 @@ public class HubServiceTest {
     void SUCCESS_addHub() {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
-                hub1.getHubId(),
                 hub1addr.getAddressId(),
                 "허브1",
                 1
@@ -216,7 +215,6 @@ public class HubServiceTest {
     void FAIL_addHub_already_exist() {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
-                hub1.getHubId(),
                 hub1addr.getAddressId(),
                 "허브2",
                 1
@@ -238,7 +236,6 @@ public class HubServiceTest {
     void FAIL_addHub_invalid_address() {
         // 데이터 생성
         HubRequest.AddHubRequest req = new HubRequest.AddHubRequest(
-                UUID.randomUUID(),
                 hub1addr.getAddressId(),
                 "허브1",
                 1

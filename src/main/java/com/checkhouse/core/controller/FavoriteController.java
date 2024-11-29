@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
 import com.checkhouse.core.apiPayload.BaseResponse;
+import com.checkhouse.core.apiPayload.code.status.SuccessStatus;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
 import com.checkhouse.core.service.FavoriteService;
@@ -61,7 +62,7 @@ public class FavoriteController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/origin/{favoriteId}")
+    @DeleteMapping("/origin")
     public BaseResponse<Void> removeFavoriteOrigin(
         @Valid @RequestBody FavoriteRequest.RemoveFromFavoriteRequest req) {
         log.info("[origin favorite 삭제] request: {}", req);
@@ -74,7 +75,7 @@ public class FavoriteController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/used/{favoriteId}")
+    @DeleteMapping("/used")
     public BaseResponse<Void> removeFavoriteUsed(
         @Valid @RequestBody FavoriteRequest.RemoveUsedProductLikeRequest req) {
         log.info("[used favorite 삭제] request: {}", req);
@@ -87,7 +88,7 @@ public class FavoriteController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/origin/list")
+    @GetMapping("/origin")
     public BaseResponse<List<FavoriteDTO>> getUserFavoriteOrigins(
         @Valid @RequestBody FavoriteRequest.GetUserFavoriteOrigins req) {
         log.info("[origin favorite 조회] request: {}", req);
@@ -99,7 +100,7 @@ public class FavoriteController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/used/list")
+    @GetMapping("/used")
     public BaseResponse<List<FavoriteDTO>> getUserFavoriteUsed(
         @Valid @RequestBody FavoriteRequest.GetUserFavoriteUsed req) {
         log.info("[used favorite 조회] request: {}", req);

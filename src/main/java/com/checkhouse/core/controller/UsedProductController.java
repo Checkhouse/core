@@ -78,15 +78,7 @@ public class UsedProductController {
                 .build()
         );
 
-        // 3. 검수 정보 생성
-        inspectionService.addInspection(
-            InspectionRequest.AddInspectionRequest.builder()
-                .usedProductId(savedProduct.usedProductId())
-                .userId(req.userId())
-                .build()
-        );
-
-        // 4. 수거 정보 생성
+        // 3. 수거 정보 생성
         collectService.addCollect(
             CollectRequest.AddCollectRequest.builder()
                 .usedProductId(savedProduct.usedProductId())
@@ -102,14 +94,10 @@ public class UsedProductController {
         @ApiResponse(responseCode = "200", description = "변경 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/{usedProductId}/state")
+    @PatchMapping("/state")
     public BaseResponse<UsedProductDTO> updateUsedProductState(
-        @PathVariable UUID usedProductId,
         @Valid @RequestBody UsedProductRequest.UpdateUsedProductState req
     ) {
-        if(!usedProductId.equals(req.usedProductId())) {
-            throw new GeneralException(ErrorStatus._BAD_REQUEST);
-        }
         log.info("[중고 상품 등록 상태 변경] request: {}", req);
         UsedProductDTO updatedProduct = usedProductService.updateUsedProductStatus(req);
         return BaseResponse.onSuccess(updatedProduct);
@@ -135,9 +123,8 @@ public class UsedProductController {
         @ApiResponse(responseCode = "200", description = "변경 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{usedProductId}/nego")
+    @PatchMapping("/nego")
     public BaseResponse<UsedProductDTO> updateUsedProductNegoState(
-        @PathVariable UUID usedProductId,
         @Valid @RequestBody UsedProductRequest.UpdateUsedProductNegoState req
     ) {
         log.info("[중고 상품 네고 상태 변경] request: {}", req);

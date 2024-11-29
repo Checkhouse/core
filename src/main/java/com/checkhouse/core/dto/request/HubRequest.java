@@ -8,7 +8,6 @@ public class HubRequest {
 
     @Builder
     public record AddHubRequest(
-            UUID hubId,
             UUID addressId,
             String name,
             int clusteredId

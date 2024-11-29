@@ -38,7 +38,6 @@ public class HubService {
 
         Hub savedHub = hubRepository.save(
                 Hub.builder()
-                        .hubId(req.hubId())
                         .name(req.name())
                         .address(addr)
                         .clusteredId(req.clusteredId())

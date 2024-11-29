@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,9 +53,9 @@ public class StoreController {
     })
     @GetMapping("/{storeId}")
     public BaseResponse<StoreDTO> getStore(
-        @Valid @PathVariable UUID storeId) {
-        log.info("[스토어 조회] request: {}", storeId);
-        return BaseResponse.onSuccess(storeService.getStore(new StoreRequest.GetStoreRequest(storeId)));
+        @Valid @RequestBody StoreRequest.GetStoreRequest req) {
+        log.info("[스토어 조회] request: {}", req);
+        return BaseResponse.onSuccess(storeService.getStore(req));
     }
     //스토어 리스트 조회
     @Operation(summary = "스토어 리스트 조회")
@@ -64,7 +63,7 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list")
+    @GetMapping
     public BaseResponse<List<StoreDTO>> getStores() {
         log.info("[스토어 리스트 조회]");
         return BaseResponse.onSuccess(storeService.getStores());
@@ -75,7 +74,7 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/{storeId}")
+    @PatchMapping
     public BaseResponse<StoreDTO> updateStore(
         @Valid @RequestBody StoreRequest.UpdateStoreRequest req) {
         log.info("[스토어 정보 수정] request: {}", req);
@@ -87,23 +86,11 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PatchMapping("/{storeId}/code")
+    @PatchMapping("/code")
     public BaseResponse<StoreDTO> updateStoreCode(
         @Valid @RequestBody StoreRequest.UpdateStoreCodeRequest req) {
         log.info("[스토어 코드 수정] request: {}", req);
         return BaseResponse.onSuccess(storeService.updateStoreCode(req));
-    }
-    //스토어 코드 확인
-    @Operation(summary = "스토어 코드 확인")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "확인 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/code/{storeId}")
-    public BaseResponse<Boolean> verifyCode(
-        @Valid @RequestBody StoreRequest.VerifyCodeRequest req) {
-        log.info("[스토어 코드 확인] request: {}", req);
-        return BaseResponse.onSuccess(storeService.verifyCode(req));
     }
     //스토어 삭제
     @Operation(summary = "스토어 삭제")
@@ -111,11 +98,11 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{storeId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteStore(
-        @Valid @PathVariable UUID storeId) {
-        log.info("[스토어 삭제] request: {}", storeId);
-        storeService.deleteStore(new StoreRequest.DeleteStoreRequest(storeId));
+        @Valid @RequestBody StoreRequest.DeleteStoreRequest req) {
+        log.info("[스토어 삭제] request: {}", req);
+        storeService.deleteStore(req);
         return BaseResponse.onSuccess(null);
     }
 }

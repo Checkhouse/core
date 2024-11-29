@@ -83,7 +83,7 @@ public class PickupController {
 		return BaseResponse.onSuccess(pickupService.getUserPickupDetails(req));
 	}
 
-	@PatchMapping("/{pickupId}")
+	@PatchMapping
 	@Operation(summary = "픽업 상태 변경")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "변경 성공")
