@@ -62,7 +62,12 @@ public class InspectionController {
         @PathVariable UUID inspectionId,
         @Valid @RequestBody InspectionRequest.UpdateInspectionDescriptionRequest req
     ) {
-        return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(inspectionId, req));
+        return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(
+            InspectionRequest.UpdateInspectionDescriptionRequest.builder()
+                .inspectionId(inspectionId)
+                .description(req.description())
+                .build()
+        ));
     }
     // 검수 완료 후 상태 업데이트
     @Operation(summary = "검수 완료 후 상태 업데이트")
@@ -71,7 +76,12 @@ public class InspectionController {
         @PathVariable UUID inspectionId,
         @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req
     ) {
-        return BaseResponse.onSuccess(inspectionService.updateInspection(inspectionId, req));
+        return BaseResponse.onSuccess(inspectionService.updateInspection(
+            InspectionRequest.UpdateInspectionRequest.builder()
+                .inspectionId(inspectionId)
+                .isDone(req.isDone())
+                .build()
+        ));
     }
 
     // 검수 리스트 조회
@@ -80,6 +90,10 @@ public class InspectionController {
     public BaseResponse<List<InspectionDTO>> getInspectionList(
         @PathVariable UUID usedProductId
     ) {
-        return BaseResponse.onSuccess(inspectionService.getInspectionList(usedProductId));
+        return BaseResponse.onSuccess(inspectionService.getInspectionList(
+            InspectionRequest.GetInspectionListRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        ));
     }
 }

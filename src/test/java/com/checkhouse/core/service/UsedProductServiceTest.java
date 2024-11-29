@@ -2,6 +2,7 @@ package com.checkhouse.core.service;
 
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
@@ -98,7 +99,11 @@ public class UsedProductServiceTest {
                 .originProductId(mockedOriginProduct.getOriginProductId())
                 .build();
 
-        when(originProductService.findOriginProduct(request.originProductId())).thenReturn(mockedOriginProduct);
+        when(originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(request.originProductId())
+                .build()
+        )).thenReturn(mockedOriginProduct);
         when(userService.findUser(request.userId())).thenReturn(mockedUser);
         when(usedProductRepository.save( any()) ).thenReturn(mockedUsedProduct);
 

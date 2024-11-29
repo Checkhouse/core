@@ -129,7 +129,11 @@ public class InspectionServiceTest {
             .thenReturn(inspectionList);
 
         // when
-        List<InspectionDTO> response = inspectionService.getInspectionList(usedProductId);
+        List<InspectionDTO> response = inspectionService.getInspectionList(
+            InspectionRequest.GetInspectionListRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        );
 
         // then
         assertEquals(1, response.size());
@@ -212,7 +216,12 @@ public class InspectionServiceTest {
 
         // when & then
         GeneralException exception = assertThrows(GeneralException.class, 
-            () -> inspectionService.updateInspection(completedInspection.getInspectionId(), req));
+            () -> inspectionService.updateInspection(
+                InspectionRequest.UpdateInspectionRequest.builder()
+                    .inspectionId(completedInspection.getInspectionId())
+                    .isDone(true)
+                    .build()
+            ));
         assertEquals(ErrorStatus._INSPECTION_ALREADY_DONE.getCode(), exception.getErrorReason().getCode());
     }
 
@@ -261,7 +270,12 @@ public class InspectionServiceTest {
             .thenReturn(inspection1);
 
         // when
-        InspectionDTO response = inspectionService.updateInspectionDescription(inspection1.getInspectionId(), req); 
+        InspectionDTO response = inspectionService.updateInspectionDescription(
+            InspectionRequest.UpdateInspectionDescriptionRequest.builder()
+                .inspectionId(inspection1.getInspectionId())
+                .description("updated description")
+                .build()
+        ); 
 
         // then
         assertEquals(inspection1.getInspectionId(), response.inspectionId());

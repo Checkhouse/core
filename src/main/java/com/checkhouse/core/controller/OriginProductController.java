@@ -120,7 +120,11 @@ public class OriginProductController {
     @GetMapping("/{originProductId}")
     public BaseResponse<Map<String, Object>> getOriginProductInfo(@PathVariable UUID originProductId) {
         // 1. 상품 정보 조회
-        OriginProductDTO product = originProductService.getOriginProductInfo(originProductId);
+        OriginProductDTO product = originProductService.getOriginProductInfo(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(originProductId)
+                .build()
+        );
         
         // 2. 이미지 정보 조회
         List<OriginImageDTO> images = imageService.getOriginImagesByOriginId(
@@ -156,7 +160,11 @@ public class OriginProductController {
     public BaseResponse<List<OriginProductDTO>> getOriginProductsWithCategory(
         @PathVariable UUID categoryId) {
         log.info("[카테고리별 원본 상품 목록 조회] categoryId: {}", categoryId);
-        List<OriginProductDTO> originProducts = originProductService.getOriginProductsWithCategory(categoryId);
+        List<OriginProductDTO> originProducts = originProductService.getOriginProductsWithCategory(
+            OriginProductRequest.GetOriginProductWithCategoryRequest.builder()
+                .categoryId(categoryId)
+                .build()
+        );
         return BaseResponse.onSuccess(originProducts);
     }
     //원본 상품 검색
@@ -169,7 +177,11 @@ public class OriginProductController {
     public BaseResponse<List<OriginProductDTO>> searchOriginProducts(
         @RequestParam("query") String query) {
         log.info("[원본 상품 검색] request: {}", query);
-        return BaseResponse.onSuccess(originProductService.searchOriginProducts(query));
+        return BaseResponse.onSuccess(originProductService.searchOriginProducts(
+            OriginProductRequest.SearchOriginProductsRequest.builder()
+                .query(query)
+                .build()
+        ));
     }
     //원본 상품 삭제
     @Operation(summary = "원본 상품 삭제")

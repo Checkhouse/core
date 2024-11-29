@@ -4,6 +4,7 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
+import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.Role;
@@ -329,7 +330,11 @@ public class FavoriteServiceTest {
 
         // Then
         Assertions.assertEquals(5, favoriteCount);
-        verify(originProductService, times(1)).findOriginProduct(mockedOriginProduct.getOriginProductId());
+        verify(originProductService, times(1)).findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(mockedOriginProduct.getOriginProductId())
+                .build()
+        );
         verify(favoriteOriginRepository, times(1)).countByOriginProductOriginProductId(mockedOriginProduct.getOriginProductId());
     }
 
@@ -365,7 +370,11 @@ public class FavoriteServiceTest {
     void FAILURE_getOriginProductFavoriteCount_ProductNotFound() {
         // Given
         UUID originProductId = UUID.randomUUID();
-        when(originProductService.findOriginProduct(originProductId)).thenThrow(new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND));
+        when(originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(originProductId)
+                .build()
+        )).thenThrow(new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND));
 
         // When & Then
         GeneralException exception = assertThrows(
@@ -373,7 +382,11 @@ public class FavoriteServiceTest {
                 () -> favoriteService.getOriginProductFavoriteCount(originProductId)
         );
         Assertions.assertEquals("원본 상품이 존재하지 않습니다.", exception.getErrorReason().getMessage());
-        verify(originProductService, times(1)).findOriginProduct(originProductId);
+        verify(originProductService, times(1)).findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(originProductId)
+                .build()
+        );
         verify(favoriteOriginRepository, never()).countByOriginProductOriginProductId(any(UUID.class));
     }
 

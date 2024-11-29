@@ -70,7 +70,10 @@ public class CollectController {
     @GetMapping
     public BaseResponse<List<CollectDTO>> getCollectList() {
         log.info("[수거 리스트 조회]");
-        List<CollectDTO> collectList = collectService.getCollectList();
+        List<CollectDTO> collectList = collectService.getCollectList(
+            CollectRequest.GetCollectListRequest.builder()
+                .build()
+        );
         return BaseResponse.onSuccess(collectList);
     }
     //수거 삭제
@@ -96,7 +99,11 @@ public class CollectController {
     public BaseResponse<DeliveryState> getCollectState(
         @Valid @RequestBody CollectRequest.GetCollectStateRequest req) {
         log.info("[수거 상태 조회] request: {}", req);
-        DeliveryState collectState = collectService.getCollectState(req.collectId());
+        DeliveryState collectState = collectService.getCollectState(
+            CollectRequest.GetCollectStateRequest.builder()
+                .collectId(req.collectId())
+                .build()
+        );
         return BaseResponse.onSuccess(collectState);
     }
 }

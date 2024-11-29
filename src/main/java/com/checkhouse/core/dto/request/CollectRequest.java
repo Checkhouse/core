@@ -28,4 +28,8 @@ public class CollectRequest {
     public record GetCollectStateRequest(
         UUID collectId
     ) {}
+
+    @Builder
+    public record GetCollectListRequest() {}
+
 }

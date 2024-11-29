@@ -4,6 +4,7 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
+import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.repository.mysql.FavoriteOriginRepository;
@@ -27,7 +28,11 @@ public class FavoriteService {
     private final UsedProductService usedProductService;
 
     public FavoriteDTO addFavoriteOrigin(FavoriteRequest.AddToFavoriteRequest request) {
-        OriginProduct originProduct = originProductService.findOriginProduct(request.originProductId());
+        OriginProduct originProduct = originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(request.originProductId())
+                .build()
+        );
         User user = userService.findUser(request.userId());
 
         if(!favoriteOriginRepository.existsByOriginProductOriginProductIdAndUserUserId(request.originProductId(), request.userId())) {
@@ -50,7 +55,11 @@ public class FavoriteService {
     }
     public void removeFavoriteOrigin(FavoriteRequest.RemoveFromFavoriteRequest request) {
         // 검증
-        originProductService.findOriginProduct(request.originProductId());
+        originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(request.originProductId())
+                .build()
+        );
         userService.findUser(request.userId());
 
         if(favoriteOriginRepository.existsByOriginProductOriginProductIdAndUserUserId(request.originProductId(), request.userId())) {
@@ -73,8 +82,11 @@ public class FavoriteService {
     }
 
     public int getOriginProductFavoriteCount(UUID originProductId) {
-        originProductService.findOriginProduct(originProductId);
-
+        originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(originProductId)
+                .build()
+        );
         return favoriteOriginRepository.countByOriginProductOriginProductId(originProductId);
     }
 

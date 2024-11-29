@@ -82,25 +82,30 @@ public class OriginProductService {
         return originProductRepository.findAll()
                 .stream().map(OriginProduct::toDto).toList();
     }
-    public OriginProductDTO getOriginProductInfo( UUID originProductId ) {
-         OriginProduct originProduct = originProductRepository.findById(originProductId).orElseThrow(
+    public OriginProductDTO getOriginProductInfo(
+            OriginProductRequest.GetOriginProductInfoRequest request
+    ) {
+         OriginProduct originProduct = originProductRepository.findById(request.originProductId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND)
         );
 
          return originProduct.toDto();
     }
 
-    public List<OriginProductDTO> getOriginProductsWithCategory( UUID categoryId ) {
-        categoryRepository.findById(categoryId).orElseThrow(
+    public List<OriginProductDTO> getOriginProductsWithCategory(
+            OriginProductRequest.GetOriginProductWithCategoryRequest request
+    ) {
+        categoryRepository.findById(request.categoryId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND)
         );
-        return originProductRepository.findByCategoryId(categoryId)
+        return originProductRepository.findByCategoryId(request.categoryId())
                 .stream().map(OriginProduct::toDto).toList();
     }
 
     // todo es 검색
-    public List<OriginProductDTO> searchOriginProducts(String query) {
-
+    public List<OriginProductDTO> searchOriginProducts(
+            OriginProductRequest.SearchOriginProductsRequest request
+    ) {
         return List.of();
 
     }
@@ -113,8 +118,10 @@ public class OriginProductService {
 
         );
     }
-    public OriginProduct findOriginProduct(UUID originProductId) {
-        return originProductRepository.findById(originProductId).orElseThrow(
+    public OriginProduct findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest request
+    ) {
+        return originProductRepository.findById(request.originProductId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ORIGIN_PRODUCT_NOT_FOUND)
         );
     }

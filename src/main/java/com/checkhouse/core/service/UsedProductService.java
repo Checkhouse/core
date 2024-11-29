@@ -3,6 +3,7 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.OriginProduct;
 import com.checkhouse.core.entity.UsedProduct;
@@ -29,7 +30,11 @@ public class UsedProductService {
 
     public UsedProductDTO addUsedProduct(UsedProductRequest.AddUsedProductRequest request) {
         try {
-            OriginProduct originProduct = originProductService.findOriginProduct(request.originProductId());
+            OriginProduct originProduct = originProductService.findOriginProduct(
+                OriginProductRequest.GetOriginProductInfoRequest.builder()
+                    .originProductId(request.originProductId())
+                    .build()
+            );
             User user = userService.findUser(request.userId());
 
             UsedProduct usedProduct = UsedProduct.builder()

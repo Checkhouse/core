@@ -65,8 +65,10 @@ public class CollectService {
         return updatedCollect.toDto();
     }
     //수거 상태 조회
-    public DeliveryState getCollectState(UUID collectId) {
-        Collect collect = collectRepository.findById(collectId)
+    public DeliveryState getCollectState(
+            CollectRequest.GetCollectStateRequest req
+    ) {
+        Collect collect = collectRepository.findById(req.collectId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
         return collect.getDelivery().getDeliveryState();
     }
@@ -81,7 +83,9 @@ public class CollectService {
         
     }
     //수거 리스트 조회
-    public List<CollectDTO> getCollectList() {
+    public List<CollectDTO> getCollectList(
+            CollectRequest.GetCollectListRequest req
+    ) {
         return collectRepository.findAll().stream()
             .map(Collect::toDto)
             .collect(Collectors.toList());

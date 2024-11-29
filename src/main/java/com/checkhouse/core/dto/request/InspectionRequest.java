@@ -33,4 +33,10 @@ public class InspectionRequest {
         UUID inspectionId,
         String description
     ) {}
+
+    @Builder
+    public record GetInspectionListRequest(
+        UUID usedProductId
+    ) {}
+
 }

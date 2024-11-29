@@ -176,7 +176,11 @@ public class OriginProductServiceTest {
         when(originProductRepository.findByCategoryId(categoryId)).thenReturn(List.of(mockedOriginProduct));
 
         // when
-        List<OriginProductDTO> result = originProductService.getOriginProductsWithCategory(categoryId);
+        List<OriginProductDTO> result = originProductService.getOriginProductsWithCategory(
+            OriginProductRequest.GetOriginProductWithCategoryRequest.builder()
+                .categoryId(categoryId)
+                .build()
+        );
 
         // then
         assertEquals(1, result.size());
@@ -192,7 +196,11 @@ public class OriginProductServiceTest {
         when(originProductRepository.findById(productId)).thenReturn(Optional.of(mockedOriginProduct));
 
         // when
-        OriginProductDTO result = originProductService.getOriginProductInfo(productId);
+        OriginProductDTO result = originProductService.getOriginProductInfo(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(productId)
+                .build()
+        );
 
         // then
         assertEquals(mockedOriginProduct.getName(), result.name());
@@ -206,7 +214,10 @@ public class OriginProductServiceTest {
         // given
         String keyword = "origin";
         // when
-        List<OriginProductDTO> result = originProductService.searchOriginProducts(keyword);
+        List<OriginProductDTO> result = originProductService.searchOriginProducts(
+            OriginProductRequest.SearchOriginProductsRequest.builder()
+                .build()
+        );
 
         System.out.println("do noting");
 
@@ -261,7 +272,11 @@ public class OriginProductServiceTest {
 
         // then
         assertThrows(GeneralException.class, () -> {
-            originProductService.getOriginProductInfo(productId);
+            originProductService.getOriginProductInfo(
+                OriginProductRequest.GetOriginProductInfoRequest.builder()
+                    .originProductId(productId)
+                    .build()
+            );
         });
         verify(originProductRepository, times(1)).findById(productId);
     }
@@ -275,7 +290,11 @@ public class OriginProductServiceTest {
 
         // when
         GeneralException exception = assertThrows(GeneralException.class, () -> {
-            originProductService.getOriginProductsWithCategory(categoryId);
+            originProductService.getOriginProductsWithCategory(
+                OriginProductRequest.GetOriginProductWithCategoryRequest.builder()
+                    .categoryId(categoryId)
+                    .build()
+            );
         });
 
         // then

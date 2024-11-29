@@ -62,8 +62,10 @@ public class InspectionService {
         return savedInspection.toDto();
     }
     // 검수 상태 업데이트
-    public InspectionDTO updateInspection(UUID inspectionId, InspectionRequest.UpdateInspectionRequest req) {
-        Inspection inspection = inspectionRepository.findById(inspectionId)
+    public InspectionDTO updateInspection(
+            InspectionRequest.UpdateInspectionRequest req
+    ) {
+        Inspection inspection = inspectionRepository.findById(req.inspectionId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
         if (inspection.isDone()) {
             throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
@@ -75,8 +77,10 @@ public class InspectionService {
     // todo: imageservice에서 사진 가져오기
     
     // 검수 리스트 조회(관리자)
-    public List<InspectionDTO> getInspectionList(UUID usedProductId) {
-        return inspectionRepository.findByUsedProduct_UsedProductId(usedProductId)
+    public List<InspectionDTO> getInspectionList(
+            InspectionRequest.GetInspectionListRequest request
+    ) {
+        return inspectionRepository.findByUsedProduct_UsedProductId(request.usedProductId())
             .stream()
             .map(Inspection::toDto)
             .collect(Collectors.toList());
@@ -88,8 +92,10 @@ public class InspectionService {
         inspectionRepository.delete(inspection);
     }
     // 검수 설명 수정
-    public InspectionDTO updateInspectionDescription(UUID inspectionId, InspectionRequest.UpdateInspectionDescriptionRequest req) {
-        Inspection inspection = inspectionRepository.findById(inspectionId)
+    public InspectionDTO updateInspectionDescription(
+            InspectionRequest.UpdateInspectionDescriptionRequest req
+    ) {
+        Inspection inspection = inspectionRepository.findById(req.inspectionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
         if (inspection.isDone()) {
             throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
