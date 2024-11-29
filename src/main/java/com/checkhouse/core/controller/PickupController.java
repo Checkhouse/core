@@ -49,18 +49,22 @@ public class PickupController {
 		@Valid @RequestBody PickupRequest.AddPickUpRequest req
 	) {
 		log.info("[픽업 등록] request: {}", req);
-		return BaseResponse.onSuccess(pickupService.addUserPickup(req));
+		PickupDTO pickup = pickupService.addUserPickup(req);
+		// 거래 상태 변경
+		transactionService.updateTransactionStatus(new TransactionRequest.UpdateTransactionRequest(
+			pickup.transaction().transactionId()
+		));
+		return BaseResponse.onSuccess(pickup);
 	}
 
-	@GetMapping("/{userId}")
+	@GetMapping
 	@Operation(summary = "사용자 픽업 조회")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	public BaseResponse<List<PickupDTO>> getPickupList(
-		@PathVariable UUID userId
+		@Valid @RequestBody PickupRequest.GetUserPickupListRequest req
 	) {
-		PickupRequest.GetUserPickupListRequest req = new PickupRequest.GetUserPickupListRequest(userId);
 		log.info("[사용자 픽업 조회] request: {}", req);
 		return BaseResponse.onSuccess(pickupService.getUserPickupList(req));
 	}
