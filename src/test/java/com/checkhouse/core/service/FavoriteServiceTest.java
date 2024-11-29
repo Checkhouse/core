@@ -4,6 +4,7 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
+import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.entity.enums.UsedProductState;
@@ -206,7 +207,11 @@ public class FavoriteServiceTest {
         );
 
         when(userService.findUser(request.userId())).thenReturn(mockedUser);
-        when(usedProductService.findUsedProduct(request.usedProductId())).thenReturn(mockedUsedProduct);
+        when(usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        )).thenReturn(mockedUsedProduct);
         when(favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId(any(), any())).thenReturn(false);
         when(favoriteUsedRepository.save(any())).thenReturn(
                 FavoriteUsed.builder()
@@ -233,7 +238,11 @@ public class FavoriteServiceTest {
                 mockedOriginProduct.getOriginProductId()
         );
         when(userService.findUser( request.userId())).thenReturn(mockedUser);
-        when(usedProductService.findUsedProduct( request.usedProductId() )).thenReturn(mockedUsedProduct);
+        when(usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        )).thenReturn(mockedUsedProduct);
         when(favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId( any(), any() )).thenReturn(true);
 
         doNothing().when(favoriteUsedRepository).deleteByUsedProductUsedProductIdAndUserUserId(any(), any());
@@ -328,15 +337,27 @@ public class FavoriteServiceTest {
     @Test
     void SUCCESS_getUsedProductFavoriteCount() {
         // Given
-        when(usedProductService.findUsedProduct(mockedUsedProduct.getUsedProductId())).thenReturn(mockedUsedProduct);
+        when(usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(mockedUsedProduct.getUsedProductId())
+                .build()
+        )).thenReturn(mockedUsedProduct);
         when(favoriteUsedRepository.countByUsedProductUsedProductId(mockedUsedProduct.getUsedProductId())).thenReturn(10);
 
         // When
-        int favoriteCount = favoriteService.getUsedProductFavoriteCount(mockedUsedProduct.getUsedProductId());
+        int favoriteCount = favoriteService.getUsedProductFavoriteCount(
+            FavoriteRequest.GetUsedProductFavoriteCountRequest.builder()
+                .usedProductId(mockedUsedProduct.getUsedProductId())
+                .build()
+        );
 
         // Then
         Assertions.assertEquals(10, favoriteCount);
-        verify(usedProductService, times(1)).findUsedProduct(mockedUsedProduct.getUsedProductId());
+        verify(usedProductService, times(1)).findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(mockedUsedProduct.getUsedProductId())
+                .build()
+        );
         verify(favoriteUsedRepository, times(1)).countByUsedProductUsedProductId(mockedUsedProduct.getUsedProductId());
     }
     @DisplayName("원본 상품의 좋아요 수 조회에 실패합니다. - 상품이 존재하지 않음")
@@ -361,15 +382,27 @@ public class FavoriteServiceTest {
     void FAILURE_getUsedProductFavoriteCount_ProductNotFound() {
         // Given
         UUID usedProductId = UUID.randomUUID();
-        when(usedProductService.findUsedProduct(usedProductId)).thenThrow(new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
+        when(usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        )).thenThrow(new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
 
         // When & Then
         GeneralException exception = assertThrows(
                 GeneralException.class,
-                () -> favoriteService.getUsedProductFavoriteCount(usedProductId)
+                () -> favoriteService.getUsedProductFavoriteCount(
+                    FavoriteRequest.GetUsedProductFavoriteCountRequest.builder()
+                        .usedProductId(usedProductId)
+                        .build()
+                )
         );
         Assertions.assertEquals("중고 상품이 존재하지 않습니다.", exception.getErrorReason().getMessage());
-        verify(usedProductService, times(1)).findUsedProduct(usedProductId);
+        verify(usedProductService, times(1)).findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        );
         verify(favoriteUsedRepository, never()).countByUsedProductUsedProductId(any(UUID.class));
     }
 

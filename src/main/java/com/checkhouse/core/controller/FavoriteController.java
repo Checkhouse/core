@@ -90,9 +90,13 @@ public class FavoriteController {
     })
     @GetMapping("/origin")
     public BaseResponse<List<FavoriteDTO>> getUserFavoriteOrigins(
-        @Valid @RequestBody FavoriteRequest.GetUserFavoriteOrigins req) {
-        log.info("[origin favorite 조회] request: {}", req);
-        return BaseResponse.onSuccess(favoriteService.getUserFavoriteOrigins(req));
+        @RequestParam UUID userId) {
+        log.info("[origin favorite 조회] userId: {}", userId);
+        return BaseResponse.onSuccess(favoriteService.getUserFavoriteOrigins(
+            FavoriteRequest.GetUserFavoriteOrigins.builder()
+                .userId(userId)
+                .build()
+        ));
     }
     //used favorite 조회
     @Operation(summary = "used favorite 조회")
@@ -102,9 +106,13 @@ public class FavoriteController {
     })
     @GetMapping("/used")
     public BaseResponse<List<FavoriteDTO>> getUserFavoriteUsed(
-        @Valid @RequestBody FavoriteRequest.GetUserFavoriteUsed req) {
-        log.info("[used favorite 조회] request: {}", req);
-        return BaseResponse.onSuccess(favoriteService.getUserFavoriteUsed(req));
+        @RequestParam UUID userId) {
+        log.info("[used favorite 조회] userId: {}", userId);
+        return BaseResponse.onSuccess(favoriteService.getUserFavoriteUsed(
+            FavoriteRequest.GetUserFavoriteUsed.builder()
+                .userId(userId)
+                .build()
+        ));
     }
     //origin favorite 개수 조회
     @Operation(summary = "origin favorite 개수 조회")
@@ -128,6 +136,10 @@ public class FavoriteController {
     public BaseResponse<Integer> getUsedProductFavoriteCount(
         @RequestParam UUID usedId) {
         log.info("[used favorite 개수 조회] request: {}", usedId);
-        return BaseResponse.onSuccess(favoriteService.getUsedProductFavoriteCount(usedId));
+        return BaseResponse.onSuccess(favoriteService.getUsedProductFavoriteCount(
+            FavoriteRequest.GetUsedProductFavoriteCountRequest.builder()
+                .usedProductId(usedId)
+                .build()
+        ));
     }
 }

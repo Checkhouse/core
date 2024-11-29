@@ -4,6 +4,7 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
+import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.repository.mysql.FavoriteOriginRepository;
 import com.checkhouse.core.repository.mysql.FavoriteUsedRepository;
@@ -78,7 +79,11 @@ public class FavoriteService {
     }
 
     public FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
-        UsedProduct usedProduct = usedProductService.findUsedProduct(request.usedProductId());
+        UsedProduct usedProduct = usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        );
         User user = userService.findUser(request.userId());
 
         if(!favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId(request.usedProductId(), request.userId())) {
@@ -101,7 +106,11 @@ public class FavoriteService {
     }
     public void removeFavoriteUsed(FavoriteRequest.RemoveUsedProductLikeRequest request) {
         // 검증
-        usedProductService.findUsedProduct(request.usedProductId());
+        usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        );
         userService.findUser(request.userId());
 
         if(favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId(request.usedProductId(), request.userId())) {
@@ -124,9 +133,13 @@ public class FavoriteService {
                 )).toList();
     }
 
-    public int getUsedProductFavoriteCount(UUID usedId) {
-        usedProductService.findUsedProduct(usedId);
+    public int getUsedProductFavoriteCount(FavoriteRequest.GetUsedProductFavoriteCountRequest request) {
+        usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        );
 
-        return favoriteUsedRepository.countByUsedProductUsedProductId(usedId);
+        return favoriteUsedRepository.countByUsedProductUsedProductId(request.usedProductId());
     }
 }

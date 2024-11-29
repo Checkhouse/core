@@ -113,7 +113,11 @@ public class UsedProductController {
     public BaseResponse<UsedProductDTO> getUsedProduct(
         @PathVariable UUID usedProductId
     ) {
-        UsedProductDTO product = usedProductService.getUsedProductDetails(usedProductId);
+        UsedProductDTO product = usedProductService.getUsedProductDetails(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        );
         return BaseResponse.onSuccess(product);
     }
 
@@ -158,7 +162,11 @@ public class UsedProductController {
     public BaseResponse<Void> deleteUsedProduct(
         @PathVariable UUID usedProductId
     ) {
-        usedProductService.cancelAddUsedProduct(usedProductId);
+        usedProductService.cancelAddUsedProduct(
+            UsedProductRequest.DeleteUsedProductRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        );
         return BaseResponse.onSuccess(null);
     }
     
@@ -172,7 +180,11 @@ public class UsedProductController {
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByStatus(
         @PathVariable UsedProductState status
     ) {
-        List<UsedProductDTO> products = usedProductService.getUsedProductsByStatus(status.name());
+        List<UsedProductDTO> products = usedProductService.getUsedProductsByStatus(
+            UsedProductRequest.GetUsedProductByStatusRequest.builder()
+                .status(status)
+                .build()
+        );
         return BaseResponse.onSuccess(products);
     }
 
@@ -186,7 +198,11 @@ public class UsedProductController {
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByUser(
         @PathVariable UUID userId
     ) {
-        List<UsedProductDTO> products = usedProductService.getUsedProductsByUser(userId);
+        List<UsedProductDTO> products = usedProductService.getUsedProductsByUser(
+            UsedProductRequest.GetUsedProductByUserRequest.builder()
+                .userId(userId)
+                .build()
+        );
         return BaseResponse.onSuccess(products);
     }
 }

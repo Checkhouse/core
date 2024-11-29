@@ -42,4 +42,25 @@ public class UsedProductRequest {
     public record DeleteUsedProduct(
             UUID usedProductId
     ) {}
+
+    @Builder
+    public record GetUsedProductRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record DeleteUsedProductRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record GetUsedProductByStatusRequest(
+            UsedProductState status
+    ) {}
+
+    @Builder
+    public record GetUsedProductByUserRequest(
+            UUID userId
+    ) {}
+    
 }
