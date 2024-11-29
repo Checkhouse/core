@@ -83,8 +83,7 @@ public class UsedProduct extends BaseTimeEntity {
             String title,
             String description,
             int price,
-            boolean isNegoAllow,
-            Address address
+            boolean isNegoAllow
     ) {
         this.usedProductId = usedProductId;
         this.originProduct = originProduct;
@@ -94,7 +93,6 @@ public class UsedProduct extends BaseTimeEntity {
         this.description = description;
         this.price = price;
         this.isNegoAllow = isNegoAllow;
-        this.address = address;
     }
     public UsedProductDTO toDto() {
         return new UsedProductDTO(

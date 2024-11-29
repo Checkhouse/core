@@ -31,4 +31,9 @@ public class DeliveryRequest {
     public record DeleteDeliveryRequest(
             UUID deliveryId
     ) {}
+
+    @Builder
+    public record GetDeliveryListRequest(
+            UUID userId
+    ) {}
 }

@@ -1,6 +1,8 @@
 package com.checkhouse.core.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,11 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
+import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
+import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
 import com.checkhouse.core.dto.OriginImageDTO;
 import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.ImageRequest;
 import com.checkhouse.core.dto.request.OriginProductRequest;
+import com.checkhouse.core.entity.enums.DeliveryState;
+import com.checkhouse.core.service.CollectService;
 import com.checkhouse.core.service.ImageService;
 import com.checkhouse.core.service.OriginProductService;
 
@@ -39,6 +45,7 @@ import jakarta.validation.Valid;
 public class OriginProductController {
     private final OriginProductService originProductService;
     private final ImageService imageService;
+    private final CollectService collectService;
     //원본 상품 등록
     @Operation(summary = "원본 상품 등록")
     @ApiResponses({
@@ -56,7 +63,6 @@ public class OriginProductController {
             req.imageUrls().forEach(imageUrl -> {
                 imageService.addOriginImage(
                     ImageRequest.AddOriginImageRequest.builder()
-                        .originImageId(UUID.randomUUID())
                         .originProductId(savedProduct.originProductId())
                         .imageURL(imageUrl)
                         .build()
@@ -76,8 +82,33 @@ public class OriginProductController {
     @PatchMapping("/{originProductId}")
     public BaseResponse<OriginProductDTO> updateOriginProductInfo(
         @PathVariable UUID originProductId,
-        @Valid @RequestBody OriginProductRequest.UpdateOriginProductInfo req) {
+        @Valid @RequestBody OriginProductRequest.UpdateOriginProductInfo req,
+        @RequestParam(required = false) List<String> imageUrls  // 이미지 URL 리스트를 파라미터로 받음
+    ) {
+        // 1. 상품 정보 수정
         OriginProductDTO updatedOriginProduct = originProductService.updateOriginProductInfo(req);
+
+        // 2. 이미지 수정 (이미지 URL이 제공된 경우에만)
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            // 기존 이미지 삭제
+            List<OriginImageDTO> existingImages = imageService.getOriginImagesByOriginId(
+                new ImageRequest.GetOriginImagesByOriginIdRequest(originProductId)
+            );
+            existingImages.forEach(image ->
+                imageService.deleteOriginImage(new ImageRequest.DeleteOriginImageRequest(image.originImageId()))
+            );
+
+            // 새 이미지 등록
+            imageUrls.forEach(imageUrl -> {
+                imageService.addOriginImage(
+                    ImageRequest.AddOriginImageRequest.builder()
+                        .originProductId(originProductId)
+                        .imageURL(imageUrl)
+                        .build()
+                );
+            });
+        }
+
         log.info("[원본 상품 정보 수정] request: {}", updatedOriginProduct);
         return BaseResponse.onSuccess(updatedOriginProduct);
     }
@@ -88,7 +119,7 @@ public class OriginProductController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/{originProductId}")
-    public BaseResponse<OriginProductDTO> getOriginProductInfo(@PathVariable UUID originProductId) {
+    public BaseResponse<Map<String, Object>> getOriginProductInfo(@PathVariable UUID originProductId) {
         // 1. 상품 정보 조회
         OriginProductDTO product = originProductService.getOriginProductInfo(originProductId);
         
@@ -97,8 +128,12 @@ public class OriginProductController {
             new ImageRequest.GetOriginImagesByOriginIdRequest(originProductId)
         );
         
+        Map<String, Object> response = new HashMap<>();
+        response.put("product", product);
+        response.put("images", images);
+        
         log.info("[원본 상품 정보 조회] originProductId: {}", originProductId);
-        return BaseResponse.onSuccess(product);
+        return BaseResponse.onSuccess(response);
     }
     //원본 상품 목록 조회
     @Operation(summary = "원본 상품 목록 조회")
@@ -107,10 +142,10 @@ public class OriginProductController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/list")
-    public BaseResponse<List<OriginProductDTO>> getOriginProducts(
-        @RequestParam UUID originProductId) {
-        log.info("[원본 상품 목록 조회] request: {}", originProductId);
-        return BaseResponse.onSuccess(originProductService.getOriginProducts());
+    public BaseResponse<List<OriginProductDTO>> getOriginProducts() {
+        log.info("[원본 상품 목록 조회]");
+        List<OriginProductDTO> originProducts = originProductService.getOriginProducts();
+        return BaseResponse.onSuccess(originProducts);
     }
     //카테고리별 원본 상품 목록 조회
     @Operation(summary = "카테고리별 원본 상품 목록 조회")
@@ -121,8 +156,9 @@ public class OriginProductController {
     @GetMapping("/list/{categoryId}")
     public BaseResponse<List<OriginProductDTO>> getOriginProductsWithCategory(
         @PathVariable UUID categoryId) {
-        log.info("[카테고리별 원본 상품 목록 조회] request: {}", categoryId);
-        return BaseResponse.onSuccess(originProductService.getOriginProductsWithCategory(categoryId));
+        log.info("[카테고리별 원본 상품 목록 조회] categoryId: {}", categoryId);
+        List<OriginProductDTO> originProducts = originProductService.getOriginProductsWithCategory(categoryId);
+        return BaseResponse.onSuccess(originProducts);
     }
     //원본 상품 검색
     @Operation(summary = "원본 상품 검색")
@@ -130,7 +166,7 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/search") //추후 수정 필요 query로 검색할건지
+    @GetMapping("/search") //todo: 수정 필요 query로 검색할건지
     public BaseResponse<List<OriginProductDTO>> searchOriginProducts(
         @RequestParam("query") String query) {
         log.info("[원본 상품 검색] request: {}", query);
@@ -144,9 +180,13 @@ public class OriginProductController {
     })
     @DeleteMapping("/{originProductId}")
     public BaseResponse<Void> deleteOriginProduct(
-        @RequestParam UUID originProductId) {
-        log.info("[원본 상품 삭제] request: {}", originProductId);
-        originProductService.deleteOriginProduct(new OriginProductRequest.DeleteOriginProduct(originProductId));
+        @Valid @RequestBody OriginProductRequest.DeleteOriginProduct req) {
+        // 수거 이전 상태에서만 삭제 가능
+        if (collectService.getCollectState(req.originProductId()) != DeliveryState.COLLECTING) {
+            throw new GeneralException(ErrorStatus._COLLECT_STATE_NOT_ALLOWED);
+        }
+        log.info("[원본 상품 삭제] request: {}", req);
+        originProductService.deleteOriginProduct(req);
         return BaseResponse.onSuccess(null);
     }
 }

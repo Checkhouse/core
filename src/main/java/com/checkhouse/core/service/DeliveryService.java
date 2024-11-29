@@ -64,11 +64,11 @@ public class DeliveryService {
         return delivery.toDto();
     }
     // 배송 리스트 조회
-    public List<DeliveryDTO> getDeliveryList() {
-        return deliveryRepository.findAll().stream()
+    public List<DeliveryDTO> getDeliveryList(DeliveryRequest.GetDeliveryListRequest req) {
+        return deliveryRepository.findByUserId(req.userId())
+            .stream()
             .map(Delivery::toDto)
-            .collect(Collectors.toList());
-        
+            .toList();
     }
 
     /**

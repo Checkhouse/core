@@ -8,7 +8,9 @@ import lombok.Builder;
 public class SendRequest {
     @Builder
     public record AddSendRequest(
-        UUID transactionId
+        UUID transactionId,
+        UUID addressId,
+        String trackingCode
     ) {}
 
     @Builder

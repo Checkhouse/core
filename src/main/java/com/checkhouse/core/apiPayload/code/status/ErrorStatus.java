@@ -101,7 +101,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _COLLECT_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECT404", "Collect ID를 찾을 수 없습니다."),
     _COLLECT_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "COLLECT4041", "수거 상태를 찾을 수 없습니다."),
     _COLLECT_ALREADY_EXISTS(HttpStatus.CONFLICT, "COLLECT409", "이미 수거 등록이 된 상품입니다."),
-    
+    _COLLECT_STATE_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "COLLECT400", "수거 이전 상태에서만 삭제 가능합니다."),
     // send
     _SEND_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND404", "Send ID를 찾을 수 없습니다."),
     _SEND_STATE_NOT_FOUND(HttpStatus.NOT_FOUND, "SEND4041", "발송 상태를 찾을 수 없습니다."),

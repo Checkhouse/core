@@ -142,8 +142,7 @@ public class ImageServiceTest {
     void SUCCESS_saveImageUrl() {
         // 이미지 정보
         ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(
-                image1.getImageId(),
-                "https://naver.com"
+                image1.getImageURL()
         );
 
         // given
@@ -202,7 +201,6 @@ public class ImageServiceTest {
     void SUCCESS_addOriginImage() {
         // 원본 이미지 정보
         ImageRequest.AddOriginImageRequest req = new ImageRequest.AddOriginImageRequest(
-                originImage1.getOriginImageId(),
                 originProduct1.getOriginProductId(),
                 image1.getImageURL()
         );
@@ -289,7 +287,6 @@ public class ImageServiceTest {
     void SUCCESS_addUsedImage() {
         // 중고 이미지 정보
         ImageRequest.AddUsedImageRequest req = new ImageRequest.AddUsedImageRequest(
-                UUID.randomUUID(),
                 usedProduct1.getUsedProductId(),
                 image1.getImageURL()
         );
@@ -395,7 +392,7 @@ public class ImageServiceTest {
                 .imageId(UUID.randomUUID())
                 .imageURL("123456 adsfasdf")
                 .build();
-        ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageId(), image.getImageURL());
+        ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageURL());
 
         //given, when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addImage(req));
@@ -423,7 +420,6 @@ public class ImageServiceTest {
     void FAIL_addOriginImageUrl_invalid_origin_product() {
         // 원본 이미지 정보
         ImageRequest.AddOriginImageRequest req = new ImageRequest.AddOriginImageRequest(
-                UUID.randomUUID(),
                 originProduct1.getOriginProductId(),
                 image1.getImageURL()
         );
@@ -498,7 +494,6 @@ public class ImageServiceTest {
     void FAIL_addUsedImageUrl_invalid_origin_product() {
         // 중고 이미지 정보
         ImageRequest.AddUsedImageRequest req = new ImageRequest.AddUsedImageRequest(
-                UUID.randomUUID(),
                 usedProduct1.getUsedProductId(),
                 image1.getImageURL()
         );

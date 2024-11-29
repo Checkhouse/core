@@ -1,9 +1,12 @@
 package com.checkhouse.core.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +28,7 @@ import com.checkhouse.core.dto.request.StoreRequest;
 
 @Tag(name = "Store", description = "스토어 API")
 @RestController
-@RequestMapping("/store")
+@RequestMapping("/api/v1/store")
 @RequiredArgsConstructor
 @Slf4j
 public class StoreController {
@@ -43,17 +46,6 @@ public class StoreController {
         log.info("[스토어 추가] request: {}", req);
         return BaseResponse.onSuccess(storeService.addStore(req));
     }
-    //스토어 이름으로 조회
-    @Operation(summary = "스토어 이름으로 조회")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/name")
-    public BaseResponse<StoreDTO> getStoreByName(String name) {
-        log.info("[스토어 이름으로 조회] name: {}", name);
-        return BaseResponse.onSuccess(storeService.getStoreByName(name));
-    }
     //스토어 조회
     @Operation(summary = "스토어 조회")
     @ApiResponses({
@@ -62,9 +54,9 @@ public class StoreController {
     })
     @GetMapping("/{storeId}")
     public BaseResponse<StoreDTO> getStore(
-        @Valid @RequestBody StoreRequest.GetStoreRequest req) {
-        log.info("[스토어 조회] request: {}", req);
-        return BaseResponse.onSuccess(storeService.getStore(req));
+        @Valid @PathVariable UUID storeId) {
+        log.info("[스토어 조회] request: {}", storeId);
+        return BaseResponse.onSuccess(storeService.getStore(new StoreRequest.GetStoreRequest(storeId)));
     }
     //스토어 리스트 조회
     @Operation(summary = "스토어 리스트 조회")
@@ -95,7 +87,7 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/code/{storeId}")
+    @PatchMapping("/{storeId}/code")
     public BaseResponse<StoreDTO> updateStoreCode(
         @Valid @RequestBody StoreRequest.UpdateStoreCodeRequest req) {
         log.info("[스토어 코드 수정] request: {}", req);
@@ -121,9 +113,9 @@ public class StoreController {
     })
     @DeleteMapping("/{storeId}")
     public BaseResponse<Void> deleteStore(
-        @Valid @RequestBody StoreRequest.DeleteStoreRequest req) {
-        log.info("[스토어 삭제] request: {}", req);
-        storeService.deleteStore(req);
+        @Valid @PathVariable UUID storeId) {
+        log.info("[스토어 삭제] request: {}", storeId);
+        storeService.deleteStore(new StoreRequest.DeleteStoreRequest(storeId));
         return BaseResponse.onSuccess(null);
     }
 }

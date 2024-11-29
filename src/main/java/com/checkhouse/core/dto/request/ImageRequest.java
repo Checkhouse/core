@@ -13,8 +13,6 @@ public class ImageRequest {
     @Builder
     public record AddImageRequest (
             @NotNull
-            UUID imageId,
-            @NotNull
             String imageURL
     ) {}
 
@@ -32,8 +30,6 @@ public class ImageRequest {
     //원본 이미지
     @Builder
     public record AddOriginImageRequest (
-            @NotNull
-            UUID originImageId,
             @NotNull
             UUID originProductId,
             @NotNull
@@ -57,8 +53,6 @@ public class ImageRequest {
     //중고 이미지
     @Builder
     public record AddUsedImageRequest (
-            @NotNull
-            UUID usedImageId,
             @NotNull
             UUID usedProductId,
             @NotNull

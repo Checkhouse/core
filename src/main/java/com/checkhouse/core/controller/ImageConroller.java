@@ -43,7 +43,8 @@ public class ImageConroller {
     public BaseResponse<ImageDTO> addImage(
         @Valid @RequestBody ImageRequest.AddImageRequest req) {
         log.info("[이미지 추가] request: {}", req);
-        return BaseResponse.onSuccess(imageService.addImage(req));
+        ImageDTO image = imageService.addImage(req);
+        return BaseResponse.onSuccess(image);
     }
     //이미지 조회
     @Operation(summary = "이미지 조회")
@@ -80,7 +81,8 @@ public class ImageConroller {
     public BaseResponse<OriginImageDTO> addOriginImage(
         @Valid @RequestBody ImageRequest.AddOriginImageRequest req) {
         log.info("[원본 이미지 추가] request: {}", req);
-        return BaseResponse.onSuccess(imageService.addOriginImage(req));
+        OriginImageDTO originImage = imageService.addOriginImage(req);
+        return BaseResponse.onSuccess(originImage);
     }
     //원본 이미지 조회
     @Operation(summary = "원본 이미지 조회")
@@ -92,7 +94,8 @@ public class ImageConroller {
     public BaseResponse<OriginImageDTO> getOriginImage(
         @Valid @RequestBody ImageRequest.GetOriginImageRequest req) {
         log.info("[원본 이미지 조회] request: {}", req);
-        return BaseResponse.onSuccess(imageService.getOriginImage(req));
+        OriginImageDTO originImage = imageService.getOriginImage(req);
+        return BaseResponse.onSuccess(originImage);
     }
     //원본 이미지 삭제
     @Operation(summary = "원본 이미지 삭제")
@@ -129,7 +132,8 @@ public class ImageConroller {
     public BaseResponse<UsedImageDTO> addUsedImage(
         @Valid @RequestBody ImageRequest.AddUsedImageRequest req) {
         log.info("[중고 상품 이미지 추가] request: {}", req);
-        return BaseResponse.onSuccess(imageService.addUsedImage(req));
+        UsedImageDTO usedImage = imageService.addUsedImage(req);
+        return BaseResponse.onSuccess(usedImage);
     }
     //중고 상품 이미지 조회
     @Operation(summary = "중고 상품 이미지 조회")
@@ -141,7 +145,8 @@ public class ImageConroller {
     public BaseResponse<UsedImageDTO> getUsedImage(
         @Valid @RequestBody ImageRequest.GetUsedImageRequest req) {
         log.info("[중고 상품 이미지 조회] request: {}", req);
-        return BaseResponse.onSuccess(imageService.getUsedImage(req));
+        UsedImageDTO usedImage = imageService.getUsedImage(req);
+        return BaseResponse.onSuccess(usedImage);
     }
     //중고 상품 리스트 조회
     @Operation(summary = "중고 상품 리스트 조회")

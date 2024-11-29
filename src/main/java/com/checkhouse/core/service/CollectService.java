@@ -64,6 +64,12 @@ public class CollectService {
         Collect updatedCollect = collectRepository.save(collect);
         return updatedCollect.toDto();
     }
+    //수거 상태 조회
+    public DeliveryState getCollectState(UUID collectId) {
+        Collect collect = collectRepository.findById(collectId)
+            .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
+        return collect.getDelivery().getDeliveryState();
+    }
 
     //수거 삭제
     public void deleteCollect(CollectRequest.DeleteCollectRequest req) {

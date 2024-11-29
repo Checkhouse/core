@@ -66,10 +66,15 @@ public class DeliveryController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list")
-    public BaseResponse<List<DeliveryDTO>> getDeliveryList() {
-        log.info("[배송 리스트 조회]");
-        return BaseResponse.onSuccess(deliveryService.getDeliveryList());
+    @GetMapping("/list/{userId}")
+    public BaseResponse<List<DeliveryDTO>> getDeliveryList(
+        @PathVariable UUID userId
+    ) {
+        log.info("[배송 리스트 조회] userId: {}", userId);
+        List<DeliveryDTO> deliveryList = deliveryService.getDeliveryList(
+            new DeliveryRequest.GetDeliveryListRequest(userId)
+        );
+        return BaseResponse.onSuccess(deliveryList);
     }
     //송장 번호 등록
     @Operation(summary = "송장 번호 등록")

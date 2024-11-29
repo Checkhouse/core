@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.dto.SendDTO;
 import com.checkhouse.core.dto.request.SendRequest;
+import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Delivery;
 import com.checkhouse.core.entity.Send;
 import com.checkhouse.core.entity.Transaction;
@@ -19,6 +20,7 @@ import com.checkhouse.core.repository.mysql.DeliveryRepository;
 import com.checkhouse.core.repository.mysql.SendRepository;
 import com.checkhouse.core.repository.mysql.TransactionRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
+import com.checkhouse.core.repository.mysql.AddressRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,11 +33,16 @@ public class SendService {
     private final TransactionRepository transactionRepository;
     private final DeliveryRepository deliveryRepository;
     private final UsedProductRepository usedProductRepository;
+    private final AddressRepository addressRepository;
     //발송 등록
     public SendDTO addSend(SendRequest.AddSendRequest req) {
         //존재하지 않는 거래 정보가 있을 수 있으므로 예외처리
         Transaction transaction = transactionRepository.findById(req.transactionId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._TRANSACTION_ID_NOT_FOUND));
+        
+        // 주소 조회
+        Address address = addressRepository.findById(req.addressId())
+            .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
         
         //이미 발송 등록이 된 상품은 발송 등록 실패
         if(sendRepository.findAllByTransactionTransactionId(transaction.getTransactionId()).size() > 0) {
@@ -44,11 +51,13 @@ public class SendService {
         //존재하지 않는 중고 상품 정보 예외 처리
         UsedProduct usedProduct = usedProductRepository.findById(transaction.getUsedProduct().getUsedProductId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
+
         // 새로운 Delivery 생성
         Delivery delivery = Delivery.builder()
             .deliveryId(UUID.randomUUID())
-            .deliveryState(DeliveryState.COLLECTING)
-            .address(usedProduct.getAddress())
+            .deliveryState(DeliveryState.PRE_DELIVERY)
+            .address(address)
+            .trackingCode(req.trackingCode())
             .build();
         delivery = deliveryRepository.save(delivery);
 

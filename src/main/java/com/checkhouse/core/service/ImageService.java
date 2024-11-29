@@ -70,7 +70,6 @@ public class ImageService {
         );
         OriginImage originImage = originImageRepository.save(
                 OriginImage.builder()
-                        .originImageId(req.originImageId())
                         .originProduct(originProduct)
                         .image(imageURL)
                         .build()
@@ -112,7 +111,6 @@ public class ImageService {
         );
         UsedImage usedImage = usedImageRepository.save(
                 UsedImage.builder()
-                        .usedImageId(req.usedImageId())
                         .usedProduct(usedProduct)
                         .image(imageURL)
                         .build()
