@@ -3,7 +3,9 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("api/v1/delivery")
 public class DeliveryController {
     private final DeliveryService deliveryService;
+    private final UserService userService;
     //배송 등록
     @Operation(summary = "배송 등록")
     @ApiResponses({
@@ -66,9 +69,11 @@ public class DeliveryController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
-    public BaseResponse<List<DeliveryDTO>> getDeliveryList(
-        @Valid @RequestBody DeliveryRequest.GetDeliveryListRequest req
-    ) {
+    public BaseResponse<List<DeliveryDTO>> getDeliveryList() {
+        // jwt 토큰에서 유저 아이디 추출
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        UUID userId = userService.getUserInfo(userEmail).userId();
+        DeliveryRequest.GetDeliveryListRequest req = new DeliveryRequest.GetDeliveryListRequest(userId);
         log.info("[배송 리스트 조회] request: {}", req);
         List<DeliveryDTO> deliveryList = deliveryService.getDeliveryList(req);
         return BaseResponse.onSuccess(deliveryList);
