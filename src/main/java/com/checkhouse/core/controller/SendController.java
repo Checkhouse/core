@@ -3,6 +3,8 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.dto.request.TransactionRequest;
+import com.checkhouse.core.service.TransactionService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,6 +35,7 @@ import jakarta.validation.Valid;
 @RequestMapping("api/v1/send")
 public class SendController {
     private final SendService sendService;
+    private final TransactionService transactionService;
     //발송 등록
     @Operation(summary = "발송 등록")
     @ApiResponses({
@@ -44,6 +47,9 @@ public class SendController {
         @Valid @RequestBody SendRequest.AddSendRequest req) {
         log.info("[발송 등록] request: {}", req);
         SendDTO send = sendService.addSend(req);
+        transactionService.updateTransactionStatus(new TransactionRequest.UpdateTransactionRequest(
+                send.transactionDTO().transactionId()
+        ));
         return BaseResponse.onSuccess(send);
     }
     //발송 상태 업데이트
