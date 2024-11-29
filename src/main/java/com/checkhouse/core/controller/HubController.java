@@ -1,9 +1,12 @@
 package com.checkhouse.core.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,17 +36,18 @@ import com.checkhouse.core.service.HubService;
 public class HubController {
     private final HubService hubService;
 
-    //허브 추가
-    @Operation(summary = "허브 추가")
+    //허브 등록
+    @Operation(summary = "허브 등록")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "추가 성공"),
+        @ApiResponse(responseCode = "200", description = "등록 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @PostMapping
     public BaseResponse<HubDTO> addHub(
         @Valid @RequestBody HubRequest.AddHubRequest req) {
-        log.info("[허브 추가] request: {}", req);
-        return BaseResponse.onSuccess(hubService.addHub(req));
+        HubDTO savedHub = hubService.addHub(req);
+        log.info("[허브 등록] request: {}", savedHub);
+        return BaseResponse.onSuccess(savedHub);
     }
     //허브 수정
     @Operation(summary = "허브 수정")
@@ -51,11 +55,12 @@ public class HubController {
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/{hubId}")
+    @PatchMapping("/{hubId}")
     public BaseResponse<HubDTO> updateHub(
         @Valid @RequestBody HubRequest.UpdateHubRequest req) {
-        log.info("[허브 수정] request: {}", req);
-        return BaseResponse.onSuccess(hubService.updateHub(req));
+        HubDTO updatedHub = hubService.updateHub(req);
+        log.info("[허브 수정] request: {}", updatedHub);
+        return BaseResponse.onSuccess(updatedHub);
     }
     //허브 삭제
     @Operation(summary = "허브 삭제")
@@ -76,7 +81,7 @@ public class HubController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping
+    @GetMapping("/list")
     public BaseResponse<List<HubDTO>> getHubs() {
         log.info("[허브 조회]");
         return BaseResponse.onSuccess(hubService.getHubs());
@@ -100,76 +105,76 @@ public class HubController {
     // }
 
     // 재고 추가
-    @Operation(summary = "재고 추가")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "추가 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @PostMapping("/stock")
-    public BaseResponse<StockDTO> addStock(
-        @Valid @RequestBody HubRequest.AddStockRequest req) {
-        log.info("[재고 추가] request: {}", req);
-        return BaseResponse.onSuccess(hubService.addStock(req));
-    }
-    // 재고 수정
-    @Operation(summary = "재고 수정")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @PutMapping("/stock/{stockId}")
-    public BaseResponse<StockDTO> updateStock(
-        @Valid @RequestBody HubRequest.UpdateStockAreaRequest req) {
-        log.info("[재고 수정] request: {}", req);
-        return BaseResponse.onSuccess(hubService.updateStockArea(req));
-    }
-    // 재고 조회
-    @Operation(summary = "재고 조회")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/stock/{usedProductId}")
-    public BaseResponse<StockDTO> getStock(
-        @Valid @RequestBody HubRequest.GetStockByUsedProductIdRequest req) {
-        log.info("[재고 조회] request: {}", req);
-        return BaseResponse.onSuccess(hubService.getStockByUsedProductId(req));
-    }
-    // 재고 조회(허브별)
-    @Operation(summary = "재고 조회(허브별)")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/stock/{hubId}")
-    public BaseResponse<List<StockDTO>> getStocksByHubId(
-        @Valid @RequestBody HubRequest.GetStocksByHubIdRequest req) {
-        log.info("[재고 조회(허브별)] request: {}", req);
-        return BaseResponse.onSuccess(hubService.getStocksByHubId(req));
-    }
-    // 재고 조회(지역별)
-    @Operation(summary = "재고 조회(지역별)")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/stock/{area}")
-    public BaseResponse<List<StockDTO>> getStocksByArea(
-        @Valid @RequestBody HubRequest.GetStocksByAreaRequest req) {
-        log.info("[재고 조회(지역별)] request: {}", req);
-        return BaseResponse.onSuccess(hubService.getStocksByArea(req));
-    }
-    // 재고 삭제
-    @Operation(summary = "재고 삭제")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "삭제 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @DeleteMapping("/stock/{stockId}")
-    public BaseResponse<Void> deleteStock(
-        @Valid @RequestBody HubRequest.DeleteStockRequest req) {
-        log.info("[재고 삭제] request: {}", req);
-        hubService.deleteStock(req);
-        return BaseResponse.onSuccess(null);
-    }
+    // @Operation(summary = "재고 추가")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "추가 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @PostMapping("/stock")
+    // public BaseResponse<StockDTO> addStock(
+    //     @Valid @RequestBody HubRequest.AddStockRequest req) {
+    //     log.info("[재고 추가] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.addStock(req));
+    // }
+    // // 재고 수정
+    // @Operation(summary = "재고 수정")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "수정 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @PatchMapping("/stock/{stockId}")
+    // public BaseResponse<StockDTO> updateStock(
+    //     @Valid @RequestBody HubRequest.UpdateStockAreaRequest req) {
+    //     log.info("[재고 수정] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.updateStockArea(req));
+    // }
+    // // 재고 조회
+    // @Operation(summary = "재고 조회")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "조회 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @GetMapping("/stock/{usedProductId}")
+    // public BaseResponse<StockDTO> getStock(
+    //     @Valid @RequestBody HubRequest.GetStockByUsedProductIdRequest req) {
+    //     log.info("[재고 조회] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.getStockByUsedProductId(req));
+    // }
+    // // 재고 조회(허브별)
+    // @Operation(summary = "재고 조회(허브별)")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "조회 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @GetMapping("/stock/{hubId}")
+    // public BaseResponse<List<StockDTO>> getStocksByHubId(
+    //     @PathVariable UUID hubId) {
+    //     log.info("[재고 조회(허브별)] hubId: {}", hubId);
+    //     return BaseResponse.onSuccess(hubService.getStocksByHubId(new HubRequest.GetStocksByHubIdRequest(hubId)));
+    // }
+    // // 재고 조회(지역별)
+    // @Operation(summary = "재고 조회(지역별)")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "조회 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @GetMapping("/stock/{area}")
+    // public BaseResponse<List<StockDTO>> getStocksByArea(
+    //     @Valid @RequestBody HubRequest.GetStocksByAreaRequest req) {
+    //     log.info("[재고 조회(지역별)] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.getStocksByArea(req));
+    // }
+    // // 재고 삭제
+    // @Operation(summary = "재고 삭제")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "삭제 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @DeleteMapping("/stock/{stockId}")
+    // public BaseResponse<Void> deleteStock(
+    //     @Valid @RequestBody HubRequest.DeleteStockRequest req) {
+    //     log.info("[재고 삭제] request: {}", req);
+    //     hubService.deleteStock(req);
+    //     return BaseResponse.onSuccess(null);
+    // }
 }

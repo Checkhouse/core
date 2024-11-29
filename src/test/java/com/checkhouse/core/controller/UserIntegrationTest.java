@@ -65,9 +65,9 @@ public class UserIntegrationTest extends BaseIntegrationTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post(baseUrl)
+                         .accept(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
 
         ).andExpect(status().isOk());
     }

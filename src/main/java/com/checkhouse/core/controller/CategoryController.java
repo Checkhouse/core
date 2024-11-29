@@ -1,9 +1,12 @@
 package com.checkhouse.core.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,25 +45,13 @@ public class CategoryController {
         log.info("[카테고리 등록] request: {}", req);
         return BaseResponse.onSuccess(categoryService.addCategory(req));
     }
-    //카테고리 상세보기
-    @Operation(summary = "카테고리 상세보기")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/{categoryId}")
-    public BaseResponse<CategoryDTO> getCategory(
-        @Valid @RequestBody CategoryRequest.GetCategoryByIdRequest req) {
-        log.info("[카테고리 상세보기] request: {}", req);
-        return BaseResponse.onSuccess(categoryService.getCategory(req));
-    }
     //카테고리 수정
     @Operation(summary = "카테고리 수정")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "수정 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @PutMapping("/{categoryId}")
+    @PatchMapping("/{categoryId}")
     public BaseResponse<CategoryDTO> updateCategory(
         @Valid @RequestBody CategoryRequest.UpdateCategoryByIdRequest req) {
         log.info("[카테고리 수정] request: {}", req);
