@@ -21,7 +21,13 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
     @Query("UPDATE Delivery d SET d.trackingCode = :trackingCode WHERE d.deliveryId = :deliveryId")
     void updateTrackingCode(@Param("deliveryId") UUID deliveryId, @Param("trackingCode") String trackingCode);
 
-    // 배송 리스트 조회
-    @Query("SELECT d FROM Delivery d WHERE d.address.user.userId = :userId")
+    // 배송 리스트 조회 - Send와 Collect를 통해 조회
+    @Query("SELECT DISTINCT d FROM Delivery d " +
+           "LEFT JOIN Send s ON s.delivery = d " +
+           "LEFT JOIN Collect c ON c.delivery = d " +
+           "JOIN d.address addr " +
+           "JOIN UserAddress ua ON ua.address = addr " +
+           "WHERE ua.user.userId = :userId AND d.deletedDate IS NULL")
     List<Delivery> findByUserId(@Param("userId") UUID userId);
+
 }
