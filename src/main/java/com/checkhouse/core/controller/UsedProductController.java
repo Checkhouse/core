@@ -3,6 +3,10 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.dto.OriginProductDTO;
+import com.checkhouse.core.dto.request.*;
+import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.service.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,17 +21,6 @@ import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.dto.DeliveryDTO;
 import com.checkhouse.core.dto.UsedProductDTO;
-import com.checkhouse.core.dto.request.CollectRequest;
-import com.checkhouse.core.dto.request.DeliveryRequest;
-import com.checkhouse.core.dto.request.InspectionRequest;
-import com.checkhouse.core.dto.request.SendRequest;
-import com.checkhouse.core.dto.request.UsedProductRequest;
-import com.checkhouse.core.service.AddressService;
-import com.checkhouse.core.service.CollectService;
-import com.checkhouse.core.service.DeliveryService;
-import com.checkhouse.core.service.InspectionService;
-import com.checkhouse.core.service.SendService;
-import com.checkhouse.core.service.UsedProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +34,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.entity.User;
-import com.checkhouse.core.service.UserService;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 
 @Slf4j
@@ -52,6 +44,7 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 @Validated
 public class UsedProductController {
     private final UsedProductService usedProductService;
+    private final OriginProductService originProductService;
     private final DeliveryService deliveryService;
     private final InspectionService inspectionService;
     private final CollectService collectService;
@@ -203,6 +196,21 @@ public class UsedProductController {
                 .userId(userId)
                 .build()
         );
+        return BaseResponse.onSuccess(products);
+    }
+
+    @Operation(summary = "원본 상품 별 중고 상품 조회")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/origin/{originId}")
+    public BaseResponse<List<UsedProductDTO>> getUsedProductWithOriginId(
+            @PathVariable UUID originId
+    ) {
+        log.info("[ 원본 상품 별 중고 상품 조회 ]");
+        OriginProduct originProduct = originProductService.findOriginProduct(OriginProductRequest.GetOriginProductInfoRequest.builder().originProductId(originId).build());
+        List<UsedProductDTO> products = usedProductService.getUsedProductWithOriginId(originProduct.getOriginProductId());
         return BaseResponse.onSuccess(products);
     }
 }

@@ -28,4 +28,6 @@ public interface UsedProductRepository extends JpaRepository<UsedProduct, UUID> 
     @Query("select up from UsedProduct up where up.user.userId = :userId and up.title like %:query% and up.deletedDate is null")
     List<UsedProduct> findByUserIdAndTitleContaining(UUID userId, String query);
 
+    List<UsedProduct> findAllByOriginProductOriginProductId(UUID originiId);
+
 }

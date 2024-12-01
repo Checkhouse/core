@@ -116,6 +116,10 @@ public class UsedProductService {
         return products.stream().map(UsedProduct::toDto).toList();
     }
 
+    public List<UsedProductDTO> getUsedProductWithOriginId(UUID originId) {
+        return usedProductRepository.findAllByOriginProductOriginProductId(originId).stream().map(UsedProduct::toDto).toList();
+    }
+
     public UsedProduct findUsedProduct(UsedProductRequest.GetUsedProductRequest request) {
         return usedProductRepository.findById(request.usedProductId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
