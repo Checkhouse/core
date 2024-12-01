@@ -19,8 +19,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class OriginProductService {
-    private OriginProductRepository originProductRepository;
-    private CategoryRepository categoryRepository;
+    private final OriginProductRepository originProductRepository;
+    private final CategoryRepository categoryRepository;
 
     public OriginProductDTO addOriginProduct(
             OriginProductRequest.AddOriginProductRequest request

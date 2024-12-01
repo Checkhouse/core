@@ -117,7 +117,7 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/{originProductId}")
+    @GetMapping("/origin/{originProductId}")
     public BaseResponse<Map<String, Object>> getOriginProductInfo(@PathVariable UUID originProductId) {
         // 1. 상품 정보 조회
         OriginProductDTO product = originProductService.getOriginProductInfo(
@@ -156,7 +156,7 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/{categoryId}")
+    @GetMapping("/category/{categoryId}")
     public BaseResponse<List<OriginProductDTO>> getOriginProductsWithCategory(
         @PathVariable UUID categoryId) {
         log.info("[카테고리별 원본 상품 목록 조회] categoryId: {}", categoryId);
