@@ -17,7 +17,7 @@ import java.util.*;
 @Slf4j
 @Tag(name = "user apis")
 @RestController
-@RequestMapping("user")
+@RequestMapping("api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -37,4 +37,5 @@ public class UserController {
         UserDTO user = userService.addUser(request);
         return BaseResponse.onSuccess(user);
     }
+
 }
