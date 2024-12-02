@@ -82,8 +82,6 @@ public class ImageRequest {
     @Builder
     public record AddInspectionImageRequest (
             @NotNull
-            UUID inspectionImageId,
-            @NotNull
             UUID inspectionId,
             @NotNull
             UUID usedImageId,

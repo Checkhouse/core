@@ -40,7 +40,6 @@ public class ImageService {
         }
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
@@ -67,13 +66,11 @@ public class ImageService {
         );
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
         OriginImage originImage = originImageRepository.save(
                 OriginImage.builder()
-                        .originImageId(req.originImageId())
                         .originProduct(originProduct)
                         .image(imageURL)
                         .build()
@@ -109,7 +106,6 @@ public class ImageService {
         );
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
@@ -167,7 +163,6 @@ public class ImageService {
         // 이미지 URL 저장
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
@@ -175,7 +170,6 @@ public class ImageService {
         // 검수 이미지 저장
         InspectionImage inspectionImage = inspectionImageRepository.save(
                 InspectionImage.builder()
-                        .inspectionImageId(req.inspectionImageId())
                         .inspection(inspection)
                         .usedImage(usedImage)
                         .image(imageURL)
@@ -184,6 +178,7 @@ public class ImageService {
 
         return inspectionImage.toDto();
     }
+
     InspectionImageDTO getInspectionImage(ImageRequest.GetInspectionImageRequest req) {
         InspectionImage inspectionImage = inspectionImageRepository.findById(req.inspectionImageId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND));

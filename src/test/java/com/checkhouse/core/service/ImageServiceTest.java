@@ -590,7 +590,6 @@ public class ImageServiceTest {
     void SUCCESS_addInspectionImage() {
         // 검수 이미지 요청
         ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
-                UUID.randomUUID(),
                 inspection1.getInspectionId(),
                 usedImage1.getUsedImageId(),
                 image1.getImageURL()
@@ -703,7 +702,6 @@ public class ImageServiceTest {
         // 검수 이미지 추가 요청
         ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
                 UUID.randomUUID(),
-                UUID.randomUUID(),
                 usedImage1.getUsedImageId(),
                 image1.getImageURL()
         );
@@ -722,7 +720,6 @@ public class ImageServiceTest {
     void FAIL_addInspectionImage_usedImage_already_exist() {
         // 검수 이미지 추가 요청
         ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
-                UUID.randomUUID(),
                 inspection1.getInspectionId(),
                 usedImage1.getUsedImageId(),
                 image1.getImageURL()
@@ -746,18 +743,15 @@ public class ImageServiceTest {
     void FAIL_addInspectionImage_used_product_not_match() {
         // 검수 이미지 추가 요청
         UsedProduct differentUsedProduct = UsedProduct.builder()
-                .usedProductId(UUID.randomUUID())
                 .title("Different Product")
                 .build();
 
         UsedImage differentUsedImage = UsedImage.builder()
-                .usedImageId(UUID.randomUUID())
                 .image(image2)
                 .usedProduct(differentUsedProduct)
                 .build();
 
         ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
-                UUID.randomUUID(),
                 inspection1.getInspectionId(),
                 differentUsedImage.getUsedImageId(),
                 image1.getImageURL()
