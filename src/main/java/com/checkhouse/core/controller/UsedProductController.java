@@ -1,7 +1,10 @@
 package com.checkhouse.core.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.*;
@@ -48,7 +51,7 @@ public class UsedProductController {
     private final DeliveryService deliveryService;
     private final InspectionService inspectionService;
     private final CollectService collectService;
-
+    private final ImageService imageService;
     // 중고 상품 등록
     @Operation(summary = "중고 상품 등록")
     @ApiResponses({
@@ -204,13 +207,27 @@ public class UsedProductController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/origin")
-    public BaseResponse<List<UsedProductDTO>> getUsedProductWithOriginId(
-            @RequestParam UUID originId
-    ) {
+    @GetMapping("/origin/{originProductId}")
+    public BaseResponse<Map<String, Object>> getUsedProductWithOriginId(
+        @RequestParam UUID originProductId) {
         log.info("[ 원본 상품 별 중고 상품 조회 ]");
-        OriginProduct originProduct = originProductService.findOriginProduct(OriginProductRequest.GetOriginProductInfoRequest.builder().originProductId(originId).build());
+        OriginProduct originProduct = originProductService.findOriginProduct(OriginProductRequest.GetOriginProductInfoRequest.builder().originProductId(originProductId).build());
         List<UsedProductDTO> products = usedProductService.getUsedProductWithOriginId(originProduct.getOriginProductId());
-        return BaseResponse.onSuccess(products);
+        // 각 상품별 이미지 조회
+        Map<UUID, List<String>> productImages = new HashMap<>();
+        products.forEach(product -> {
+            List<String> imageUrls = imageService.getUsedImagesByUsedId(
+                new ImageRequest.GetUsedImagesByUsedIdRequest(product.usedProductId())
+        ).stream()
+                .map(usedImage -> usedImage.image().imageURL())
+                .collect(Collectors.toList());
+            productImages.put(product.usedProductId(), imageUrls);
+        });
+    
+        Map<String, Object> response = new HashMap<>();
+        response.put("products", products);
+        response.put("images", productImages);
+    
+        return BaseResponse.onSuccess(response);
     }
 }
