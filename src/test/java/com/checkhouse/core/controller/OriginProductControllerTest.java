@@ -36,7 +36,7 @@ public class OriginProductControllerTest extends BaseIntegrationTest {
     @BeforeEach
     void setup() {
         Category category = Category.builder()
-            .name("test category")
+            .name("태블릿")
             .build();
 		savedCategory = categoryRepository.saveAndFlush(category);
 
@@ -46,12 +46,12 @@ public class OriginProductControllerTest extends BaseIntegrationTest {
                 .company("애플")
                 .category(savedCategory)
                 .build();
+        originProductRepository.hardDeleteByNameIfSoftDeleted(originProduct1.getName());
         savedOriginProduct = originProductRepository.saveAndFlush(originProduct1);
     }
 
     @AfterEach
     void cleanUp() {
-        originProductRepository.hardDeleteByNameIfSoftDeleted(savedOriginProduct.getName());
         originProductRepository.deleteAll();
         categoryRepository.deleteAll();
     }
@@ -73,49 +73,49 @@ public class OriginProductControllerTest extends BaseIntegrationTest {
         ).andExpect(status().isOk());
     }
     //원본 상품 정보 수정 성공
-//    @Test
-//    @DisplayName("원본 상품 정보 수정 성공")
-//    public void updateOriginProductInfoSuccess() throws Exception {
-//        OriginProductRequest.UpdateOriginProductInfo request = OriginProductRequest.UpdateOriginProductInfo.builder()
-//            .originProductId(savedOriginProduct.getOriginProductId())
-//            .name("갤럭시탭")
-//            .company("삼성")
-//            .build();
-//
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.patch(baseUrl)
-//                .content(objectMapper.writeValueAsString(request))
-//                .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(status().isOk());
-//    }
+    @Test
+    @DisplayName("원본 상품 정보 수정 성공")
+    public void updateOriginProductInfoSuccess() throws Exception {
+        OriginProductRequest.UpdateOriginProductInfo request = OriginProductRequest.UpdateOriginProductInfo.builder()
+            .originProductId(savedOriginProduct.getOriginProductId())
+            .name("갤럭시탭")
+            .company("삼성")
+            .build();
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch(baseUrl)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
     //원본 상품 정보 조회 성공
-//    @Test
-//    @DisplayName("원본 상품 정보 조회 성공")
-//    public void getOriginProductInfoSuccess() throws Exception {
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.get(baseUrl + "/origin?originProductId=" + savedOriginProduct.getOriginProductId())
-//                .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(status().isOk());
-//    }
-//    //원본 상품 목록 조회 성공
-//    @Test
-//    @DisplayName("원본 상품 목록 조회 성공")
-//    public void getOriginProductsSuccess() throws Exception {
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.get(baseUrl)
-//                .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(status().isOk());
-//    }
-//    //카테고리별 원본 상품 목록 조회 성공
-//    @Test
-//    @DisplayName("카테고리별 원본 상품 목록 조회 성공")
-//    public void getOriginProductsWithCategorySuccess() throws Exception {
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.get(baseUrl + "/category" + savedCategory.getCategoryId())
-//                .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(status().isOk());
-//    }
-//    //원본 상품 검색 성공
+    @Test
+    @DisplayName("원본 상품 정보 조회 성공")
+    public void getOriginProductInfoSuccess() throws Exception {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get(baseUrl + "/origin?originProductId=" + savedOriginProduct.getOriginProductId())
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+    //원본 상품 목록 조회 성공
+    @Test
+    @DisplayName("원본 상품 목록 조회 성공")
+    public void getOriginProductsSuccess() throws Exception {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+    //카테고리별 원본 상품 목록 조회 성공
+    @Test
+    @DisplayName("카테고리별 원본 상품 목록 조회 성공")
+    public void getOriginProductsWithCategorySuccess() throws Exception {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get(baseUrl + "/category?categoryId=" + savedCategory.getCategoryId())
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+    //원본 상품 검색 성공
     @Test
     @DisplayName("원본 상품 검색 성공")
     public void searchOriginProductsSuccess() throws Exception {
@@ -125,18 +125,18 @@ public class OriginProductControllerTest extends BaseIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk());
     }
-//    //원본 상품 삭제 성공
-//    @Test
-//    @DisplayName("원본 상품 삭제 성공")
-//    public void deleteOriginProductSuccess() throws Exception {
-//        OriginProductRequest.DeleteOriginProduct request = OriginProductRequest.DeleteOriginProduct.builder()
-//            .originProductId(savedOriginProduct.getOriginProductId())
-//            .build();
-//
-//        mockMvc.perform(
-//            MockMvcRequestBuilders.delete(baseUrl)
-//                .content(objectMapper.writeValueAsString(request))
-//                .contentType(MediaType.APPLICATION_JSON)
-//        ).andExpect(status().isOk());
-//    }
+    //원본 상품 삭제 성공
+    @Test
+    @DisplayName("원본 상품 삭제 성공")
+    public void deleteOriginProductSuccess() throws Exception {
+        OriginProductRequest.DeleteOriginProduct request = OriginProductRequest.DeleteOriginProduct.builder()
+            .originProductId(savedOriginProduct.getOriginProductId())
+            .build();
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete(baseUrl)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
 }
