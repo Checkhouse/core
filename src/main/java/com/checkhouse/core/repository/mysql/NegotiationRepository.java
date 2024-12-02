@@ -11,11 +11,11 @@ import java.util.UUID;
 
 public interface NegotiationRepository extends JpaRepository<Negotiation, UUID> {
     // 구매자 ID 조회
-    @Query("select n from Negotiation n where n.buyer = :buyerId")
+    @Query("select n from Negotiation n where n.buyer.userId = :buyerId")
     List<Negotiation> findAllByBuyerId(UUID buyerId);
 
     // 판매자 ID 조회
-    @Query("select n from Negotiation n where n.seller = :sellerId")
+    @Query("select n from Negotiation n where n.seller.userId = :sellerId")
     List<Negotiation> findAllBySellerId(UUID sellerId);
 
     // 상태 조회    

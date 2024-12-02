@@ -50,9 +50,8 @@ public class NegotiationController {
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "변경 성공")
 	})
-	@PatchMapping("/{negotiationId}")
+	@PatchMapping
 	public BaseResponse<NegotiationDTO> updateNegotiation(
-		@PathVariable UUID negotiationId,
 		@Valid @RequestBody NegotiationRequest.UpdateNegotiationRequest req
 	) {
 		log.info("[네고 상태 변경] request: {}", req);
@@ -60,7 +59,7 @@ public class NegotiationController {
 		String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		UUID userId = userService.getUserInfo(userEmail).userId();
 		NegotiationRequest.UpdateNegotiationRequest request = new NegotiationRequest.UpdateNegotiationRequest(
-			negotiationId,
+			req.negotiationId(),
 			req.state()
 		);
 
