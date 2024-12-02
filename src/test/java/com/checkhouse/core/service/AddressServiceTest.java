@@ -113,7 +113,7 @@ public class AddressServiceTest {
     void SUCCESS_addAddress() {
         UUID randomUUID = UUID.randomUUID();
         AddressRequest.AddAddressRequest req = AddressRequest.AddAddressRequest.builder()
-                .addressId(randomUUID)
+//                .addressId(randomUUID)
                 .name(commonAddress.getName())
                 .address(commonAddress.getAddress())
                 .zipcode(commonAddress.getZipcode())
