@@ -79,29 +79,20 @@ public class NegotiationService {
         Negotiation negotiation = negotiationRepository.findById(request.negotiationId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._NEGOTIATION_NOT_FOUND));
 
-        // 상태 변경
-        switch(negotiation.getState()){
-            case CANCELLED: // 취소된 경우
-                if(request.state() == NegotiationState.ACCEPTED){   // 승인으로 요청
-                    throw new GeneralException(ErrorStatus._NEGOTIATION_ALREADY_ACCEPTED);
-                }
-                break;
-            case ACCEPTED: // 승인된 경우
-                if(request.state() == NegotiationState.CANCELLED){   // 취소로 요청
-                    throw new GeneralException(ErrorStatus._NEGOTIATION_ALREADY_CANCELLED);
-                }
-                break;
-            case DENIED: // 거절된 경우
-                if(request.state() == NegotiationState.CANCELLED){   // 취소로 요청
-                    throw new GeneralException(ErrorStatus._NEGOTIATION_ALREADY_DENIED);
-                }
-                break;
-        }
-
         // 상태 중복 체크
         if(negotiation.getState() == request.state()){
             throw new GeneralException(ErrorStatus._NEGOTIATION_STATE_DUPLICATE);
         }
+        // 상태 변경
+        switch(negotiation.getState()){
+            case CANCELLED: // 취소된 경우
+                throw new GeneralException(ErrorStatus._NEGOTIATION_ALREADY_CANCELLED);
+            case ACCEPTED: // 승인된 경우
+                throw new GeneralException(ErrorStatus._NEGOTIATION_ALREADY_ACCEPTED);
+            case DENIED: // 거절된 경우
+                throw new GeneralException(ErrorStatus._NEGOTIATION_ALREADY_DENIED);
+        }
+
 
         // 상태 변경
         negotiation.updateState(request.state());

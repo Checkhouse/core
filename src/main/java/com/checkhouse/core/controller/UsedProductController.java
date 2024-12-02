@@ -67,7 +67,7 @@ public class UsedProductController {
         // 2. 배송 정보 생성 - 프론트에서 받은 주소 ID 사용
         DeliveryDTO delivery = deliveryService.addDelivery(
             DeliveryRequest.AddDeliveryRequest.builder()
-                .addressId(UUID.fromString(req.addressId()))
+                .addressId(req.addressId())
                 .build()
         );
 

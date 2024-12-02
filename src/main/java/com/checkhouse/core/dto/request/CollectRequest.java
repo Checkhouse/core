@@ -30,7 +30,4 @@ public class CollectRequest {
         UUID collectId
     ) {}
 
-    @Builder
-    public record GetCollectListRequest() {}
-
 }

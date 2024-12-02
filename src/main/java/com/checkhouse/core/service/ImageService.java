@@ -154,6 +154,10 @@ public class ImageService {
                     throw new GeneralException(ErrorStatus._INSPECTION_IMAGE_ALREADY_EXISTS);
                 });
 
+        System.out.println(inspection);
+        System.out.println(inspection.getUsedProduct());
+        System.out.println(inspection.getInspectionId());
+        System.out.println(inspection.getUsedProduct().getUsedProductId());
         // UsedProduct 일치 여부 확인
         if (!inspection.getUsedProduct().getUsedProductId().equals(usedImage.getUsedProduct().getUsedProductId())) {
             throw new GeneralException(ErrorStatus._INSPECTION_IMAGE_PRODUCT_NOT_MATCH);

@@ -91,9 +91,7 @@ public class CollectService {
         
     }
     //수거 리스트 조회
-    public List<CollectDTO> getCollectList(
-            CollectRequest.GetCollectListRequest req
-    ) {
+    public List<CollectDTO> getCollectList() {
         return collectRepository.findAll().stream()
             .map(Collect::toDto)
             .collect(Collectors.toList());

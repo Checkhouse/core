@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import java.util.UUID;
 import java.util.Optional;
 
+import com.checkhouse.core.repository.mysql.AddressRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,6 +47,8 @@ public class CollectServiceTest {
     private DeliveryRepository deliveryRepository;
     @Mock
     private UsedProductRepository usedProductRepository;
+    @Mock
+    private AddressRepository addressRepository;
     @InjectMocks
     private CollectService collectService;
 
@@ -86,6 +89,7 @@ public class CollectServiceTest {
         delivery1 = Delivery.builder()
             .deliveryId(UUID.randomUUID())
             .address(Address.builder()
+                    .addressId(UUID.randomUUID())
                 .zipcode(12345)
                 .address("서울시 강남구")
                 .build())
@@ -119,6 +123,7 @@ public class CollectServiceTest {
         // given
         AddCollectRequest req = AddCollectRequest.builder()
             .usedProductId(usedProduct1.getUsedProductId())
+                .addressId(delivery1.getAddress().getAddressId())
             .build();
 
         Delivery updatedDelivery = Delivery.builder()
@@ -130,6 +135,7 @@ public class CollectServiceTest {
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
         when(collectRepository.save(any(Collect.class))).thenReturn(collect1);
         when(deliveryRepository.save(any(Delivery.class))).thenReturn(updatedDelivery);
+        when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery1.getAddress()));
 
         // when
         CollectDTO collectDTO = collectService.addCollect(req);

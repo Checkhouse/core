@@ -63,10 +63,7 @@ public class CollectController {
     @GetMapping
     public BaseResponse<List<CollectDTO>> getCollectList() {
         log.info("[수거 리스트 조회]");
-        List<CollectDTO> collectList = collectService.getCollectList(
-            CollectRequest.GetCollectListRequest.builder()
-                .build()
-        );
+        List<CollectDTO> collectList = collectService.getCollectList();
         return BaseResponse.onSuccess(collectList);
     }
     //수거 삭제

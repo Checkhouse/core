@@ -12,6 +12,7 @@ import java.util.UUID;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.repository.mysql.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,15 +26,13 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.SendDTO;
 import com.checkhouse.core.dto.request.SendRequest;
 import com.checkhouse.core.entity.enums.DeliveryState;
-import com.checkhouse.core.repository.mysql.DeliveryRepository;
-import com.checkhouse.core.repository.mysql.SendRepository;
-import com.checkhouse.core.repository.mysql.TransactionRepository;
-import com.checkhouse.core.repository.mysql.UsedProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class SendServiceTest {
     @Mock
     private SendRepository sendRepository;
+    @Mock
+    private AddressRepository addressRepository;
 
     @InjectMocks
     private SendService sendService;
@@ -92,6 +91,7 @@ public class SendServiceTest {
                 .company("애플")
                 .category(
                         Category.builder()
+                                .categoryId(UUID.randomUUID())
                                 .name("category1")
                                 .build()
                 )
@@ -126,6 +126,7 @@ public class SendServiceTest {
         // given
         SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .transactionId(transaction1.getTransactionId())
+                .addressId(delivery1.getAddress().getAddressId())
             .build();
 
         when(transactionRepository.findById(any(UUID.class)))
@@ -136,6 +137,7 @@ public class SendServiceTest {
             .thenReturn(send1);
         when(deliveryRepository.save(any(Delivery.class)))
             .thenReturn(delivery1);
+        when(addressRepository.findById(delivery1.getAddress().getAddressId())).thenReturn(Optional.of(delivery1.getAddress()));
 
         // when
         SendDTO result = sendService.addSend(req);
@@ -172,10 +174,12 @@ public class SendServiceTest {
         // given
         SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .transactionId(transaction1.getTransactionId())
+                .addressId(delivery1.getAddress().getAddressId())
             .build();
         
         when(transactionRepository.findById(any(UUID.class))).thenReturn(Optional.of(transaction1));
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.empty());  // 중고 상품을 찾을 수 없음
+        when(addressRepository.findById(delivery1.getAddress().getAddressId())).thenReturn(Optional.of(delivery1.getAddress()));
 
         // when & then
         assertThrows(GeneralException.class, () -> sendService.addSend(req));
@@ -239,12 +243,14 @@ public class SendServiceTest {
         // given
         SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .transactionId(transaction1.getTransactionId())
+                .addressId(delivery1.getAddress().getAddressId())
             .build();
 
         when(transactionRepository.findById(req.transactionId()))
             .thenReturn(Optional.of(transaction1));
         when(sendRepository.findAllByTransactionTransactionId(transaction1.getTransactionId()))
             .thenReturn(List.of(send1));  // 이미 발송이 존재함
+        when(addressRepository.findById(delivery1.getAddress().getAddressId())).thenReturn(Optional.of(delivery1.getAddress()));
 
         // when & then
         assertThrows(GeneralException.class, () -> sendService.addSend(req));   

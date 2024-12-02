@@ -14,7 +14,7 @@ public class UsedProductRequest {
             boolean isNegoAllow,
             UUID userId,
             UUID originProductId,
-            String addressId
+            UUID addressId
     ) {}
 
     @Builder

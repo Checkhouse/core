@@ -62,22 +62,6 @@ public class DeliveryController {
         DeliveryDTO delivery = deliveryService.updateDeliveryState(req);
         return BaseResponse.onSuccess(delivery);
     }
-    //배송 리스트 조회
-    @Operation(summary = "배송 리스트 조회")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping
-    public BaseResponse<List<DeliveryDTO>> getDeliveryList() {
-        // jwt 토큰에서 유저 아이디 추출
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        UUID userId = userService.getUserInfo(userEmail).userId();
-        DeliveryRequest.GetDeliveryListRequest req = new DeliveryRequest.GetDeliveryListRequest(userId);
-        log.info("[배송 리스트 조회] request: {}", req);
-        List<DeliveryDTO> deliveryList = deliveryService.getDeliveryList(req);
-        return BaseResponse.onSuccess(deliveryList);
-    }
     //송장 번호 등록
     @Operation(summary = "송장 번호 등록")
     @ApiResponses({

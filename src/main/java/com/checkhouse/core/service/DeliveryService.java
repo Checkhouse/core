@@ -60,15 +60,8 @@ public class DeliveryService {
         }
         
         //배송 상태 업데이트
-        deliveryRepository.updateDeliveryState(req.deliveryId(), req.deliveryState());
+        delivery.updateDeliveryState(req.deliveryState());
         return delivery.toDto();
-    }
-    // 배송 리스트 조회
-    public List<DeliveryDTO> getDeliveryList(DeliveryRequest.GetDeliveryListRequest req) {
-        return deliveryRepository.findByUserId(req.userId())
-            .stream()
-            .map(Delivery::toDto)
-            .toList();
     }
 
     /**
@@ -79,7 +72,7 @@ public class DeliveryService {
         //존재하지 않는 배송 ID 예외 처리
         Delivery delivery = deliveryRepository.findById(req.deliveryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._DELIVERY_ID_NOT_FOUND));
-        deliveryRepository.updateTrackingCode(req.deliveryId(), req.trackingCode());
+        delivery.updateTrackingCode(req.trackingCode());
         return delivery.toDto();
     }
 
