@@ -2,6 +2,7 @@ package com.checkhouse.core.dto.request;
 
 import com.checkhouse.core.entity.enums.DeliveryState;
 import lombok.Builder;
+import org.springframework.lang.Nullable;
 
 import java.util.UUID;
 
@@ -9,8 +10,8 @@ public class DeliveryRequest {
 
     @Builder
     public record AddDeliveryRequest(
-            UUID deliveryId,
             UUID addressId,
+            @Nullable
             String trackingCode
     ) {}
 
@@ -23,11 +24,17 @@ public class DeliveryRequest {
     @Builder
     public record RegisterTrackingCodeRequest(
             UUID deliveryId,
+            @Nullable
             String trackingCode
     ) {}
 
     @Builder
     public record DeleteDeliveryRequest(
             UUID deliveryId
+    ) {}
+
+    @Builder
+    public record GetDeliveryListRequest(
+            UUID userId
     ) {}
 }

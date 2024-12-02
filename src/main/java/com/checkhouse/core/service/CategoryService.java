@@ -19,7 +19,7 @@ import java.util.UUID;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
-    CategoryDTO addCategory(CategoryRequest.AddCategoryRequest req) {
+    public CategoryDTO addCategory(CategoryRequest.AddCategoryRequest req) {
         //이미 존재하는 카테고리 확인
         categoryRepository.findCategoryByName(req.name()).ifPresent(category -> {
             throw new GeneralException(ErrorStatus._CATEGORY_ALREADY_EXIST);
@@ -34,13 +34,13 @@ public class CategoryService {
         return savedCategory.toDto();
     }
 
-    CategoryDTO getCategory(CategoryRequest.GetCategoryByIdRequest req) {
+    public CategoryDTO getCategory(CategoryRequest.GetCategoryByIdRequest req) {
         Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
         return category.toDto();
     }
 
-    CategoryDTO updateCategoryById(CategoryRequest.UpdateCategoryByIdRequest req) {
+    public CategoryDTO updateCategoryById(CategoryRequest.UpdateCategoryByIdRequest req) {
         //ID가 존재하는지 확인
         Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
@@ -53,7 +53,7 @@ public class CategoryService {
     }
 
 
-    void deleteCategory(CategoryRequest.DeleteCategoryRequest req) {
+    public void deleteCategory(CategoryRequest.DeleteCategoryRequest req) {
         //ID가 존재하는지 확인
         Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._CATEGORY_ID_NOT_FOUND));
@@ -61,7 +61,7 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    List<CategoryDTO> getCategories() {
+    public List<CategoryDTO> getCategories() {
         return categoryRepository.findAll()
                 .stream()
                 .map(Category::toDto)

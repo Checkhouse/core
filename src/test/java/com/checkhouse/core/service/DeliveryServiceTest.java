@@ -90,7 +90,6 @@ public class DeliveryServiceTest {
     void SUCCESS_addDelivery() {
         // 데이터 생성
         DeliveryRequest.AddDeliveryRequest req = new DeliveryRequest.AddDeliveryRequest(
-            del1.getDeliveryId(),
             del1addr.getAddressId(),
             "1234567890"
         );
@@ -107,12 +106,17 @@ public class DeliveryServiceTest {
     @Test
     @DisplayName("배송 리스트 조회 성공")
     void SUCCESS_getDeliveries() {
+        DeliveryRequest.GetDeliveryListRequest req = new DeliveryRequest.GetDeliveryListRequest(
+            UUID.randomUUID()
+        );
         //given
         when(deliveryRepository.findAll()).thenReturn(List.of(del1, del2));
         //when
-        List<DeliveryDTO> result = deliveryService.getDeliveryList();
+        List<DeliveryDTO> result = deliveryService.getDeliveryList(req);
         //then
         assertEquals(2, result.size());
+        assertEquals(del1.getDeliveryId(), result.get(0).deliveryId());
+        assertEquals(del2.getDeliveryId(), result.get(1).deliveryId());
     }
 
     @DisplayName("배송 상태 업데이트")
@@ -154,7 +158,6 @@ public class DeliveryServiceTest {
         when(addressRepository.findById(del1addr.getAddressId())).thenReturn(Optional.empty());
         //when
         DeliveryRequest.AddDeliveryRequest req = new DeliveryRequest.AddDeliveryRequest(
-            del1.getDeliveryId(),
             del1addr.getAddressId(),
             "1234567890"
         );

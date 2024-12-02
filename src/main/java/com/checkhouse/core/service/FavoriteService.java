@@ -4,6 +4,8 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
+import com.checkhouse.core.dto.request.OriginProductRequest;
+import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.repository.mysql.FavoriteOriginRepository;
 import com.checkhouse.core.repository.mysql.FavoriteUsedRepository;
@@ -25,8 +27,12 @@ public class FavoriteService {
     private final OriginProductService originProductService;
     private final UsedProductService usedProductService;
 
-    FavoriteDTO addFavoriteOrigin(FavoriteRequest.AddToFavoriteRequest request) {
-        OriginProduct originProduct = originProductService.findOriginProduct(request.originProductId());
+    public FavoriteDTO addFavoriteOrigin(FavoriteRequest.AddToFavoriteRequest request) {
+        OriginProduct originProduct = originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(request.originProductId())
+                .build()
+        );
         User user = userService.findUser(request.userId());
 
         if(!favoriteOriginRepository.existsByOriginProductOriginProductIdAndUserUserId(request.originProductId(), request.userId())) {
@@ -47,9 +53,13 @@ public class FavoriteService {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
     }
-    void removeFavoriteOrigin(FavoriteRequest.RemoveFromFavoriteRequest request) {
+    public void removeFavoriteOrigin(FavoriteRequest.RemoveFromFavoriteRequest request) {
         // 검증
-        originProductService.findOriginProduct(request.originProductId());
+        originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(request.originProductId())
+                .build()
+        );
         userService.findUser(request.userId());
 
         if(favoriteOriginRepository.existsByOriginProductOriginProductIdAndUserUserId(request.originProductId(), request.userId())) {
@@ -59,7 +69,7 @@ public class FavoriteService {
         }
     }
 
-    List<FavoriteDTO> getUserFavoriteOrigins(FavoriteRequest.GetUserFavoriteOrigins request) {
+    public List<FavoriteDTO> getUserFavoriteOrigins(FavoriteRequest.GetUserFavoriteOrigins request) {
         User user = userService.findUser(request.userId());
 
         return favoriteOriginRepository.findAllByUserId(user.getUserId())
@@ -71,14 +81,21 @@ public class FavoriteService {
                 )).toList();
     }
 
-    int getOriginProductFavoriteCount(UUID originProductId) {
-        originProductService.findOriginProduct(originProductId);
-
+    public int getOriginProductFavoriteCount(UUID originProductId) {
+        originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(originProductId)
+                .build()
+        );
         return favoriteOriginRepository.countByOriginProductOriginProductId(originProductId);
     }
 
-    FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
-        UsedProduct usedProduct = usedProductService.findUsedProduct(request.usedProductId());
+    public FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
+        UsedProduct usedProduct = usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        );
         User user = userService.findUser(request.userId());
 
         if(!favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId(request.usedProductId(), request.userId())) {
@@ -99,9 +116,13 @@ public class FavoriteService {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
     }
-    void removeFavoriteUsed(FavoriteRequest.RemoveUsedProductLikeRequest request) {
+    public void removeFavoriteUsed(FavoriteRequest.RemoveUsedProductLikeRequest request) {
         // 검증
-        usedProductService.findUsedProduct(request.usedProductId());
+        usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        );
         userService.findUser(request.userId());
 
         if(favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId(request.usedProductId(), request.userId())) {
@@ -112,7 +133,7 @@ public class FavoriteService {
         }
     }
 
-    List<FavoriteDTO> getUserFavoriteUsed(FavoriteRequest.GetUserFavoriteUsed request) {
+    public List<FavoriteDTO> getUserFavoriteUsed(FavoriteRequest.GetUserFavoriteUsed request) {
         User user = userService.findUser(request.userId());
 
         return favoriteUsedRepository.findAllByUserId(user.getUserId())
@@ -124,9 +145,13 @@ public class FavoriteService {
                 )).toList();
     }
 
-    int getUsedProductFavoriteCount(UUID usedId) {
-        usedProductService.findUsedProduct(usedId);
+    public int getUsedProductFavoriteCount(FavoriteRequest.GetUsedProductFavoriteCountRequest request) {
+        usedProductService.findUsedProduct(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(request.usedProductId())
+                .build()
+        );
 
-        return favoriteUsedRepository.countByUsedProductUsedProductId(usedId);
+        return favoriteUsedRepository.countByUsedProductUsedProductId(request.usedProductId());
     }
 }

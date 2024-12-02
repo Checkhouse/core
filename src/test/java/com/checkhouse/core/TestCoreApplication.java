@@ -6,7 +6,7 @@ public class TestCoreApplication {
 
 	
 	public static void main(String[] args) {
-		SpringApplication.from(CoreApplication::main).with(TestcontainersConfiguration.class).run(args);
+		SpringApplication.from(CoreApplication::main).run(args);
 	}
 
 }

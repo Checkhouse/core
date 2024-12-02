@@ -36,7 +36,7 @@ public class TransactionService {
 		UsedProduct usedProduct = usedProductRepository
 				.findById(request.usedProductId())
 				.orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
-		// 이미 거래된 상품인지 확인 
+		// 이미 거래된 상품인지 확인
 		transactionRepository.findByUsedProduct(usedProduct.getUsedProductId())
 				.ifPresent(transaction -> {
 					throw new GeneralException(ErrorStatus._TRANSACTION_ALREADY_EXISTS);

@@ -147,7 +147,7 @@ public class PickupServiceTest {
         when(pickupRepository.save(any(Pickup.class)))
                 .thenReturn(pickup1);
 
-        PickupDTO result = pickupService.addUserPickupList(addPickUpRequest);
+        PickupDTO result = pickupService.addUserPickup(addPickUpRequest);
 
         assertNotNull(result);
         assertEquals(pickup1.toDto(), result);
@@ -251,7 +251,7 @@ public class PickupServiceTest {
         when(transactionRepository.findById(invalidTransactionId))
                 .thenReturn(Optional.empty());
 
-        GeneralException exception = assertThrows(GeneralException.class, () -> pickupService.addUserPickupList(addPickUpRequest));
+        GeneralException exception = assertThrows(GeneralException.class, () -> pickupService.addUserPickup(addPickUpRequest));
         assertEquals(ErrorStatus._TRANSACTION_NOT_FOUND, exception.getCode());
     }
     @DisplayName("존재하지 않는 스토어에 대한 픽업 생성 실패")
@@ -274,7 +274,7 @@ public class PickupServiceTest {
         when(storeRepository.findById(invalidStoreId))
                 .thenReturn(Optional.empty());
 
-        GeneralException exception = assertThrows(GeneralException.class, () -> pickupService.addUserPickupList(addPickUpRequest));
+        GeneralException exception = assertThrows(GeneralException.class, () -> pickupService.addUserPickup(addPickUpRequest));
         
         assertEquals(ErrorStatus._PICKUP_STORE_NOT_FOUND, exception.getCode());
         verify(storeRepository, times(1)).findById(invalidStoreId);

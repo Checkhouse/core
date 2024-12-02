@@ -152,7 +152,7 @@ public class ImageServiceTest {
     void SUCCESS_saveImageUrl() {
         // 이미지 정보
         ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(
-                "https://naver.com"
+                image1.getImageURL()
         );
 
         // given

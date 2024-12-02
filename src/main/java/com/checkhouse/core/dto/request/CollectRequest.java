@@ -10,12 +10,12 @@ import lombok.Builder;
 public class CollectRequest {
     @Builder
     public record AddCollectRequest(
-        UUID deliveryId,
-        UUID usedProductId
+        UUID usedProductId,
+        UUID addressId
     ) {}
 
     @Builder
-    public record UpdateCollectStateRequest(
+    public record UpdateCollectRequest(
         UUID collectId,
         DeliveryState deliveryState
     ) {}
@@ -24,4 +24,13 @@ public class CollectRequest {
     public record DeleteCollectRequest(
         UUID collectId
     ) {}
+
+    @Builder
+    public record GetCollectStateRequest(
+        UUID collectId
+    ) {}
+
+    @Builder
+    public record GetCollectListRequest() {}
+
 }

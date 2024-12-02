@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String accessToken = request.getHeader("Authorization");
         String refreshToken = request.getHeader("Authorization-refreshToken");
-
+        log.info("[ JwtFilter ] Authentication code: {}",accessToken);
         if (accessToken != null && accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.substring(7); // "Bearer " 이후의 토큰 부분만 추출
         }
@@ -103,6 +103,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.warn(e.getMessage());
                 log.warn("filter exception");
             }
+        } else {
+            log.info("authentication code not exist");
         }
 
         filterChain.doFilter(request, response); // Pass the request to the next filter

@@ -21,7 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.CollectDTO;
+import com.checkhouse.core.dto.request.CollectRequest;
 import com.checkhouse.core.dto.request.CollectRequest.AddCollectRequest;
+import com.checkhouse.core.dto.request.CollectRequest.UpdateCollectRequest;
 import com.checkhouse.core.entity.Collect;
 import com.checkhouse.core.entity.Delivery;
 import com.checkhouse.core.entity.UsedProduct;
@@ -115,10 +117,9 @@ public class CollectServiceTest {
     @Test
     void SUCCESS_addCollect() {
         // given
-        AddCollectRequest req = new AddCollectRequest(
-            delivery1.getDeliveryId(),
-            usedProduct1.getUsedProductId()
-        );
+        AddCollectRequest req = AddCollectRequest.builder()
+            .usedProductId(usedProduct1.getUsedProductId())
+            .build();
 
         Delivery updatedDelivery = Delivery.builder()
             .deliveryId(delivery1.getDeliveryId())
@@ -126,7 +127,6 @@ public class CollectServiceTest {
             .deliveryState(DeliveryState.COLLECTING)
             .build();
 
-        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery1));
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
         when(collectRepository.save(any(Collect.class))).thenReturn(collect1);
         when(deliveryRepository.save(any(Delivery.class))).thenReturn(updatedDelivery);
@@ -147,6 +147,11 @@ public class CollectServiceTest {
         UUID collectId = collect1.getCollectId();
         DeliveryState newState = DeliveryState.COLLECTING;
         
+        UpdateCollectRequest req = UpdateCollectRequest.builder()
+            .collectId(collectId)
+            .deliveryState(newState)
+            .build();
+        
         Collect updatedCollect = Collect.builder()
             .collectId(collectId)
             .state(newState)
@@ -158,7 +163,7 @@ public class CollectServiceTest {
         when(collectRepository.save(any(Collect.class))).thenReturn(updatedCollect);
 
         // when
-        CollectDTO collectDTO = collectService.updateCollectState(collectId, newState);
+        CollectDTO collectDTO = collectService.updateCollect(req);
 
         // then
         assertEquals(newState, collectDTO.state());
@@ -170,12 +175,11 @@ public class CollectServiceTest {
     @Test
     void FAIL_addCollect_not_found() {
         // given
-        AddCollectRequest req = new AddCollectRequest(
-            UUID.randomUUID(),
-            usedProduct1.getUsedProductId()
-        );
+        AddCollectRequest req = AddCollectRequest.builder()
+            .usedProductId(UUID.randomUUID())
+            .build();
 
-        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         // when & then
         assertThrows(GeneralException.class, () -> collectService.addCollect(req));
@@ -185,15 +189,10 @@ public class CollectServiceTest {
     @Test
     void FAIL_addCollect_not_found_used_product() {
         // given
-        UUID deliveryId = delivery1.getDeliveryId();
-        UUID nonExistentUsedProductId = UUID.randomUUID();
+        AddCollectRequest req = AddCollectRequest.builder()
+            .usedProductId(UUID.randomUUID())
+            .build();
 
-        AddCollectRequest req = new AddCollectRequest(
-            deliveryId,
-            nonExistentUsedProductId
-        );
-
-        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery1));
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
 
         // when & then
@@ -206,22 +205,25 @@ public class CollectServiceTest {
         // given
         UUID collectId = collect1.getCollectId();
         DeliveryState invalidState = null;
+        
+        UpdateCollectRequest req = new UpdateCollectRequest(
+            collectId,
+            invalidState
+        );
 
         // when & then
         assertThrows(GeneralException.class, 
-            () -> collectService.updateCollectState(collectId, invalidState));
+            () -> collectService.updateCollect(req));
     }
 
     @DisplayName("이미 수거 등록이 된 상품은 수거 등록 실패")
     @Test
     void FAIL_addCollect_already_collected() {
         // given
-        AddCollectRequest req = new AddCollectRequest(
-            delivery2.getDeliveryId(),
-            usedProduct1.getUsedProductId()
-        );
+        AddCollectRequest req = AddCollectRequest.builder()
+            .usedProductId(usedProduct1.getUsedProductId())
+            .build();
 
-        when(deliveryRepository.findById(any(UUID.class))).thenReturn(Optional.of(delivery2));
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
         when(collectRepository.findByUsedProduct(usedProduct1)).thenReturn(Optional.of(collect1));
 

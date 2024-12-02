@@ -39,4 +39,22 @@ public class OriginProductRequest {
             @NotNull
             UUID originProductId
     ) {}
+
+    @Builder
+    public record GetOriginProductInfoRequest(
+            @NotNull
+            UUID originProductId
+    ) {}
+
+    @Builder
+    public record GetOriginProductWithCategoryRequest(
+            @NotNull
+            UUID categoryId
+    ) {}
+
+    @Builder
+    public record SearchOriginProductsRequest(
+            @NotNull
+            String query
+    ) {}
 }

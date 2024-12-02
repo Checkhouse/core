@@ -2,6 +2,7 @@ package com.checkhouse.core.service;
 
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
@@ -89,16 +90,20 @@ public class UsedProductServiceTest {
     @DisplayName("중고 상품 등록")
     @Test
     void SUCCESS_addUsedProduct() {
-        UsedProductRequest.AddUsedProductRequest request = new UsedProductRequest.AddUsedProductRequest(
-                "Used Product Name",
-                "shit",
-                189000,
-                true,
-                mockedUser.getUserId(),
-                mockedOriginProduct.getOriginProductId()
-        );
+        UsedProductRequest.AddUsedProductRequest request = UsedProductRequest.AddUsedProductRequest.builder()
+                .title("Used Product Name")
+                .description("shit")
+                .price(189000)
+                .isNegoAllow(true)
+                .userId(mockedUser.getUserId())
+                .originProductId(mockedOriginProduct.getOriginProductId())
+                .build();
 
-        when(originProductService.findOriginProduct(request.originProductId())).thenReturn(mockedOriginProduct);
+        when(originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(request.originProductId())
+                .build()
+        )).thenReturn(mockedOriginProduct);
         when(userService.findUser(request.userId())).thenReturn(mockedUser);
         when(usedProductRepository.save( any()) ).thenReturn(mockedUsedProduct);
 
@@ -191,7 +196,11 @@ public class UsedProductServiceTest {
 
         when(usedProductRepository.findById(productId)).thenReturn(Optional.of(mockedUsedProduct));
 
-        UsedProductDTO result = usedProductService.getUsedProductDetails(productId);
+        UsedProductDTO result = usedProductService.getUsedProductDetails(
+            UsedProductRequest.GetUsedProductRequest.builder()
+                .usedProductId(productId)
+                .build()
+        );
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(mockedUsedProduct.getTitle(), result.title());
@@ -206,7 +215,11 @@ public class UsedProductServiceTest {
         when(usedProductRepository.findById(productId)).thenReturn(Optional.of(mockedUsedProduct));
         doNothing().when(usedProductRepository).delete(mockedUsedProduct);
 
-        usedProductService.cancelAddUsedProduct(productId);
+        usedProductService.cancelAddUsedProduct(
+            UsedProductRequest.DeleteUsedProductRequest.builder()
+                .usedProductId(productId)
+                .build()
+        );
 
         verify(usedProductRepository, times(1)).findById(productId);
         verify(usedProductRepository, times(1)).delete(mockedUsedProduct);
@@ -217,14 +230,18 @@ public class UsedProductServiceTest {
     void SUCCESS_getUsedProductsByStatus() {
         UsedProductState status = UsedProductState.PRE_SALE;
 
-        when(usedProductRepository.findAllByState(status.name())).thenReturn(List.of(mockedUsedProduct));
+        when(usedProductRepository.findAllByState(status)).thenReturn(List.of(mockedUsedProduct));
 
-        List<UsedProductDTO> result = usedProductService.getUsedProductsByStatus(status.name());
+        List<UsedProductDTO> result = usedProductService.getUsedProductsByStatus(
+            UsedProductRequest.GetUsedProductByStatusRequest.builder()
+                .status(status)
+                .build()
+        );
 
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals(mockedUsedProduct.getTitle(), result.getFirst().title());
 
-        verify(usedProductRepository, times(1)).findAllByState(status.name());
+        verify(usedProductRepository, times(1)).findAllByState(status);
     }
 
     @DisplayName("특정 사용자가 등록한 중고 상품 리스트 조회")
@@ -235,7 +252,11 @@ public class UsedProductServiceTest {
         when(usedProductRepository.findAllByUserId(userId)).thenReturn(List.of(mockedUsedProduct));
         when(userService.findUser( userId )).thenReturn(mockedUser);
 
-        List<UsedProductDTO> result = usedProductService.getUsedProductsByUser(userId);
+        List<UsedProductDTO> result = usedProductService.getUsedProductsByUser(
+            UsedProductRequest.GetUsedProductByUserRequest.builder()
+                .userId(userId)
+                .build()
+        );
 
         Assertions.assertEquals(1, result.size());
         Assertions.assertEquals(mockedUsedProduct.getTitle(), result.getFirst().title());
@@ -245,14 +266,14 @@ public class UsedProductServiceTest {
     @DisplayName("존재하지 않는 사용자에 대한 즁고 상품 등록은 실패")
     @Test
     void FAIL_addUsedProduct_not_exist() {
-        UsedProductRequest.AddUsedProductRequest request = new UsedProductRequest.AddUsedProductRequest(
-                "Used Product Name",
-                "shit",
-                189000,
-                true,
-                UUID.randomUUID(),
-                mockedOriginProduct.getOriginProductId()
-        );
+        UsedProductRequest.AddUsedProductRequest request = UsedProductRequest.AddUsedProductRequest.builder()
+                .title("Used Product Name")
+                .description("shit")
+                .price(189000)
+                .isNegoAllow(true)
+                .userId(UUID.randomUUID())
+                .originProductId(mockedOriginProduct.getOriginProductId())
+                .build();
 
         when(userService.findUser(request.userId())).thenThrow(GeneralException.class);
 
@@ -320,7 +341,11 @@ public class UsedProductServiceTest {
         when(usedProductRepository.findById(productId)).thenReturn(Optional.empty());
 
         assertThrows(GeneralException.class, () -> {
-            usedProductService.getUsedProductDetails(productId);
+            usedProductService.getUsedProductDetails(
+                UsedProductRequest.GetUsedProductRequest.builder()
+                    .usedProductId(productId)
+                    .build()
+            );
         });
         verify(usedProductRepository, times(1)).findById(productId);
     }
@@ -332,7 +357,11 @@ public class UsedProductServiceTest {
         when(usedProductRepository.findById(productId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(GeneralException.class, () -> {
-            usedProductService.cancelAddUsedProduct(productId);
+            usedProductService.cancelAddUsedProduct(
+                UsedProductRequest.DeleteUsedProductRequest.builder()
+                    .usedProductId(productId)
+                    .build()
+            );
         });
         verify(usedProductRepository, times(1)).findById(productId);
     }
@@ -345,7 +374,11 @@ public class UsedProductServiceTest {
         when(userService.findUser( userId )).thenThrow(GeneralException.class);
 
         Assertions.assertThrows(GeneralException.class, () -> {
-            usedProductService.getUsedProductsByUser(userId);
+            usedProductService.getUsedProductsByUser(
+                UsedProductRequest.GetUsedProductByUserRequest.builder()
+                    .userId(userId)
+                    .build()
+            );
         });
     }
 }

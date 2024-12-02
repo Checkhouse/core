@@ -1,5 +1,6 @@
 package com.checkhouse.core.repository.mysql;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,6 +10,10 @@ import com.checkhouse.core.entity.Send;
 import com.checkhouse.core.entity.Transaction;
 
 public interface SendRepository extends JpaRepository<Send, UUID> {
+
     Optional<Send> findBySendId(UUID sendId);
-    Optional<Send> findByTransaction(Transaction transaction);
+
+    Optional<Send> findByTransactionTransactionId(UUID transactionId);
+
+    List<Send> findAllByTransactionTransactionId(UUID transactionId);
 }

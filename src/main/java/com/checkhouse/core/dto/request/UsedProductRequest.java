@@ -13,7 +13,8 @@ public class UsedProductRequest {
             int price,
             boolean isNegoAllow,
             UUID userId,
-            UUID originProductId
+            UUID originProductId,
+            String addressId
     ) {}
 
     @Builder
@@ -36,4 +37,30 @@ public class UsedProductRequest {
             UUID usedProductId,
             UsedProductState status
     ) {}
+
+    @Builder
+    public record DeleteUsedProduct(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record GetUsedProductRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record DeleteUsedProductRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record GetUsedProductByStatusRequest(
+            UsedProductState status
+    ) {}
+
+    @Builder
+    public record GetUsedProductByUserRequest(
+            UUID userId
+    ) {}
+    
 }
