@@ -1,13 +1,9 @@
 package com.checkhouse.core.controller;
 
 import java.util.List;
+import java.util.UUID;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.dto.ImageDTO;
@@ -30,7 +26,7 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/images")
-public class ImageConroller {
+public class ImageController {
     private final ImageService imageService;
 
     //이미지 추가
@@ -52,9 +48,10 @@ public class ImageConroller {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/{imageId}")
+    @GetMapping
     public BaseResponse<ImageDTO> getImage(
-        @Valid @RequestBody ImageRequest.GetImageRequest req) {
+        @RequestParam UUID imageId) {
+        ImageRequest.GetImageRequest req = new ImageRequest.GetImageRequest(imageId);
         log.info("[이미지 조회] request: {}", req);
         return BaseResponse.onSuccess(imageService.getImage(req));
     }
@@ -64,7 +61,7 @@ public class ImageConroller {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/{imageId}")
+    @DeleteMapping
     public BaseResponse<Void> deleteImage(
         @Valid @RequestBody ImageRequest.DeleteImageRequest req) {
         log.info("[이미지 삭제] request: {}", req);
@@ -85,17 +82,31 @@ public class ImageConroller {
         return BaseResponse.onSuccess(originImage);
     }
     //원본 이미지 조회
-    @Operation(summary = "원본 이미지 조회")
+    @Operation(summary = "원본 이미지 조회/이미지 ID로 조회")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/origin/{originImageId}")
+    @GetMapping("/origin")
     public BaseResponse<OriginImageDTO> getOriginImage(
-        @Valid @RequestBody ImageRequest.GetOriginImageRequest req) {
+        @RequestParam UUID originImageId) {
+        ImageRequest.GetOriginImageRequest req = new ImageRequest.GetOriginImageRequest(originImageId);
         log.info("[원본 이미지 조회] request: {}", req);
         OriginImageDTO originImage = imageService.getOriginImage(req);
         return BaseResponse.onSuccess(originImage);
+    }
+    //원본 상품 이미지 조회
+    @Operation(summary = "원본 상품 이미지 조회/원본 상품 ID로 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping("/origin/product")
+    public BaseResponse<List<OriginImageDTO>> getOriginImagesByOriginId(
+        @RequestParam UUID originProductId) {
+        ImageRequest.GetOriginImagesByOriginIdRequest req = new ImageRequest.GetOriginImagesByOriginIdRequest(originProductId);
+        log.info("[원본 상품 이미지 조회] request: {}", req);
+        return BaseResponse.onSuccess(imageService.getOriginImagesByOriginId(req));
     }
     //원본 이미지 삭제
     @Operation(summary = "원본 이미지 삭제")
@@ -103,24 +114,12 @@ public class ImageConroller {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/origin/{originImageId}")
+    @DeleteMapping("/origin")
     public BaseResponse<Void> deleteOriginImage(
         @Valid @RequestBody ImageRequest.DeleteOriginImageRequest req) {
         log.info("[원본 이미지 삭제] request: {}", req);
         imageService.deleteOriginImage(req);
         return BaseResponse.onSuccess(null);
-    }
-    //원본 상품 이미지 조회
-    @Operation(summary = "원본 상품 이미지 조회")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @GetMapping("/origin/{originProductId}")
-    public BaseResponse<List<OriginImageDTO>> getOriginImagesByOriginId(
-        @Valid @RequestBody ImageRequest.GetOriginImagesByOriginIdRequest req) {
-        log.info("[원본 상품 이미지 조회] request: {}", req);
-        return BaseResponse.onSuccess(imageService.getOriginImagesByOriginId(req));
     }
     //중고 상품 이미지 추가
     @Operation(summary = "중고 상품 이미지 추가")
@@ -136,27 +135,29 @@ public class ImageConroller {
         return BaseResponse.onSuccess(usedImage);
     }
     //중고 상품 이미지 조회
-    @Operation(summary = "중고 상품 이미지 조회")
+    @Operation(summary = "중고 상품 이미지 조회/이미지 ID로 조회")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/used/{usedImageId}")
+    @GetMapping("/used")
     public BaseResponse<UsedImageDTO> getUsedImage(
-        @Valid @RequestBody ImageRequest.GetUsedImageRequest req) {
+        @RequestParam UUID usedImageId) {
+        ImageRequest.GetUsedImageRequest req = new ImageRequest.GetUsedImageRequest(usedImageId);
         log.info("[중고 상품 이미지 조회] request: {}", req);
         UsedImageDTO usedImage = imageService.getUsedImage(req);
         return BaseResponse.onSuccess(usedImage);
     }
     //중고 상품 리스트 조회
-    @Operation(summary = "중고 상품 리스트 조회")
+    @Operation(summary = "중고 상품 이미지 조회/중고 상품 ID로 조회")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/used/{usedProductId}")
+    @GetMapping("/used/product")
     public BaseResponse<List<UsedImageDTO>> getUsedImagesByUsedId(
-        @Valid @RequestBody ImageRequest.GetUsedImagesByUsedIdRequest req) {
+        @RequestParam UUID usedProductId) {
+        ImageRequest.GetUsedImagesByUsedIdRequest req = new ImageRequest.GetUsedImagesByUsedIdRequest(usedProductId);
         log.info("[중고 상품 리스트 조회] request: {}", req);
         return BaseResponse.onSuccess(imageService.getUsedImagesByUsedId(req));
     }

@@ -102,9 +102,9 @@ public class UsedProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/{usedProductId}")
+    @GetMapping
     public BaseResponse<UsedProductDTO> getUsedProduct(
-        @PathVariable UUID usedProductId
+        @RequestParam UUID usedProductId
     ) {
         UsedProductDTO product = usedProductService.getUsedProductDetails(
             UsedProductRequest.GetUsedProductRequest.builder()
@@ -169,9 +169,9 @@ public class UsedProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list/{status}")
+    @GetMapping("/list")
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByStatus(
-        @PathVariable UsedProductState status
+        @RequestParam UsedProductState status
     ) {
         List<UsedProductDTO> products = usedProductService.getUsedProductsByStatus(
             UsedProductRequest.GetUsedProductByStatusRequest.builder()
@@ -187,9 +187,9 @@ public class UsedProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/list/user/{userId}")
+    @GetMapping("/list/user")
     public BaseResponse<List<UsedProductDTO>> getUsedProductsByUser(
-        @PathVariable UUID userId
+        @RequestParam UUID userId
     ) {
         List<UsedProductDTO> products = usedProductService.getUsedProductsByUser(
             UsedProductRequest.GetUsedProductByUserRequest.builder()
@@ -204,9 +204,9 @@ public class UsedProductController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/origin/{originId}")
+    @GetMapping("/origin")
     public BaseResponse<List<UsedProductDTO>> getUsedProductWithOriginId(
-            @PathVariable UUID originId
+            @RequestParam UUID originId
     ) {
         log.info("[ 원본 상품 별 중고 상품 조회 ]");
         OriginProduct originProduct = originProductService.findOriginProduct(OriginProductRequest.GetOriginProductInfoRequest.builder().originProductId(originId).build());

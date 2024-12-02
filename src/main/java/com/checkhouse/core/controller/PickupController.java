@@ -63,19 +63,23 @@ public class PickupController {
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	public BaseResponse<List<PickupDTO>> getPickupList(
-		@Valid @RequestBody PickupRequest.GetUserPickupListRequest req
 	) {
+		String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+		UUID userId = userService.getUserInfo(userEmail).userId();
+		PickupRequest.GetUserPickupListRequest req = new PickupRequest.GetUserPickupListRequest(
+			userId
+		);
 		log.info("[사용자 픽업 조회] request: {}", req);
 		return BaseResponse.onSuccess(pickupService.getUserPickupList(req));
 	}
 
-	@GetMapping("/{pickupId}")
+	@GetMapping("/details")
 	@Operation(summary = "특정 픽업 조회")
 	@ApiResponses({
 		@ApiResponse(responseCode = "200", description = "조회 성공")
 	})
 	public BaseResponse<PickupDTO> getPickupDetails(
-		@PathVariable UUID pickupId
+		@RequestParam UUID pickupId
 	) {
 		String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 		UUID userId = userService.getUserInfo(userEmail).userId();

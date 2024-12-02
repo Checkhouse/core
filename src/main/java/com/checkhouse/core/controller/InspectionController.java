@@ -86,14 +86,11 @@ public class InspectionController {
 
     // 검수 리스트 조회
     @Operation(summary = "검수 리스트 조회")
-    @GetMapping("/list/{usedProductId}")
+    @GetMapping("/list")
     public BaseResponse<List<InspectionDTO>> getInspectionList(
-        @PathVariable UUID usedProductId
+        @RequestParam UUID usedProductId
     ) {
-        return BaseResponse.onSuccess(inspectionService.getInspectionList(
-            InspectionRequest.GetInspectionListRequest.builder()
-                .usedProductId(usedProductId)
-                .build()
-        ));
+        InspectionRequest.GetInspectionListRequest req = new InspectionRequest.GetInspectionListRequest(usedProductId);
+        return BaseResponse.onSuccess(inspectionService.getInspectionList(req));
     }
 }

@@ -3,14 +3,7 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.checkhouse.core.service.StoreService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,9 +44,10 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/{storeId}")
+    @GetMapping
     public BaseResponse<StoreDTO> getStore(
-        @Valid @RequestBody StoreRequest.GetStoreRequest req) {
+        @RequestParam UUID storeId) {
+        StoreRequest.GetStoreRequest req = new StoreRequest.GetStoreRequest(storeId);
         log.info("[스토어 조회] request: {}", req);
         return BaseResponse.onSuccess(storeService.getStore(req));
     }
@@ -63,7 +57,7 @@ public class StoreController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping
+    @GetMapping("/list")
     public BaseResponse<List<StoreDTO>> getStores() {
         log.info("[스토어 리스트 조회]");
         return BaseResponse.onSuccess(storeService.getStores());

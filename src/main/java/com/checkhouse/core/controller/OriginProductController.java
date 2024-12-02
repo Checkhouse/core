@@ -117,14 +117,12 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/origin/{originProductId}")
-    public BaseResponse<Map<String, Object>> getOriginProductInfo(@PathVariable UUID originProductId) {
+    @GetMapping("/origin")
+    public BaseResponse<Map<String, Object>> getOriginProductInfo(
+        @RequestParam UUID originProductId) {
+        OriginProductRequest.GetOriginProductInfoRequest req = new OriginProductRequest.GetOriginProductInfoRequest(originProductId);
         // 1. 상품 정보 조회
-        OriginProductDTO product = originProductService.getOriginProductInfo(
-            OriginProductRequest.GetOriginProductInfoRequest.builder()
-                .originProductId(originProductId)
-                .build()
-        );
+        OriginProductDTO product = originProductService.getOriginProductInfo(req);
         
         // 2. 이미지 정보 조회
         List<OriginImageDTO> images = imageService.getOriginImagesByOriginId(
@@ -156,15 +154,12 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/category")
     public BaseResponse<List<OriginProductDTO>> getOriginProductsWithCategory(
-        @PathVariable UUID categoryId) {
+        @RequestParam UUID categoryId) {
+        OriginProductRequest.GetOriginProductWithCategoryRequest req = new OriginProductRequest.GetOriginProductWithCategoryRequest(categoryId);
         log.info("[카테고리별 원본 상품 목록 조회] categoryId: {}", categoryId);
-        List<OriginProductDTO> originProducts = originProductService.getOriginProductsWithCategory(
-            OriginProductRequest.GetOriginProductWithCategoryRequest.builder()
-                .categoryId(categoryId)
-                .build()
-        );
+        List<OriginProductDTO> originProducts = originProductService.getOriginProductsWithCategory(req);
         return BaseResponse.onSuccess(originProducts);
     }
     //원본 상품 검색
