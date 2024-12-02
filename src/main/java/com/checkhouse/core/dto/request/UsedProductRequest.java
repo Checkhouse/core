@@ -13,8 +13,7 @@ public class UsedProductRequest {
             int price,
             boolean isNegoAllow,
             UUID userId,
-            UUID originProductId,
-            UUID addressId
+            UUID originProductId
     ) {}
 
     @Builder

@@ -41,7 +41,6 @@ public class OriginProductControllerTest extends BaseIntegrationTest {
 		savedCategory = categoryRepository.saveAndFlush(category);
 
         OriginProduct originProduct1 = OriginProduct.builder()
-                .id(UUID.randomUUID())
                 .name("아이패드")
                 .company("애플")
                 .category(savedCategory)
