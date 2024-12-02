@@ -111,7 +111,6 @@ public class ImageService {
         );
         UsedImage usedImage = usedImageRepository.save(
                 UsedImage.builder()
-                        .usedImageId(req.usedImageId())
                         .usedProduct(usedProduct)
                         .image(imageURL)
                         .build()

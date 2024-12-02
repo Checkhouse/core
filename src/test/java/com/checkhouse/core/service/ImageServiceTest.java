@@ -76,7 +76,6 @@ public class ImageServiceTest {
     @BeforeEach
     void setup() {
         mockedUser = User.builder()
-                .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
                 .nickname("test nickname")
@@ -87,15 +86,12 @@ public class ImageServiceTest {
                 .build();
 
         image1 = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("https://naver.com")
                 .build();
         image2 = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("https://google.com")
                 .build();
         invalidImage = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("123456")
                 .build();
 
@@ -104,26 +100,22 @@ public class ImageServiceTest {
                 .build();
 
         originProduct1 = OriginProduct.builder()
-                .id(UUID.randomUUID())
                 .name("origin product name")
                 .company("origin product company")
                 .category(category1)
                 .build();
 
         originImage1 = OriginImage.builder()
-                .originImageId(UUID.randomUUID())
                 .image(image1)
                 .originProduct(originProduct1)
                 .build();
 
         originImage2 = OriginImage.builder()
-                .originImageId(UUID.randomUUID())
                 .image(image2)
                 .originProduct(originProduct1)
                 .build();
 
         usedProduct1 = UsedProduct.builder()
-                .usedProductId(UUID.randomUUID())
                 .originProduct(originProduct1)
                 .user(mockedUser)
                 .state(UsedProductState.PRE_SALE)
@@ -134,25 +126,21 @@ public class ImageServiceTest {
                 .build();
 
         usedImage1 = UsedImage.builder()
-                .usedImageId(UUID.randomUUID())
                 .image(image1)
                 .usedProduct(usedProduct1)
                 .build();
 
         usedImage2 = UsedImage.builder()
-                .usedImageId(UUID.randomUUID())
                 .image(image2)
                 .usedProduct(usedProduct1)
                 .build();
         inspection1 = Inspection.builder()
-                .inspectionId(UUID.randomUUID())
                 .isDone(false)
                 .description("test description")
                 .usedProduct(usedProduct1)
                 .user(mockedUser)
                 .build();
         inspectionImage1 = InspectionImage.builder()
-                .inspectionImageId(UUID.randomUUID())
                 .image(image1)
                 .inspection(inspection1)
                 .usedImage(usedImage1)
@@ -164,7 +152,6 @@ public class ImageServiceTest {
     void SUCCESS_saveImageUrl() {
         // 이미지 정보
         ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(
-                image1.getImageId(),
                 "https://naver.com"
         );
 
@@ -224,7 +211,6 @@ public class ImageServiceTest {
     void SUCCESS_addOriginImage() {
         // 원본 이미지 정보
         ImageRequest.AddOriginImageRequest req = new ImageRequest.AddOriginImageRequest(
-                originImage1.getOriginImageId(),
                 originProduct1.getOriginProductId(),
                 image1.getImageURL()
         );
@@ -311,7 +297,6 @@ public class ImageServiceTest {
     void SUCCESS_addUsedImage() {
         // 중고 이미지 정보
         ImageRequest.AddUsedImageRequest req = new ImageRequest.AddUsedImageRequest(
-                UUID.randomUUID(),
                 usedProduct1.getUsedProductId(),
                 image1.getImageURL()
         );
@@ -414,10 +399,9 @@ public class ImageServiceTest {
     void FAIL_saveImageUrl_invalid_url() {
         //이미지 정보
         ImageURL image = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("123456 adsfasdf")
                 .build();
-        ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageId(), image.getImageURL());
+        ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageURL());
 
         //given, when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addImage(req));
@@ -445,7 +429,6 @@ public class ImageServiceTest {
     void FAIL_addOriginImageUrl_invalid_origin_product() {
         // 원본 이미지 정보
         ImageRequest.AddOriginImageRequest req = new ImageRequest.AddOriginImageRequest(
-                UUID.randomUUID(),
                 originProduct1.getOriginProductId(),
                 image1.getImageURL()
         );
@@ -520,7 +503,6 @@ public class ImageServiceTest {
     void FAIL_addUsedImageUrl_invalid_origin_product() {
         // 중고 이미지 정보
         ImageRequest.AddUsedImageRequest req = new ImageRequest.AddUsedImageRequest(
-                UUID.randomUUID(),
                 usedProduct1.getUsedProductId(),
                 image1.getImageURL()
         );
