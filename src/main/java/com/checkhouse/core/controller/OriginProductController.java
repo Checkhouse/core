@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.checkhouse.core.entity.es.OriginProductDocument;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -169,8 +170,9 @@ public class OriginProductController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/search")
-    public BaseResponse<List<OriginProductDTO>> searchOriginProducts(
-        @RequestParam("query") String query) {
+    public BaseResponse<List<OriginProductDocument>> searchOriginProducts(
+        @RequestParam("query") String query
+    ) {
         log.info("[원본 상품 검색] request: {}", query);
         return BaseResponse.onSuccess(originProductService.searchOriginProducts(
             OriginProductRequest.SearchOriginProductsRequest.builder()

@@ -6,6 +6,8 @@ import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.entity.es.OriginProductDocument;
+import com.checkhouse.core.repository.es.OriginProductDocumentRepository;
 import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.OriginProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.UUID;
 public class OriginProductService {
     private final OriginProductRepository originProductRepository;
     private final CategoryRepository categoryRepository;
+
+    private final OriginProductDocumentRepository originProductDocumentRepository;
 
     public OriginProductDTO addOriginProduct(
             OriginProductRequest.AddOriginProductRequest request
@@ -103,11 +107,10 @@ public class OriginProductService {
     }
 
     // todo es 검색
-    public List<OriginProductDTO> searchOriginProducts(
+    public List<OriginProductDocument> searchOriginProducts(
             OriginProductRequest.SearchOriginProductsRequest request
     ) {
-        return List.of();
-
+        return originProductDocumentRepository.findByTitleContainsIgnoreCase(request.query());
     }
     public void deleteOriginProduct( OriginProductRequest.DeleteOriginProduct request ) {
         originProductRepository.findById(request.originProductId()).ifPresentOrElse(
