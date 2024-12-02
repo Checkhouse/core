@@ -3,6 +3,7 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
+import com.checkhouse.core.dto.InspectionImageDTO;
 import com.checkhouse.core.dto.OriginImageDTO;
 import com.checkhouse.core.dto.UsedImageDTO;
 import com.checkhouse.core.entity.*;
@@ -25,6 +26,8 @@ public class ImageService {
     private final UsedProductRepository usedProductRepository;
     private final OriginImageRepository originImageRepository;
     private final UsedImageRepository usedImageRepository;
+    private final InspectionImageRepository inspectionImageRepository;
+    private final InspectionRepository inspectionRepository;
 
     void checkURL(String URL) {}
 
@@ -37,7 +40,6 @@ public class ImageService {
         }
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
@@ -64,7 +66,6 @@ public class ImageService {
         );
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
@@ -105,7 +106,6 @@ public class ImageService {
         );
         ImageURL imageURL = imageRepository.save(
                 ImageURL.builder()
-                        .imageId(UUID.randomUUID())
                         .imageURL(req.imageURL())
                         .build()
         );
@@ -139,6 +139,71 @@ public class ImageService {
         usedImageRepository.delete(usedImage);
     }
 
-    //TODO: 검수이미지 추가
+    InspectionImageDTO addInspectionImage(ImageRequest.AddInspectionImageRequest req) {
+        // 검수 ID 유효성 검사
+        Inspection inspection = inspectionRepository.findById(req.inspectionId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
+
+        // 중고 이미지 ID 유효성 검사
+        UsedImage usedImage = usedImageRepository.findById(req.usedImageId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USED_IMAGE_ID_NOT_FOUND));
+
+        // 중복된 검수 이미지가 이미 존재하는지 검사
+        inspectionImageRepository.findInspectionImageByUsedImageUsedImageId(req.usedImageId())
+                .ifPresent(existing -> {
+                    throw new GeneralException(ErrorStatus._INSPECTION_IMAGE_ALREADY_EXISTS);
+                });
+
+        // UsedProduct 일치 여부 확인
+        if (!inspection.getUsedProduct().getUsedProductId().equals(usedImage.getUsedProduct().getUsedProductId())) {
+            throw new GeneralException(ErrorStatus._INSPECTION_IMAGE_PRODUCT_NOT_MATCH);
+        }
+
+        // 이미지 URL 저장
+        ImageURL imageURL = imageRepository.save(
+                ImageURL.builder()
+                        .imageURL(req.imageURL())
+                        .build()
+        );
+
+        // 검수 이미지 저장
+        InspectionImage inspectionImage = inspectionImageRepository.save(
+                InspectionImage.builder()
+                        .inspection(inspection)
+                        .usedImage(usedImage)
+                        .image(imageURL)
+                        .build()
+        );
+
+        return inspectionImage.toDto();
+    }
+
+    InspectionImageDTO getInspectionImage(ImageRequest.GetInspectionImageRequest req) {
+        InspectionImage inspectionImage = inspectionImageRepository.findById(req.inspectionImageId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND));
+        return inspectionImage.toDto();
+    }
+    InspectionImageDTO getInspectionImageByUsedImageId(ImageRequest.GetInspectionImageByUsedImageIdRequest req) {
+        usedImageRepository.findById(req.usedImageId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USED_IMAGE_ID_NOT_FOUND));
+
+        InspectionImage inspectionImage = inspectionImageRepository.findInspectionImageByUsedImageUsedImageId(req.usedImageId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND));
+
+        return inspectionImage.toDto();
+    }
+    List<InspectionImageDTO> getInspectionImagesByInspectionId(ImageRequest.GetInspectionImagesByInspectionIdRequest req) {
+        Inspection inspection = inspectionRepository.findById(req.inspectionId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
+
+        List<InspectionImage> inspectionImages = inspectionImageRepository.findInspectionImagesByInspectionInspectionId(req.inspectionId());
+        return inspectionImages.stream().map(InspectionImage::toDto).toList();
+    }
+    void deleteInspectionImage(ImageRequest.DeleteInspectionImageRequest req) {
+        InspectionImage inspectionImage = inspectionImageRepository.findById(req.inspectionId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND));
+        inspectionImageRepository.delete(inspectionImage);
+    }
+
 
 }

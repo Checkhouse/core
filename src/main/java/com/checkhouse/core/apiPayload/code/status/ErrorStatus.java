@@ -76,6 +76,9 @@ public enum ErrorStatus implements BaseErrorCode {
     _IMAGE_URL_NOT_EXIST(HttpStatus.NOT_FOUND, "IMAGE4041", "유효하지 않는 URL입니다."),
     _ORIGIN_IMAGE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "OIMG404", "Origin Image ID를 찾을 수 없습니다."),
     _USED_IMAGE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "UIMG404", "Used Image ID를 찾을 수 없습니다."),
+    _INSPECTION_IMAGE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "IIMG404", "Inspection Image ID를 찾을 수 없습니다."),
+    _INSPECTION_IMAGE_ALREADY_EXISTS(HttpStatus.CONFLICT, "IIMG409", "이미 중고이미지에 대한 검수이미지가 존재합니다."),
+    _INSPECTION_IMAGE_PRODUCT_NOT_MATCH(HttpStatus.FORBIDDEN, "IIMG403", "중고 상품이 일치하지 않습니다."),
 
     // store
     _STORE_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "STORE404", "Store ID를 찾을 수 없습니다."),

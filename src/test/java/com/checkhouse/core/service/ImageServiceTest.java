@@ -3,6 +3,7 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
+import com.checkhouse.core.dto.InspectionImageDTO;
 import com.checkhouse.core.dto.OriginImageDTO;
 import com.checkhouse.core.dto.UsedImageDTO;
 import com.checkhouse.core.entity.*;
@@ -39,6 +40,10 @@ public class ImageServiceTest {
     private UsedProductRepository usedProductRepository;
     @Mock
     private UsedImageRepository usedImageRepository;
+    @Mock
+    private InspectionRepository inspectionRepository;
+    @Mock
+    private InspectionImageRepository inspectionImageRepository;
 
     @InjectMocks
     private ImageService imageService;
@@ -61,13 +66,16 @@ public class ImageServiceTest {
     private UsedImage usedImage1;
     private UsedImage usedImage2;
 
+    private Inspection inspection1;
+
+    private InspectionImage inspectionImage1;
+
     @BeforeAll
     public static void onlyOnce() {}
 
     @BeforeEach
     void setup() {
         mockedUser = User.builder()
-                .userId(UUID.randomUUID())
                 .username("test user")
                 .email("test@test.com")
                 .nickname("test nickname")
@@ -78,15 +86,12 @@ public class ImageServiceTest {
                 .build();
 
         image1 = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("https://naver.com")
                 .build();
         image2 = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("https://google.com")
                 .build();
         invalidImage = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("123456")
                 .build();
 
@@ -95,26 +100,22 @@ public class ImageServiceTest {
                 .build();
 
         originProduct1 = OriginProduct.builder()
-                .id(UUID.randomUUID())
                 .name("origin product name")
                 .company("origin product company")
                 .category(category1)
                 .build();
 
         originImage1 = OriginImage.builder()
-                .originImageId(UUID.randomUUID())
                 .image(image1)
                 .originProduct(originProduct1)
                 .build();
 
         originImage2 = OriginImage.builder()
-                .originImageId(UUID.randomUUID())
                 .image(image2)
                 .originProduct(originProduct1)
                 .build();
 
         usedProduct1 = UsedProduct.builder()
-                .usedProductId(UUID.randomUUID())
                 .originProduct(originProduct1)
                 .user(mockedUser)
                 .state(UsedProductState.PRE_SALE)
@@ -125,15 +126,24 @@ public class ImageServiceTest {
                 .build();
 
         usedImage1 = UsedImage.builder()
-                .usedImageId(UUID.randomUUID())
                 .image(image1)
                 .usedProduct(usedProduct1)
                 .build();
 
         usedImage2 = UsedImage.builder()
-                .usedImageId(UUID.randomUUID())
                 .image(image2)
                 .usedProduct(usedProduct1)
+                .build();
+        inspection1 = Inspection.builder()
+                .isDone(false)
+                .description("test description")
+                .usedProduct(usedProduct1)
+                .user(mockedUser)
+                .build();
+        inspectionImage1 = InspectionImage.builder()
+                .image(image1)
+                .inspection(inspection1)
+                .usedImage(usedImage1)
                 .build();
     }
 
@@ -389,7 +399,6 @@ public class ImageServiceTest {
     void FAIL_saveImageUrl_invalid_url() {
         //이미지 정보
         ImageURL image = ImageURL.builder()
-                .imageId(UUID.randomUUID())
                 .imageURL("123456 adsfasdf")
                 .build();
         ImageRequest.AddImageRequest req = new ImageRequest.AddImageRequest(image.getImageURL());
@@ -557,5 +566,266 @@ public class ImageServiceTest {
     }
 
     //TODO: 검수이미지
+    //Success
+    @DisplayName("검수 이미지 추가 성공")
+    @Test
+    void SUCCESS_addInspectionImage() {
+        // 검수 이미지 요청
+        ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
+                inspection1.getInspectionId(),
+                usedImage1.getUsedImageId(),
+                image1.getImageURL()
+        );
+
+        // given
+        when(inspectionRepository.findById(inspection1.getInspectionId())).thenReturn(Optional.of(inspection1));
+        when(usedImageRepository.findById(usedImage1.getUsedImageId())).thenReturn(Optional.of(usedImage1));
+        when(inspectionImageRepository.findInspectionImageByUsedImageUsedImageId(usedImage1.getUsedImageId())).thenReturn(Optional.empty());
+        when(imageRepository.save(any())).thenReturn(image1);
+        when(inspectionImageRepository.save(any())).thenReturn(inspectionImage1);
+
+        // when
+        InspectionImageDTO result = imageService.addInspectionImage(req);
+
+        // then
+        assertNotNull(result);
+        assertEquals(result.image().imageURL(), image1.getImageURL());
+        assertEquals(result.usedImage().usedImageId(), usedImage1.getUsedImageId());
+        assertEquals(result.inspection().inspectionId(), inspection1.getInspectionId());
+        verify(usedImageRepository, times(1)).findById(usedImage1.getUsedImageId());
+        verify(inspectionRepository, times(1)).findById(inspection1.getInspectionId());
+        verify(inspectionImageRepository, times(1)).findInspectionImageByUsedImageUsedImageId(usedImage1.getUsedImageId());
+        verify(imageRepository, times(1)).save(any());
+        verify(inspectionImageRepository, times(1)).save(any());
+    }
+
+    @DisplayName("검수 이미지 조회 성공")
+    @Test
+    void SUCCESS_getInspectionImage() {
+        // 검수 이미지 요청
+        UUID inspectionImageId = inspectionImage1.getInspectionImageId();
+        ImageRequest.GetInspectionImageRequest req = new ImageRequest.GetInspectionImageRequest(inspectionImageId);
+
+        // given
+        when(inspectionImageRepository.findById(inspectionImageId)).thenReturn(Optional.of(inspectionImage1));
+
+        // when
+        InspectionImageDTO result = imageService.getInspectionImage(req);
+
+        // then
+        assertNotNull(result);
+        assertEquals(result.image().imageURL(), inspectionImage1.getImage().getImageURL());
+        verify(inspectionImageRepository, times(1)).findById(inspectionImageId);
+    }
+    @DisplayName("중고 이미지로 검수 이미지 조회 성공")
+    @Test
+    void SUCCESS_getInspectionImagebyUsedImage() {
+        // 검수 이미지 요청
+        UUID usedImageId = usedImage1.getUsedImageId();
+        ImageRequest.GetInspectionImageByUsedImageIdRequest req = new ImageRequest.GetInspectionImageByUsedImageIdRequest(usedImageId);
+
+        // given
+        when(usedImageRepository.findById(usedImageId)).thenReturn(Optional.of(usedImage1));
+        when(inspectionImageRepository.findInspectionImageByUsedImageUsedImageId(usedImage1.getUsedImageId())).thenReturn(Optional.of(inspectionImage1));
+
+        // when
+        InspectionImageDTO result = imageService.getInspectionImageByUsedImageId(req);
+
+        // then
+        assertNotNull(result);
+        assertEquals(result.image().imageURL(), inspectionImage1.getImage().getImageURL());
+        verify(inspectionImageRepository, times(1)).findInspectionImageByUsedImageUsedImageId(usedImage1.getUsedImageId());
+        verify(usedImageRepository, times(1)).findById(usedImageId);
+    }
+    @DisplayName("검수 ID로 검수 이미지 리스트 조회 성공")
+    @Test
+    void SUCCESS_getInspectionImagesbyInspection() {
+        // 검수 이미지 요청
+        UUID inspectionId = inspection1.getInspectionId();
+        ImageRequest.GetInspectionImagesByInspectionIdRequest req = new ImageRequest.GetInspectionImagesByInspectionIdRequest(inspectionId);
+
+        // given
+        when(inspectionRepository.findById(inspectionId)).thenReturn(Optional.of(inspection1));
+        when(inspectionImageRepository.findInspectionImagesByInspectionInspectionId(inspectionId))
+                .thenReturn(List.of(inspectionImage1));
+
+        // when
+        List<InspectionImageDTO> result = imageService.getInspectionImagesByInspectionId(req);
+
+        // then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(result.get(0).image().imageURL(), inspectionImage1.getImage().getImageURL());
+        verify(inspectionRepository, times(1)).findById(inspectionId);
+        verify(inspectionImageRepository, times(1)).findInspectionImagesByInspectionInspectionId(inspectionId);
+    }
+    @DisplayName("검수 이미지 삭제 성공")
+    @Test
+    void SUCCESS_deleteInspectionImage() {
+        // 검수 이미지 삭제 요청
+        UUID inspectionImageId = inspectionImage1.getInspectionImageId();
+        ImageRequest.DeleteInspectionImageRequest req = new ImageRequest.DeleteInspectionImageRequest(inspectionImageId);
+
+        // given
+        when(inspectionImageRepository.findById(inspectionImageId)).thenReturn(Optional.of(inspectionImage1));
+
+        // when
+        imageService.deleteInspectionImage(req);
+
+        // then
+        verify(inspectionImageRepository, times(1)).findById(inspectionImageId);
+        verify(inspectionImageRepository, times(1)).delete(inspectionImage1);
+    }
+
+    //Fail
+    @DisplayName("검수 이미지 추가 실패 - 검수가 존재하지 않음")
+    @Test
+    void FAIL_addInspectionImage_invalid_inspection() {
+        // 검수 이미지 추가 요청
+        ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
+                UUID.randomUUID(),
+                usedImage1.getUsedImageId(),
+                image1.getImageURL()
+        );
+
+        // given
+        when(inspectionRepository.findById(any())).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addInspectionImage(req));
+
+        assertEquals(ErrorStatus._INSPECTION_ID_NOT_FOUND, exception.getCode());
+        verify(inspectionRepository, times(1)).findById(any());
+    }
+    @DisplayName("검수 이미지 추가 실패 - 이미 usedimage와 매핑되는 이미지가 존재")
+    @Test
+    void FAIL_addInspectionImage_usedImage_already_exist() {
+        // 검수 이미지 추가 요청
+        ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
+                inspection1.getInspectionId(),
+                usedImage1.getUsedImageId(),
+                image1.getImageURL()
+        );
+
+        // given
+        when(inspectionRepository.findById(any())).thenReturn(Optional.of(inspection1));
+        when(usedImageRepository.findById(usedImage1.getUsedImageId())).thenReturn(Optional.of(usedImage1));
+        when(inspectionImageRepository.findInspectionImageByUsedImageUsedImageId(usedImage1.getUsedImageId()))
+                .thenReturn(Optional.of(inspectionImage1));
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addInspectionImage(req));
+
+        assertEquals(ErrorStatus._INSPECTION_IMAGE_ALREADY_EXISTS, exception.getCode());
+        verify(usedImageRepository, times(1)).findById(usedImage1.getUsedImageId());
+        verify(inspectionImageRepository, times(1)).findInspectionImageByUsedImageUsedImageId(inspectionImage1.getUsedImage().getUsedImageId());
+    }
+    @DisplayName("검수 이미지 추가 실패 - inspection과 usedimage의 usedproduct가 다름")
+    @Test
+    void FAIL_addInspectionImage_used_product_not_match() {
+        // 검수 이미지 추가 요청
+        UsedProduct differentUsedProduct = UsedProduct.builder()
+                .title("Different Product")
+                .build();
+
+        UsedImage differentUsedImage = UsedImage.builder()
+                .image(image2)
+                .usedProduct(differentUsedProduct)
+                .build();
+
+        ImageRequest.AddInspectionImageRequest req = new ImageRequest.AddInspectionImageRequest(
+                inspection1.getInspectionId(),
+                differentUsedImage.getUsedImageId(),
+                image1.getImageURL()
+        );
+
+        // given
+        when(inspectionRepository.findById(inspection1.getInspectionId())).thenReturn(Optional.of(inspection1));
+        when(usedImageRepository.findById(differentUsedImage.getUsedImageId())).thenReturn(Optional.of(differentUsedImage));
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.addInspectionImage(req));
+
+        assertEquals(ErrorStatus._INSPECTION_IMAGE_PRODUCT_NOT_MATCH, exception.getCode());
+    }
+
+    @DisplayName("검수 이미지 조회 실패 - id가 존재하지않음")
+    @Test
+    void FAIL_getInspectionImage_invalid_id() {
+        // 검수 이미지 조회 요청
+        UUID invalidId = UUID.randomUUID();
+        ImageRequest.GetInspectionImageRequest req = new ImageRequest.GetInspectionImageRequest(invalidId);
+
+        // given
+        when(inspectionImageRepository.findById(invalidId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getInspectionImage(req));
+
+        assertEquals(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND, exception.getCode());
+        verify(inspectionImageRepository, times(1)).findById(invalidId);
+    }
+    @DisplayName("중고 이미지로 검수 이미지 조회 실패 - 중고이미지가 존재하지 않음")
+    @Test
+    void FAIL_getInspectionImagebyUsedImage_invalid_usedImage() {
+        // 검수 이미지 조회 요청
+        UUID invalidUsedImageId = UUID.randomUUID();
+        ImageRequest.GetInspectionImageByUsedImageIdRequest req = new ImageRequest.GetInspectionImageByUsedImageIdRequest(invalidUsedImageId);
+
+        // given
+        when(usedImageRepository.findById(invalidUsedImageId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getInspectionImageByUsedImageId(req));
+
+        assertEquals(ErrorStatus._USED_IMAGE_ID_NOT_FOUND, exception.getCode());
+    }
+    @DisplayName("중고 이미지로 검수 이미지 조회 실패 - 매칭되는 검수이미지가 존재하지 않음")
+    @Test
+    void FAIL_getInspectionImagebyUsedImage_invalid_inspectionImage() {
+        // 검수 이미지 조회 요청
+        UUID usedImageId = usedImage1.getUsedImageId();
+        ImageRequest.GetInspectionImageByUsedImageIdRequest req = new ImageRequest.GetInspectionImageByUsedImageIdRequest(usedImageId);
+
+        // given
+        when(usedImageRepository.findById(usedImageId)).thenReturn(Optional.of(usedImage1));
+        when(inspectionImageRepository.findInspectionImageByUsedImageUsedImageId(usedImageId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getInspectionImageByUsedImageId(req));
+
+        assertEquals(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND, exception.getCode());
+    }
+    @DisplayName("검수로 검수 이미지 조회 실패 - 검수가 존재하지 않음")
+    @Test
+    void FAIL_getInspectionImagesbyInspection_invalid_inspection() {
+        // 검수 이미지 리스트 조회 요청
+        UUID invalidInspectionId = UUID.randomUUID();
+        ImageRequest.GetInspectionImagesByInspectionIdRequest req = new ImageRequest.GetInspectionImagesByInspectionIdRequest(invalidInspectionId);
+
+        // given
+        when(inspectionRepository.findById(invalidInspectionId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.getInspectionImagesByInspectionId(req));
+
+        assertEquals(ErrorStatus._INSPECTION_ID_NOT_FOUND, exception.getCode());
+    }
+    @DisplayName("검수 이미지 삭제 실패 - 검수 이미지가 존재하지 않음")
+    @Test
+    void FAIL_deleteInspectionImage_invalid_inspectionImage() {
+        // 검수 이미지 삭제 요청
+        UUID invalidInspectionImageId = UUID.randomUUID();
+        ImageRequest.DeleteInspectionImageRequest req = new ImageRequest.DeleteInspectionImageRequest(invalidInspectionImageId);
+
+        // given
+        when(inspectionImageRepository.findById(invalidInspectionImageId)).thenReturn(Optional.empty());
+
+        // when, then
+        GeneralException exception = assertThrows(GeneralException.class, () -> imageService.deleteInspectionImage(req));
+
+        assertEquals(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND, exception.getCode());
+    }
+
 }
 
