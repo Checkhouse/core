@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update origin_image t set t.deleted_at = now() where t.origin_image_id = :origin_image_id")
+@SQLDelete(sql= "update origin_image t set t.deleted_at = now() where t.origin_image_id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class OriginImage extends BaseTimeEntity {
     @Id

@@ -17,7 +17,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update delivery t set t.deleted_at = now() where t.delivery_id = :delivery_id")
+@SQLDelete(sql= "update delivery t set t.deleted_at = now() where t.delivery_id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Delivery extends BaseTimeEntity {
     @Id

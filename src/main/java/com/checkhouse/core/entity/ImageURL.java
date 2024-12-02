@@ -15,6 +15,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE image_url SET deleted_at = NOW() WHERE image_id = ?")
+@SQLRestriction("deleted_at is null")
 public class ImageURL extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
