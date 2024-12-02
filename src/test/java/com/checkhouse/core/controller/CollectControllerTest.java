@@ -26,24 +26,24 @@ public class CollectControllerTest {
     void setup() {
 
     }
-    @Test
-    @DisplayName("수거 등록 성공")
-    void SUCCESS_addCollect() throws Exception {
+//    @Test
+//    @DisplayName("수거 등록 성공")
+//    void SUCCESS_addCollect() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("수거 상태 업데이트 성공")
+//    void SUCCESS_updateCollect() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("수거 리스트 조회 성공")
+//    void SUCCESS_getCollectList() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("수거 삭제 성공")
+//    void SUCCESS_deleteCollect() throws Exception {
         
-    }
-    @Test
-    @DisplayName("수거 상태 업데이트 성공")
-    void SUCCESS_updateCollect() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("수거 리스트 조회 성공")
-    void SUCCESS_getCollectList() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("수거 삭제 성공")
-    void SUCCESS_deleteCollect() throws Exception {
-        
-    }
+//    }
 }

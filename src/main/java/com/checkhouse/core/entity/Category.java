@@ -15,8 +15,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update category t set t.deleted_at = now() where t.category_id = :category_id")
-@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE category SET deleted_at = NOW() WHERE category_id = ?")
+@SQLRestriction("deleted_at is null")
 public class Category extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -34,38 +34,38 @@ public class DeliveryControllerTest extends BaseIntegrationTest {
     @BeforeEach
     void setup() {
     }
-    @Test
-    @DisplayName("배송 등록 성공")
-    void SUCCESS_addDelivery() throws Exception {
-    }
-    @Test
-    @DisplayName("배송 수정 성공")
-    void SUCCESS_updateDelivery() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("배송 조회 성공")
-    void SUCCESS_getDelivery() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("배송 삭제 성공")
-    void SUCCESS_deleteDelivery() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("배송 조회 실패")
-    void FAIL_getDelivery() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("배송 수정 실패")
-    void FAIL_updateDelivery() throws Exception {
-        
-    }
-    @Test
-    @DisplayName("배송 삭제 실패")
-    void FAIL_deleteDelivery() throws Exception {
-        
-    }
+//    @Test
+//    @DisplayName("배송 등록 성공")
+//    void SUCCESS_addDelivery() throws Exception {
+//    }
+//    @Test
+//    @DisplayName("배송 수정 성공")
+//    void SUCCESS_updateDelivery() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("배송 조회 성공")
+//    void SUCCESS_getDelivery() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("배송 삭제 성공")
+//    void SUCCESS_deleteDelivery() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("배송 조회 실패")
+//    void FAIL_getDelivery() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("배송 수정 실패")
+//    void FAIL_updateDelivery() throws Exception {
+//
+//    }
+//    @Test
+//    @DisplayName("배송 삭제 실패")
+//    void FAIL_deleteDelivery() throws Exception {
+//
+//    }
 }

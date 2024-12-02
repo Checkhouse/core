@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE favorite_origin SET deleted_at = NOW() WHERE favorite_origin_id = ?")
+@SQLRestriction("deleted_at is null")
 public class FavoriteOrigin extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

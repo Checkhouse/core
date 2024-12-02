@@ -6,12 +6,16 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
 @Table(name = "inspection_image")
 @Entity
 @Getter
+@SQLDelete(sql = "UPDATE inspection_image SET deleted_at = NOW() WHERE inspection_image_id = ?")
+@SQLRestriction("deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InspectionImage extends BaseTimeEntity {
     @Id
