@@ -59,6 +59,7 @@ public class CollectService {
         Collect collect = Collect.builder()
             .delivery(delivery)
             .usedProduct(usedProduct)
+                .state(DeliveryState.COLLECTING)
             .build();
         Collect savedCollect = collectRepository.save(collect);
         return savedCollect.toDto();

@@ -22,8 +22,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
+import com.checkhouse.core.dto.AddressDTO;
 import com.checkhouse.core.dto.DeliveryDTO;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.UserAddressDTO;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,11 +35,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.UserAddress;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 
 @Slf4j
@@ -52,6 +57,9 @@ public class UsedProductController {
     private final InspectionService inspectionService;
     private final CollectService collectService;
     private final ImageService imageService;
+    private final AddressService addressService;
+    private final UserService userService;
+
     // 중고 상품 등록
     @Operation(summary = "중고 상품 등록")
     @ApiResponses({
@@ -64,20 +72,45 @@ public class UsedProductController {
         @Valid @RequestBody UsedProductRequest.AddUsedProductRequest req
     ) {
         log.info("[중고 상품 등록] request: {}", req);
-        // 1. 중고 상품 등록
-        UsedProductDTO savedProduct = usedProductService.addUsedProduct(req);
+        // JWT에서 사용자 정보 추출
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        UUID sellerId = userService.getUserInfo(userEmail).userId();
 
-        // 2. 배송 정보 생성 - 프론트에서 받은 주소 ID 사용
-        DeliveryDTO delivery = deliveryService.addDelivery(
-            DeliveryRequest.AddDeliveryRequest.builder()
-                .addressId(req.addressId())
+        // 사용자의 주소 목록 조회
+        List<UserAddressDTO> userAddresses = addressService.getAllUserAddressesById(
+            AddressRequest.GetAllUserAddressesByIdRequest.builder()
+                .userId(sellerId)  // JWT에서 추출한 userId 사용
+                .build()
+        );
+        
+        if (userAddresses.isEmpty()) {
+            throw new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND);
+        }
+
+        // 중고 상품 등록
+        UsedProductDTO savedProduct = usedProductService.addUsedProduct(
+            UsedProductRequest.AddUsedProductRequest.builder()
+                .title(req.title())
+                .description(req.description())
+                .price(req.price())
+                .isNegoAllow(req.isNegoAllow())
+                .userId(sellerId)  // JWT에서 추출한 userId 사용
+                .originProductId(req.originProductId())
                 .build()
         );
 
-        // 3. 수거 정보 생성
+        // 배송 정보 생성
+        DeliveryDTO delivery = deliveryService.addDelivery(
+            DeliveryRequest.AddDeliveryRequest.builder()
+                .addressId(userAddresses.get(0).address().addressId())
+                .build()
+        );
+
+        // 수거 정보 생성
         collectService.addCollect(
             CollectRequest.AddCollectRequest.builder()
                 .usedProductId(savedProduct.usedProductId())
+                    .addressId(userAddresses.get(0).address().addressId())
                 .build()
         );
 

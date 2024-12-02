@@ -40,7 +40,9 @@ public class UsedProductService {
                     .originProductId(request.originProductId())
                     .build()
             );
+            log.info("originProduct {}", originProduct);
             User user = userService.findUser(request.userId());
+            log.info("user {}", user);
 
             UsedProduct usedProduct = UsedProduct.builder()
                     .originProduct(originProduct)
@@ -51,6 +53,7 @@ public class UsedProductService {
                     .price(request.price())
                     .isNegoAllow(request.isNegoAllow())
                     .build();
+            log.info("usedProduct {}", usedProduct);
 
             return usedProductRepository.save(usedProduct).toDto();
         } catch(Exception e) {
