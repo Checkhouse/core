@@ -26,27 +26,27 @@ public class SendControllerTest extends BaseIntegrationTest {
 
     }   
     //발송 등록 성공
-    @Test
-    @DisplayName("발송 등록 성공")
-    void addSendSuccess() throws Exception {
-
-    }
-    //발송 상태 업데이트 성공
-    @Test
-    @DisplayName("발송 상태 업데이트 성공")
-    void updateSendStateSuccess() throws Exception {
-
-    }
-    //발송 삭제 성공
-    @Test
-    @DisplayName("발송 삭제 성공")
-    void deleteSendSuccess() throws Exception {
-
-    }
-    //발송 목록 조회 성공
-    @Test
-    @DisplayName("발송 목록 조회 성공")
-    void getSendListSuccess() throws Exception {
-
-    }
+//    @Test
+//    @DisplayName("발송 등록 성공")
+//    void addSendSuccess() throws Exception {
+//
+//    }
+//    //발송 상태 업데이트 성공
+//    @Test
+//    @DisplayName("발송 상태 업데이트 성공")
+//    void updateSendStateSuccess() throws Exception {
+//
+//    }
+//    //발송 삭제 성공
+//    @Test
+//    @DisplayName("발송 삭제 성공")
+//    void deleteSendSuccess() throws Exception {
+//
+//    }
+//    //발송 목록 조회 성공
+//    @Test
+//    @DisplayName("발송 목록 조회 성공")
+//    void getSendListSuccess() throws Exception {
+//
+//    }
 }

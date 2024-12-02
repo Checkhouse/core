@@ -25,39 +25,39 @@ public class InspectionControllerTest {
 
     }
     //검수 등록 성공
-    @Test
-    @DisplayName("검수 등록 성공")
-    void addInspectionSuccess() throws Exception {
-
-    }
-    //검수 상태 업데이트 성공
-    @Test
-    @DisplayName("검수 상태 업데이트 성공")
-    void updateInspectionSuccess() throws Exception {
-
-    }
-    //검수 삭제 성공
-    @Test
-    @DisplayName("검수 삭제 성공")
-    void deleteInspectionSuccess() throws Exception {
-
-    }
-    //검수 설명 수정 성공
-    @Test
-    @DisplayName("검수 설명 수정 성공")
-    void updateInspectionDescriptionSuccess() throws Exception {
-
-    }
-    //검수 리스트 조회 성공
-    @Test
-    @DisplayName("검수 리스트 조회 성공")
-    void getInspectionListSuccess() throws Exception {
-
-    }
-    // todo: 검수 사진 등록 성공
-    @Test
-    @DisplayName("검수 사진 등록 성공")
-    void addInspectionPhotoSuccess() throws Exception {
-
-    }
+//    @Test
+//    @DisplayName("검수 등록 성공")
+//    void addInspectionSuccess() throws Exception {
+//
+//    }
+//    //검수 상태 업데이트 성공
+//    @Test
+//    @DisplayName("검수 상태 업데이트 성공")
+//    void updateInspectionSuccess() throws Exception {
+//
+//    }
+//    //검수 삭제 성공
+//    @Test
+//    @DisplayName("검수 삭제 성공")
+//    void deleteInspectionSuccess() throws Exception {
+//
+//    }
+//    //검수 설명 수정 성공
+//    @Test
+//    @DisplayName("검수 설명 수정 성공")
+//    void updateInspectionDescriptionSuccess() throws Exception {
+//
+//    }
+//    //검수 리스트 조회 성공
+//    @Test
+//    @DisplayName("검수 리스트 조회 성공")
+//    void getInspectionListSuccess() throws Exception {
+//
+//    }
+//    // todo: 검수 사진 등록 성공
+//    @Test
+//    @DisplayName("검수 사진 등록 성공")
+//    void addInspectionPhotoSuccess() throws Exception {
+//
+//    }
 }

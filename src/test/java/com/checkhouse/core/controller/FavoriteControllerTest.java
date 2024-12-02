@@ -27,52 +27,52 @@ public class FavoriteControllerTest {
 
     }
     //origin favorite 등록 성공
-    @Test
-    @DisplayName("origin favorite 등록 성공")
-    void addFavoriteOriginSuccess() throws Exception {
-
-    }
-    //used favorite 등록 성공
-    @Test
-    @DisplayName("used favorite 등록 성공")
-    void addFavoriteUsedSuccess() throws Exception {
-
-    }
-    //origin favorite 삭제 성공
-    @Test
-    @DisplayName("origin favorite 삭제 성공")
-    void removeFavoriteOriginSuccess() throws Exception {
-
-    }
-    //used favorite 삭제 성공
-    @Test
-    @DisplayName("used favorite 삭제 성공")
-    void removeFavoriteUsedSuccess() throws Exception {
-
-    }
-    //origin favorite 조회 성공
-    @Test
-    @DisplayName("origin favorite 조회 성공")
-    void getUserFavoriteOriginsSuccess() throws Exception {
-
-    }
-    //used favorite 조회 성공
-    @Test
-    @DisplayName("used favorite 조회 성공")
-    void getUserFavoriteUsedSuccess() throws Exception {
-
-    }
-    //origin favorite 개수 조회 성공
-    @Test
-    @DisplayName("origin favorite 개수 조회 성공")
-    void getOriginProductFavoriteCountSuccess() throws Exception {
-
-    }
-    //used favorite 개수 조회 성공
-    @Test
-    @DisplayName("used favorite 개수 조회 성공")
-    void getUsedProductFavoriteCountSuccess() throws Exception {
-
-    }
+//    @Test
+//    @DisplayName("origin favorite 등록 성공")
+//    void addFavoriteOriginSuccess() throws Exception {
+//
+//    }
+//    //used favorite 등록 성공
+//    @Test
+//    @DisplayName("used favorite 등록 성공")
+//    void addFavoriteUsedSuccess() throws Exception {
+//
+//    }
+//    //origin favorite 삭제 성공
+//    @Test
+//    @DisplayName("origin favorite 삭제 성공")
+//    void removeFavoriteOriginSuccess() throws Exception {
+//
+//    }
+//    //used favorite 삭제 성공
+//    @Test
+//    @DisplayName("used favorite 삭제 성공")
+//    void removeFavoriteUsedSuccess() throws Exception {
+//
+//    }
+//    //origin favorite 조회 성공
+//    @Test
+//    @DisplayName("origin favorite 조회 성공")
+//    void getUserFavoriteOriginsSuccess() throws Exception {
+//
+//    }
+//    //used favorite 조회 성공
+//    @Test
+//    @DisplayName("used favorite 조회 성공")
+//    void getUserFavoriteUsedSuccess() throws Exception {
+//
+//    }
+//    //origin favorite 개수 조회 성공
+//    @Test
+//    @DisplayName("origin favorite 개수 조회 성공")
+//    void getOriginProductFavoriteCountSuccess() throws Exception {
+//
+//    }
+//    //used favorite 개수 조회 성공
+//    @Test
+//    @DisplayName("used favorite 개수 조회 성공")
+//    void getUsedProductFavoriteCountSuccess() throws Exception {
+//
+//    }
 
 }
