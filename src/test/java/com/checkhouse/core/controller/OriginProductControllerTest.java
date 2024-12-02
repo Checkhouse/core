@@ -46,7 +46,7 @@ public class OriginProductControllerTest extends BaseIntegrationTest {
                 .company("애플")
                 .category(savedCategory)
                 .build();
-        originProductRepository.hardDeleteByNameIfSoftDeleted(originProduct1.getName());
+        // originProductRepository.hardDeleteByNameIfSoftDeleted(originProduct1.getName());
         savedOriginProduct = originProductRepository.saveAndFlush(originProduct1);
     }
 
