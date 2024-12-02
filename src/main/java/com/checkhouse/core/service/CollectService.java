@@ -4,10 +4,12 @@ import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.CollectDTO;
 import com.checkhouse.core.dto.request.CollectRequest;
+import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Collect;
 import com.checkhouse.core.entity.Delivery;
 import com.checkhouse.core.entity.UsedProduct;
 import com.checkhouse.core.entity.enums.DeliveryState;
+import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.CollectRepository;
 import com.checkhouse.core.repository.mysql.DeliveryRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
@@ -28,6 +30,9 @@ public class CollectService {
     private final CollectRepository collectRepository;
     private final DeliveryRepository deliveryRepository;
     private final UsedProductRepository usedProductRepository;
+    private final AddressService addressService;
+    private final AddressRepository addressRepository;
+
     //수거 등록 성공
     public CollectDTO addCollect(CollectRequest.AddCollectRequest req) {
         //존재하지 않는 중고 상품 정보 예외처리
@@ -39,11 +44,14 @@ public class CollectService {
             throw new GeneralException(ErrorStatus._COLLECT_ALREADY_EXISTS);
         }
 
+        Address address = addressRepository.findById(req.addressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
+
         //새로운 배송 정보 생성
         Delivery delivery = Delivery.builder()
             .deliveryId(UUID.randomUUID())
             .deliveryState(DeliveryState.COLLECTING)
-            .address(usedProduct.getAddress())
+            .address(address)
             .build();
         delivery = deliveryRepository.save(delivery);
 

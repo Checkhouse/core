@@ -66,10 +66,6 @@ public class UsedProduct extends BaseTimeEntity {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name="address_id", nullable = false)
-    private Address address;
-
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳
     //----------------------------------------------------------------------------

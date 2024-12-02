@@ -10,7 +10,8 @@ import lombok.Builder;
 public class CollectRequest {
     @Builder
     public record AddCollectRequest(
-        UUID usedProductId
+        UUID usedProductId,
+        UUID addressId
     ) {}
 
     @Builder
