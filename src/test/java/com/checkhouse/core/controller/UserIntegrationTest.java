@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class UserIntegrationTest extends BaseIntegrationTest {
 
-    private static String baseUrl = "/user";
+    private static String baseUrl = "/api/v1/user";
 
     @Autowired
     private UserController userController;
