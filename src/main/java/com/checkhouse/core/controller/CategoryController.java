@@ -3,6 +3,8 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.annotation.security.PermitAll;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api/v1/category")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class CategoryController {
     private final CategoryService categoryService;
     //카테고리 등록
@@ -77,6 +80,7 @@ public class CategoryController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
+    @PreAuthorize("permitAll()")
     public BaseResponse<List<CategoryDTO>> getCategoryList() {
         log.info("[카테고리 조회]");
         return BaseResponse.onSuccess(categoryService.getCategories());

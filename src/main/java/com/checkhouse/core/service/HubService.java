@@ -2,17 +2,25 @@ package com.checkhouse.core.service;
 
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
+import com.checkhouse.core.dto.AddressDTO;
 import com.checkhouse.core.dto.HubDTO;
 import com.checkhouse.core.dto.StockDTO;
 import com.checkhouse.core.entity.Address;
 import com.checkhouse.core.entity.Hub;
 import com.checkhouse.core.entity.Stock;
+import com.checkhouse.core.entity.es.HubDocument;
+import com.checkhouse.core.entity.es.RegionDocument;
+import com.checkhouse.core.entity.es.ZoneDocument;
+import com.checkhouse.core.repository.es.HubDocumentRepository;
+import com.checkhouse.core.repository.es.RegionRepository;
+import com.checkhouse.core.repository.es.ZoneRepository;
 import com.checkhouse.core.repository.mysql.AddressRepository;
 import com.checkhouse.core.repository.mysql.HubRepository;
 import com.checkhouse.core.dto.request.HubRequest;
 import com.checkhouse.core.repository.mysql.StockRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.elasticsearch.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,25 +32,19 @@ public class HubService {
     private final HubRepository hubRepository;
     private final AddressRepository addressRepository;
     private final StockRepository stockRepository;
-
-    public HubDTO addHub(HubRequest.AddHubRequest req) {
-        hubRepository.findHubByName(req.name()).ifPresent(hub -> {
-            throw new GeneralException(ErrorStatus._HUB_ALREADY_EXISTS);
-        });
-        hubRepository.findHubByClusteredId(req.clusteredId()).ifPresent(hub -> {
-            throw new GeneralException(ErrorStatus._HUB_CLUSTERED_ID_ALREADY_EXISTS);
-        });
-        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
+    public HubDTO addHub(HubRequest.AddHubRequest req, AddressDTO addressDTO, int zoneId) {
+        Address address = addressRepository.findById(addressDTO.addressId()).orElseThrow(
                 () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
         );
-
+        // 허브 es 저장
         Hub savedHub = hubRepository.save(
                 Hub.builder()
                         .name(req.name())
-                        .address(addr)
-                        .clusteredId(req.clusteredId())
+                        .address(address)
+                        .clusteredId(zoneId)
                         .build()
         );
+
         return savedHub.toDto();
     }
     public HubDTO updateHub(HubRequest.UpdateHubRequest req) {

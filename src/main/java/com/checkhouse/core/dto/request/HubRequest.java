@@ -1,6 +1,7 @@
 package com.checkhouse.core.dto.request;
 
 import lombok.Builder;
+import org.springframework.data.geo.Point;
 
 import java.util.UUID;
 
@@ -10,7 +11,12 @@ public class HubRequest {
     public record AddHubRequest(
             UUID addressId,
             String name,
-            int clusteredId
+            String address,
+            int zipcode,
+            String phone,
+            String addressDetail,
+            Point location
+
     ) {}
     @Builder
     public record UpdateHubRequest(
@@ -63,5 +69,12 @@ public class HubRequest {
             String area
     ) {}
 
-
+    @Builder
+    public record SaveHubEsRequest(
+            UUID hubId,
+            String name,
+            String address,
+            Double latitude,
+            Double longitude
+    ) {}
 }

@@ -32,11 +32,10 @@ public class AddressService {
 
 
     //주소 추가
-    AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
+    public AddressDTO addAddress(AddressRequest.AddAddressRequest req) {
 
         Address savedAddress = addressRepository.save(
                 Address.builder()
-                        .addressId(req.addressId())
                         .name(req.name())
                         .address(req.address())
                         .zipcode(req.zipcode())
@@ -50,7 +49,7 @@ public class AddressService {
     }
 
     //리스트 가져오기
-    List<AddressDTO> getAllAddresses() {
+    public List<AddressDTO> getAllAddresses() {
         return addressRepository.findAll()
                 .stream()
                 .map(Address::toDto)
@@ -58,7 +57,7 @@ public class AddressService {
     }
 
     //Id로 가져오기
-    AddressDTO getAddressById(AddressRequest.GetAddressByIdRequest req) {
+    public AddressDTO getAddressById(AddressRequest.GetAddressByIdRequest req) {
         Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
@@ -66,7 +65,7 @@ public class AddressService {
     }
 
     //Update
-    AddressDTO updateAddress(AddressRequest.UpdateAddressRequest req) {
+    public AddressDTO updateAddress(AddressRequest.UpdateAddressRequest req) {
         Address modifiedAddress = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
@@ -83,7 +82,7 @@ public class AddressService {
         return modifiedAddress.toDto();
     }
 
-    void deleteAddress(AddressRequest.DeleteAddressRequest req) {
+    public void deleteAddress(AddressRequest.DeleteAddressRequest req) {
         Address address = addressRepository.findById(req.addressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND));
 
@@ -91,7 +90,7 @@ public class AddressService {
     }
 
     //UserAddress
-    UserAddressDTO addUserAddress(AddressRequest.AddUserAddressRequest req) {
+    public UserAddressDTO addUserAddress(AddressRequest.AddUserAddressRequest req) {
         User user = userRepository.findById(req.userId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
@@ -100,7 +99,6 @@ public class AddressService {
 
         Address address = addressRepository.save(
                 Address.builder()
-                        .addressId(UUID.randomUUID())
                         .name(req.name())
                         .address(req.address())
                         .zipcode(req.zipcode())
@@ -119,7 +117,7 @@ public class AddressService {
         );
         return userAddress.toDto();
     }
-    UserAddressDTO updateUserAddressHub(AddressRequest.UpdateUserAddressHubRequest req) {
+    public UserAddressDTO updateUserAddressHub(AddressRequest.UpdateUserAddressHubRequest req) {
         UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
         Hub newhub = hubRepository.findById(req.hubId())
@@ -127,12 +125,12 @@ public class AddressService {
         userAddress.UpdateHub(newhub);
         return userAddress.toDto();
     }
-    UserAddressDTO getUserAddress(AddressRequest.GetUserAddressRequest req) {
+    public UserAddressDTO getUserAddress(AddressRequest.GetUserAddressRequest req) {
         UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
         return userAddress.toDto();
     }
-    List<UserAddressDTO> getAllUserAddressesById(AddressRequest.GetAllUserAddressesByIdRequest req) {
+    public List<UserAddressDTO> getAllUserAddressesById(AddressRequest.GetAllUserAddressesByIdRequest req) {
         UUID userId = req.userId();
         userRepository.findById(userId).orElseThrow(
                 () -> new GeneralException(ErrorStatus._USER_NOT_FOUND)
@@ -142,7 +140,7 @@ public class AddressService {
                 .map(UserAddress::toDto)
                 .collect(Collectors.toList());
     }
-    void deleteUserAddress(AddressRequest.DeleteUserAddressRequest req) {
+    public  void deleteUserAddress(AddressRequest.DeleteUserAddressRequest req) {
         UserAddress userAddress = userAddressRepository.findById(req.userAddressId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND));
         userAddressRepository.delete(userAddress);

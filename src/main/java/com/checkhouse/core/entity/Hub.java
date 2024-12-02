@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update hub t set t.deleted_at = now() where t.hub_id = :hub_id")
+@SQLDelete(sql= "update hub t set t.deleted_at = now() where t.hub_id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Hub extends BaseTimeEntity {
     @Id

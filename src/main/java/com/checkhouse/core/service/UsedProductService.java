@@ -9,9 +9,13 @@ import com.checkhouse.core.entity.OriginProduct;
 import com.checkhouse.core.entity.UsedProduct;
 import com.checkhouse.core.entity.User;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.entity.es.UsedProductDocument;
+import com.checkhouse.core.repository.es.UsedProductDocumentRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +27,7 @@ import java.util.UUID;
 public class UsedProductService {
 
     private final UsedProductRepository usedProductRepository;
+    private final UsedProductDocumentRepository usedProductDocumentRepository;
 
     //service
     private final UserService userService;
@@ -123,6 +128,14 @@ public class UsedProductService {
     public UsedProduct findUsedProduct(UsedProductRequest.GetUsedProductRequest request) {
         return usedProductRepository.findById(request.usedProductId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
+    }
+
+    public List<UsedProductDocument> searchUsedProduct(String query) {
+        return usedProductDocumentRepository.findByTitleContainsIgnoreCase(query);
+    }
+
+    public Page<UsedProductDocument> searchUsedProduct(String query, Pageable pageable) {
+        return usedProductDocumentRepository.findByTitleContainsIgnoreCase(query, pageable);
     }
 
 }

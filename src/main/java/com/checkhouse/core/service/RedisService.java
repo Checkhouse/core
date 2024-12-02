@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -37,5 +38,13 @@ public class RedisService {
         redisTemplate.delete("ACCESS_TOKEN:" + userEmail);
         redisTemplate.delete("REFRESH_TOKEN:" + userEmail);
     }
+    public void createExpireEvent() {
+        // 10초 뒤에 사라지는 redis 생성
+        // 네고 생성 후
+        UUID negoId = UUID.randomUUID();
+        String key = "NEGO:" + negoId.toString();
+        String value = "NEGOEXPIRE";
 
+        redisTemplate.opsForValue().set(key, value, 10, TimeUnit.SECONDS);
+    }
 }

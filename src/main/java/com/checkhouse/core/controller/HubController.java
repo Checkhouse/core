@@ -3,6 +3,12 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.dto.AddressDTO;
+import com.checkhouse.core.dto.request.AddressRequest;
+import com.checkhouse.core.entity.es.HubDocument;
+import com.checkhouse.core.entity.es.ZoneDocument;
+import com.checkhouse.core.service.AddressService;
+import com.checkhouse.core.service.HubEsService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +41,8 @@ import com.checkhouse.core.service.HubService;
 @RequestMapping("/api/v1/hubs")
 public class HubController {
     private final HubService hubService;
+    private final HubEsService hubEsService;
+    private final AddressService addressService;
 
     //허브 등록
     @Operation(summary = "허브 등록")
@@ -44,8 +52,38 @@ public class HubController {
     })
     @PostMapping
     public BaseResponse<HubDTO> addHub(
-        @Valid @RequestBody HubRequest.AddHubRequest req) {
-        HubDTO savedHub = hubService.addHub(req);
+        @Valid @RequestBody HubRequest.AddHubRequest req
+    ) {
+        // 허브 주소 저장
+        AddressDTO address = addressService.addAddress(
+                AddressRequest.AddAddressRequest.builder()
+                        .name(req.name())
+                        .address(req.address())
+                        .zipcode(req.zipcode())
+                        .phone(req.phone())
+                        .addressDetail(req.addressDetail())
+                        .location(req.location())
+                        .build()
+        );
+
+        // 허브 존 할당(실제로는 자동으로 내부에서 지정되어 할당 되어야 함, 현재는 이미 있는 존에 허브를 매핑)
+        ZoneDocument zone = hubEsService.searchZone(req.location().getX(), req.location().getY());
+
+        // 허브 저장
+        HubDTO savedHub = hubService.addHub(req, address, zone.getZoneId());
+
+        // es 저장
+        HubDocument hub = hubEsService.addHub(
+                HubRequest.SaveHubEsRequest.builder()
+                        .hubId(savedHub.hubId())
+                        .name(savedHub.name())
+                        .longitude(req.location().getX())
+                        .latitude(req.location().getY())
+                        .address(req.address() + ' ' + req.addressDetail())
+                        .build(),
+                zone.getZoneId()
+        );
+
         log.info("[허브 등록] request: {}", savedHub);
         return BaseResponse.onSuccess(savedHub);
     }
