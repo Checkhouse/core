@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.geo.Point;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,18 +81,20 @@ public class StoreServiceTest {
     @DisplayName("스토어 저장 성공")
     @Test
     void SUCCESS_addStore() {
-        // 스토어 정보
-        StoreRequest.AddStoreRequest req = new StoreRequest.AddStoreRequest(
-                store1addr.getAddressId(),
-                "정보섬티맥스",
-                "SSUBEST"
-
-        );
+        StoreRequest.AddStoreRequest req = StoreRequest.AddStoreRequest.builder()
+                .name("정보섬티맥스")
+                .address("서울특별시 동작구 상도로 369")
+                .addressDetail("정보과학관 지하 1층")
+                .zipcode(6978)
+                .phone("01012345678")
+                .location(new Point(37.4967, 127.0276))
+                .code("SSUBEST")
+                .build();
 
         // given
+        when(storeRepository.findStoreByName(req.name())).thenReturn(Optional.empty());
+        when(addressRepository.save(any(Address.class))).thenReturn(store1addr);
         when(storeRepository.save(any(Store.class))).thenReturn(store1);
-        when(storeRepository.findStoreByName(store1.getName())).thenReturn(Optional.empty());
-        when(addressRepository.findById(store1addr.getAddressId())).thenReturn(Optional.of(store1addr));
 
         // when
         StoreDTO result = storeService.addStore(req);
@@ -100,8 +103,8 @@ public class StoreServiceTest {
         assertNotNull(result);
         assertEquals("정보섬티맥스", result.name());
         assertEquals("SSUBEST", result.code());
-        assertEquals(store1addr.getAddressId(), result.addressDTO().addressId());;
-        verify(storeRepository, times(1)).findStoreByName("정보섬티맥스");
+        verify(storeRepository, times(1)).findStoreByName(req.name());
+        verify(addressRepository, times(1)).save(any(Address.class));
         verify(storeRepository, times(1)).save(any(Store.class));
     }
 
@@ -160,34 +163,6 @@ public class StoreServiceTest {
         verify(storeRepository, times(1)).findById(storeId);
     }
 
-    @DisplayName("스토어 정보 수정 성공")
-    @Test
-    void SUCCESS_updateStoreName(){
-        // 스토어 정보
-        StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
-                store1.getStoreId(),
-                store2addr.getAddressId(),
-                "정보섬1층"
-        );
-
-        // given
-        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.of(store1));
-        when(addressRepository.findById(store2addr.getAddressId())).thenReturn(Optional.of(store2addr));
-        when(storeRepository.findStoreByName(req.name())).thenReturn(Optional.empty());
-
-        // when
-        StoreDTO result = storeService.updateStore(req);
-
-        // then
-        assertNotNull(result);
-        assertEquals("정보섬1층", result.name());
-        assertEquals("SSUBEST", result.code());
-        assertEquals(store2addr.getAddressId(), result.addressDTO().addressId());
-        verify(storeRepository, times(1)).findById(store1.getStoreId());
-        verify(storeRepository, times(1)).findStoreByName(any());
-        verify(storeRepository, never()).save(any(Store.class));
-    }
-
     @DisplayName("스토어 코드 수정 성공")
     @Test
     void SUCCESS_updateStoreCode(){
@@ -236,95 +211,29 @@ public class StoreServiceTest {
     @Test
     void FAIL_addStore_invalid_address() {
         // 스토어 정보
-        StoreRequest.AddStoreRequest req = new StoreRequest.AddStoreRequest(
-                store1addr.getAddressId(),
-                "정보섬티맥스",
-                "SSUBEST"
-
-        );
+        StoreRequest.AddStoreRequest req = StoreRequest.AddStoreRequest.builder()
+                .name("정보섬티맥스")
+                .address("서울특별시 동작구 상도로 369")
+                .addressDetail("정보과학관 지하 1층")
+                .zipcode(6978)
+                .phone("01012345678")
+                .location(new Point(37.4967, 127.0276))
+                .code("SSUBEST")
+                .build();
 
         // given
         when(storeRepository.findStoreByName(store1.getName())).thenReturn(Optional.empty());
-        when(addressRepository.findById(store1addr.getAddressId())).thenReturn(Optional.empty());
+        when(addressRepository.save(any(Address.class))).thenThrow(new RuntimeException());
 
         // when, then
         GeneralException exception = assertThrows(GeneralException.class, () -> storeService.addStore(req));
 
         assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
         verify(storeRepository, times(1)).findStoreByName(any());
-        verify(addressRepository, times(1)).findById(any());
-    }
-
-    @DisplayName("잘못된 이름의 경우 스토어 정보 수정 실패")
-    @Test
-    void FAIL_updateStore_name() {
-        //FIXME: 무슨뜻일까?
-    }
-    @DisplayName("잘못된 주소의 경우 스토어 정보 수정 실패")
-    @Test
-    void FAIL_updateStore_invalid_address() {
-        // 스토어 정보
-        StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
-                store1.getStoreId(),
-                store1addr.getAddressId(),
-                "test"
-        );
-
-        // given
-        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.of(store1));
-        when(addressRepository.findById(store1addr.getAddressId())).thenReturn(Optional.empty());
-
-        // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> storeService.updateStore(req));
-
-        assertEquals(ErrorStatus._ADDRESS_ID_NOT_FOUND, exception.getCode());
-        verify(storeRepository, times(1)).findById(any());
-        verify(addressRepository, times(1)).findById(any());
-    }
-
-    @DisplayName("존재하지 않는 스토어의 경우 스토어 정보 수정 실패")
-    @Test
-    void FAIL_updateStore_not_found() {
-        // 스토어 정보
-        UUID invalidId = UUID.randomUUID();
-        StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
-                invalidId,
-                store2addr.getAddressId(),
-                "정보섬1층"
-        );
-
-        // given
-        when(storeRepository.findById(invalidId)).thenReturn(Optional.empty());
-
-        // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> storeService.updateStore(req));
-
-        assertEquals(ErrorStatus._STORE_ID_NOT_FOUND, exception.getCode());
-        verify(storeRepository, times(1)).findById(any());
+        verify(addressRepository, times(1)).save(any(Address.class));
         verify(storeRepository, never()).save(any(Store.class));
     }
-    @DisplayName("중복된 스토어가 있을 경우 스토어 정보 수정 실패")
-    @Test
-    void FAIL_updateStore_already_exist() {
-        // 스토어 정보
-        StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
-                store1.getStoreId(),
-                store1addr.getAddressId(),
-                "숭실대 CU"
-        );
 
-        // given
-        when(storeRepository.findById(store1.getStoreId())).thenReturn(Optional.of(store1));
-        when(storeRepository.findStoreByName("숭실대 CU")).thenReturn(Optional.of(store2));
-
-        // when, then
-        GeneralException exception = assertThrows(GeneralException.class, () -> storeService.updateStore(req));
-
-        assertEquals(ErrorStatus._STORE_ALREADY_EXISTS, exception.getCode());
-        verify(storeRepository, times(1)).findById(any());
-        verify(storeRepository, times(1)).findStoreByName(any());
-        verify(storeRepository, never()).save(any(Store.class));
-    }
     @DisplayName("존재하지 않는 스토어의 경우 스토어 코드 수정 실패")
     @Test
     void FAIL_updateStoreCode_not_found() {
@@ -346,8 +255,7 @@ public class StoreServiceTest {
         verify(storeRepository, never()).save(any(Store.class));
     }
 
-
-    @DisplayName("존재하지 않는 스토어의 경우 스토어 삭제 실패")
+    @DisplayName("존재하지 는 스토어의 경우 스토어 삭제 실패")
     @Test
     void FAIL_deleteStore_not_found() {
         // 스토어 정보

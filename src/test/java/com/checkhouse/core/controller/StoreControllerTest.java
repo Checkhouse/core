@@ -167,20 +167,14 @@ public class StoreControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("스토어 추가 성공")
     void addStore_success() throws Exception {
-        Address newAddress = Address.builder()
-            .address("서울시 강남구 역삼동 2")
-            .addressDetail("789번지 101호")
-            .location(new Point(235, 235))
-            .zipcode(12346)
-            .phone("010-9876-5432")
-            .name("test user 2")
-            .build();
-        Address savedNewAddress = addressRepository.saveAndFlush(newAddress);
-
         StoreRequest.AddStoreRequest request = StoreRequest.AddStoreRequest.builder()
             .name("새로운 테스트 스토어")
+            .address("서울시 강남구 역삼동 2")
+            .addressDetail("789번지 101호")
+            .zipcode(12346)
+            .phone("010-9876-5432")
+            .location(new Point(235, 235))
             .code("test code")
-            .addressId(savedNewAddress.getAddressId())
             .build();
 
         mockMvc.perform(
@@ -208,22 +202,6 @@ public class StoreControllerTest extends BaseIntegrationTest {
     void getStores_success() throws Exception {
         mockMvc.perform(
             MockMvcRequestBuilders.get(BASE_URL + "/list")
-        ).andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("스토어 정보 수정 성공")
-    void updateStore_success() throws Exception {
-        StoreRequest.UpdateStoreRequest request = StoreRequest.UpdateStoreRequest.builder()
-            .storeId(savedStore.getStoreId())
-            .addressId(savedAddress.getAddressId())
-            .name("테스트 스토어 수정")
-            .build();
-
-        mockMvc.perform(
-            MockMvcRequestBuilders.patch(BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
         ).andExpect(status().isOk());
     }
 
