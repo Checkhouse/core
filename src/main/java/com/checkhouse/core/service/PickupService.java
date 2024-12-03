@@ -103,7 +103,7 @@ public class PickupService {
 	}
 
 	 public List<PickupDTO> getPickupListForAdmin(PickupRequest.GetPickUpListForAdminRequest request) {
-		return pickupRepository.findByStoreId(request.storeID())
+		return pickupRepository.findByStoreId(request.storeId())
 				.stream()
 				.map(Pickup::toDto)
 				.collect(Collectors.toList());

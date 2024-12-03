@@ -106,10 +106,6 @@ public class PickupController {
 		));
 		log.info("[픽업 상태 변경] request: {}", req);
 		PickupDTO pickup = pickupService.updatePickup(req);
-		// 거래 성공으로 변경
-		transactionService.updateTransactionStatus(new TransactionRequest.UpdateTransactionRequest(
-			pickup.transaction().transactionId()
-		));
 		return BaseResponse.onSuccess(pickup);
 	}
 

@@ -27,4 +27,8 @@ public class TransactionRequest {
 	public record GetTransactionsForAdminRequest(
 		UUID adminId
 	){ }
+	@Builder
+	public record GetPurchasedProductsRequest(
+		UUID userId
+	){ }
 }

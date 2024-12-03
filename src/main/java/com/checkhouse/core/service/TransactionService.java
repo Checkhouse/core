@@ -2,9 +2,11 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 
+import com.checkhouse.core.dto.PurchasedProductDTO;
 import com.checkhouse.core.dto.TransactionDTO;
 import com.checkhouse.core.dto.request.TransactionRequest;
 import com.checkhouse.core.entity.Transaction;
+import com.checkhouse.core.entity.UsedImage;
 import com.checkhouse.core.entity.UsedProduct;
 import com.checkhouse.core.entity.User;
 import com.checkhouse.core.entity.enums.Role;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static java.lang.System.*;
 
 @Slf4j
 @Service
@@ -100,6 +104,19 @@ public class TransactionService {
 
 		return transactionRepository.findAll()
 				.stream()
+				.map(Transaction::toDto)
+				.collect(Collectors.toList());
+	}
+
+	public List<TransactionDTO> getPurchasedProducts(TransactionRequest.GetPurchasedProductsRequest request) {
+		// 구매자 확인
+		User buyer = userRepository.findById(request.userId())
+				.orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+		List<Transaction> transactions = transactionRepository.findPurchasedProductsByUserId(buyer.getUserId());
+
+		log.info("Transactions found: {}", transactions);
+		System.out.println("Transactions found: " + transactions.toString());
+		return transactions.stream()
 				.map(Transaction::toDto)
 				.collect(Collectors.toList());
 	}
