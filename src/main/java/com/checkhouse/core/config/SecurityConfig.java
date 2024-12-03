@@ -8,6 +8,7 @@ import com.checkhouse.core.security.oauth2.handler.OAuth2AuthenticationSuccessHa
 import com.checkhouse.core.security.oauth2.service.CustomOAuth2UserService;
 import com.checkhouse.core.service.RedisService;
 import com.checkhouse.core.util.JwtUtil;
+import io.jsonwebtoken.lang.Arrays;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -47,7 +49,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
 
     @Value("${cors.allowed-origins.${spring.profiles.active}}")
-    private List<String> allowOriginList;
+    private ArrayList<String> allowOriginList;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -56,8 +58,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.formLogin(AbstractHttpConfigurer::disable);
@@ -95,14 +95,17 @@ public class SecurityConfig {
                         .failureHandler(oAuth2AuthenticationFailureHandler)
         );
 
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
         return http.build();
     }
 
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        configuration.setAllowedOrigins(allowOriginList); // 허용할 Origin 추가
+
+        log.info("{}", allowOriginList);
+        configuration.setAllowedOrigins(List.of("*")); // 허용할 Origin 추가
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -110,6 +113,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
     @Bean
