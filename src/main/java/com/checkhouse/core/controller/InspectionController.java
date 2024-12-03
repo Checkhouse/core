@@ -95,4 +95,18 @@ public class InspectionController {
                 .build()
         ));
     }
+
+    // 검수 삭제
+    @Operation(summary = "검수 삭제")
+    @DeleteMapping("/{inspectionId}")
+    public BaseResponse<Void> deleteInspection(
+        @PathVariable UUID inspectionId
+    ) {
+        inspectionService.deleteInspection(
+            InspectionRequest.DeleteInspectionRequest.builder()
+                .inspectionId(inspectionId)
+                .build()
+        );
+        return BaseResponse.onSuccess(null);
+    }
 }
