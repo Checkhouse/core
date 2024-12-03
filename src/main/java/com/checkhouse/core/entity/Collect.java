@@ -47,7 +47,7 @@ public class Collect extends BaseTimeEntity {
         nullable=false
         )
     @Enumerated(EnumType.STRING)
-    private DeliveryState state = DeliveryState.COLLECTING;
+    private DeliveryState state = DeliveryState.PRE_COLLECT;
 
 
     //----------------------------------------------------------------------------

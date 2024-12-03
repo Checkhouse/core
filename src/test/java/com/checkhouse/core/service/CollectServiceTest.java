@@ -99,7 +99,7 @@ public class CollectServiceTest {
             .collectId(UUID.randomUUID())
             .usedProduct(usedProduct1)
             .delivery(delivery1)
-            .state(DeliveryState.COLLECTING)
+            .state(DeliveryState.PRE_COLLECT)
             .build();
 
         usedProduct2 = UsedProduct.builder()
@@ -129,7 +129,7 @@ public class CollectServiceTest {
         Delivery updatedDelivery = Delivery.builder()
             .deliveryId(delivery1.getDeliveryId())
             .address(delivery1.getAddress())
-            .deliveryState(DeliveryState.COLLECTING)
+            .deliveryState(DeliveryState.PRE_COLLECT)
             .build();
 
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
@@ -151,7 +151,7 @@ public class CollectServiceTest {
     void SUCCESS_updateCollectState() {
         // given
         UUID collectId = collect1.getCollectId();
-        DeliveryState newState = DeliveryState.COLLECTING;
+        DeliveryState newState = DeliveryState.PRE_COLLECT;
         
         UpdateCollectRequest req = UpdateCollectRequest.builder()
             .collectId(collectId)

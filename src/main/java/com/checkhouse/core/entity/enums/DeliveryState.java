@@ -6,9 +6,12 @@ public enum DeliveryState {
     DELIVERING, //배송 중
     DELIVERED, //배송 완료
     //수거
-    COLLECTING, //수거 전
+    PRE_COLLECT, //수거 전
+    // COLLECTING, //수거 중
+    COLLECTED, //수거 완료
     //발송
-    SENDING //발송 전
+    PRE_SEND, //발송 전
+    // SENDING, //발송 중
+    SENT, //발송 완료
 ;
-
 }

@@ -158,7 +158,7 @@ public class DeliveryServiceTest {
         //given
         DeliveryRequest.UpdateDeliveryStateRequest req = new DeliveryRequest.UpdateDeliveryStateRequest(
             del1.getDeliveryId(),
-            DeliveryState.COLLECTING
+            DeliveryState.PRE_COLLECT
         );
         //then
         assertThrows(GeneralException.class, () -> deliveryService.updateDeliveryState(req));
