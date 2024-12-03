@@ -31,6 +31,6 @@ public class PickupRequest {
 
 	@Builder
 	public record GetPickUpListForAdminRequest(
-			UUID storeID
+			UUID storeId
 	){ }
 }
