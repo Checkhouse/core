@@ -93,10 +93,12 @@ public class StoreController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @DeleteMapping
-    public BaseResponse<Void> deleteStore(
-        @Valid @RequestBody StoreRequest.DeleteStoreRequest req) {
-        log.info("[스토어 삭제] request: {}", req);
-        storeService.deleteStore(req);
+    public BaseResponse<Void> deleteStore(@RequestParam UUID storeId) {
+        storeService.deleteStore(
+            StoreRequest.DeleteStoreRequest.builder()
+                .storeId(storeId)
+                .build()
+        );
         return BaseResponse.onSuccess(null);
     }
 }
