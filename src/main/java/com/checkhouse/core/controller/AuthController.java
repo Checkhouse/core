@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final UserRepository userRepository;
     private final RedisService redisService;
+
     @PostMapping("/signin")
     public String signin(
             @Valid @RequestBody AuthRequest.SigninRequest req

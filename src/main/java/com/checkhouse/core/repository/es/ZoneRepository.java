@@ -10,7 +10,7 @@ public interface ZoneRepository extends ElasticsearchRepository<ZoneDocument, In
     @Query("""
             {
                  "terms": {
-                   "areasIds": [?0]
+                   "areaIds": [?0]
                  }
              }
             """)

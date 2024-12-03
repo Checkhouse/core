@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.*;
-import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.entity.*;
+import com.checkhouse.core.repository.mysql.UsedImageRepository;
+import com.checkhouse.core.repository.mysql.UserAddressRepository;
 import com.checkhouse.core.service.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,8 +42,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.checkhouse.core.entity.enums.UsedProductState;
-import com.checkhouse.core.entity.User;
-import com.checkhouse.core.entity.UserAddress;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 
 @Slf4j
@@ -53,12 +53,12 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 public class UsedProductController {
     private final UsedProductService usedProductService;
     private final OriginProductService originProductService;
-    private final DeliveryService deliveryService;
-    private final InspectionService inspectionService;
     private final CollectService collectService;
     private final ImageService imageService;
     private final AddressService addressService;
     private final UserService userService;
+    private final UserAddressRepository userAddressRepository;
+    private final UsedImageRepository usedImageRepository;
 
     // 중고 상품 등록
     @Operation(summary = "중고 상품 등록")
@@ -77,40 +77,28 @@ public class UsedProductController {
         UUID sellerId = userService.getUserInfo(userEmail).userId();
 
         // 사용자의 주소 목록 조회
-        List<UserAddressDTO> userAddresses = addressService.getAllUserAddressesById(
-            AddressRequest.GetAllUserAddressesByIdRequest.builder()
-                .userId(sellerId)  // JWT에서 추출한 userId 사용
-                .build()
-        );
-        
-        if (userAddresses.isEmpty()) {
-            throw new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND);
-        }
+        AddressDTO addressDTO = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND))
+                .getAddress().toDto();
 
         // 중고 상품 등록
-        UsedProductDTO savedProduct = usedProductService.addUsedProduct(
-            UsedProductRequest.AddUsedProductRequest.builder()
-                .title(req.title())
-                .description(req.description())
-                .price(req.price())
-                .isNegoAllow(req.isNegoAllow())
-                .userId(sellerId)  // JWT에서 추출한 userId 사용
-                .originProductId(req.originProductId())
-                .build()
-        );
+        UsedProductDTO savedProduct = usedProductService.addUsedProduct(req);
 
-        // 배송 정보 생성
-        DeliveryDTO delivery = deliveryService.addDelivery(
-            DeliveryRequest.AddDeliveryRequest.builder()
-                .addressId(userAddresses.get(0).address().addressId())
-                .build()
-        );
+        // 이미지 추가
+        for (String i : req.usedImageList()) {
+            imageService.addUsedImage(
+                    ImageRequest.AddUsedImageRequest.builder()
+                            .usedProductId(savedProduct.usedProductId())
+                            .imageURL(i)
+                            .build()
+            );
+        }
 
         // 수거 정보 생성
         collectService.addCollect(
             CollectRequest.AddCollectRequest.builder()
                 .usedProductId(savedProduct.usedProductId())
-                    .addressId(userAddresses.get(0).address().addressId())
+                    .addressId(addressDTO.addressId())
                 .build()
         );
 
