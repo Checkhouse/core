@@ -3,6 +3,9 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.dto.ImageDTO;
+import com.checkhouse.core.dto.UsedImageDTO;
+import com.checkhouse.core.entity.Inspection;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,10 +44,22 @@ public class InspectionController {
     // QR 스캔 후 검수 시작
     @Operation(summary = "검수 등록 (QR 스캔 후)")
     @PostMapping("/start")
-    public BaseResponse<InspectionDTO> startInspection(
+    public BaseResponse<InspectionRequest.StartInspectionResponse> startInspection(
         @Valid @RequestBody InspectionRequest.AddInspectionRequest req
     ) {
-        return BaseResponse.onSuccess(inspectionService.addInspection(req));
+        InspectionDTO inspectionDTO = inspectionService.addInspection(req);
+        List<UsedImageDTO> imagelist = imageService.getUsedImagesByUsedId(
+                ImageRequest.GetUsedImagesByUsedIdRequest.builder()
+                        .usedProductId(req.usedProductId())
+                        .build()
+        );
+
+        return BaseResponse.onSuccess(InspectionRequest.StartInspectionResponse.builder()
+                .inspectionId(inspectionDTO.inspectionId())
+                .usedProductName(inspectionDTO.usedProductDTO().title())
+                .usedProductDescription(inspectionDTO.usedProductDTO().description())
+                .usedImages(imagelist)
+                .build());
     }
 
     // 검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트
