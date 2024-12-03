@@ -105,7 +105,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         log.info("{}", allowOriginList);
-        configuration.setAllowedOrigins(List.of("*")); // 허용할 Origin 추가
+        configuration.setAllowedOrigins(allowOriginList); // 허용할 Origin 추가
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

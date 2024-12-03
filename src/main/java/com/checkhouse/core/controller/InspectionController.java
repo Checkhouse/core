@@ -3,6 +3,13 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.dto.ImageDTO;
+import com.checkhouse.core.dto.UsedImageDTO;
+import com.checkhouse.core.dto.request.UsedProductRequest;
+import com.checkhouse.core.entity.Inspection;
+import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.service.CollectService;
+import com.checkhouse.core.service.UsedProductService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,14 +44,28 @@ import jakarta.validation.Valid;
 public class InspectionController {
     private final InspectionService inspectionService;
     private final ImageService imageService;
+    private final UsedProductService usedProductService;
+    private final CollectService collectService;
 
     // QR 스캔 후 검수 시작
     @Operation(summary = "검수 등록 (QR 스캔 후)")
     @PostMapping("/start")
-    public BaseResponse<InspectionDTO> startInspection(
+    public BaseResponse<InspectionRequest.StartInspectionResponse> startInspection(
         @Valid @RequestBody InspectionRequest.AddInspectionRequest req
     ) {
-        return BaseResponse.onSuccess(inspectionService.addInspection(req));
+        InspectionDTO inspectionDTO = inspectionService.addInspection(req);
+        List<UsedImageDTO> imagelist = imageService.getUsedImagesByUsedId(
+                ImageRequest.GetUsedImagesByUsedIdRequest.builder()
+                        .usedProductId(req.usedProductId())
+                        .build()
+        );
+        // TODO: Collect 상태 업데이트
+        return BaseResponse.onSuccess(InspectionRequest.StartInspectionResponse.builder()
+                .inspectionId(inspectionDTO.inspectionId())
+                .usedProductName(inspectionDTO.usedProductDTO().title())
+                .usedProductDescription(inspectionDTO.usedProductDTO().description())
+                .usedImages(imagelist)
+                .build());
     }
 
     // 검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트
@@ -73,6 +94,19 @@ public class InspectionController {
         );
         
         // 검수 상태 업데이트
+        InspectionDTO inspection = inspectionService.updateInspection(
+                InspectionRequest.UpdateInspectionRequest.builder()
+                        .inspectionId(req.inspectionId())
+                        .isDone(true)
+                        .build());
+        usedProductService.updateUsedProductStatus(
+                UsedProductRequest.UpdateUsedProductState.builder()
+                        .usedProductId(inspection.usedProductDTO().usedProductId())
+                        .status(UsedProductState.ON_SALE)
+                        .build());
+        //TODO: ES 검색 상태 변경
+
+        return BaseResponse.onSuccess(inspection);
         return BaseResponse.onSuccess(
             inspectionService.updateInspectionState(
                 InspectionRequest.UpdateInspectionStateRequest.builder()
