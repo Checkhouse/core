@@ -8,6 +8,7 @@ import com.checkhouse.core.dto.UsedImageDTO;
 import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.Inspection;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.service.CollectService;
 import com.checkhouse.core.service.UsedProductService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +45,7 @@ public class InspectionController {
     private final InspectionService inspectionService;
     private final ImageService imageService;
     private final UsedProductService usedProductService;
+    private final CollectService collectService;
 
     // QR 스캔 후 검수 시작
     @Operation(summary = "검수 등록 (QR 스캔 후)")
@@ -57,7 +59,7 @@ public class InspectionController {
                         .usedProductId(req.usedProductId())
                         .build()
         );
-
+        // TODO: Collect 상태 업데이트
         return BaseResponse.onSuccess(InspectionRequest.StartInspectionResponse.builder()
                 .inspectionId(inspectionDTO.inspectionId())
                 .usedProductName(inspectionDTO.usedProductDTO().title())
