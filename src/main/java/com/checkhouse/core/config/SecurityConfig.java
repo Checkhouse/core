@@ -84,6 +84,7 @@ public class SecurityConfig {
                                 .requestMatchers(antMatcher("swagger-resources/**")).permitAll()
                                 .requestMatchers(antMatcher("/api-docs")).permitAll()
                                 .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
+                                .requestMatchers(antMatcher("/api/v1/auth/**")).permitAll()
                                 .anyRequest().authenticated()
         );
 
@@ -119,7 +120,8 @@ public class SecurityConfig {
                         "swagger-ui/**",
                         "/swagger-ui.html",
                         "swagger-resources/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                        "/api/v1/auth/**"
                 );
     }
 }

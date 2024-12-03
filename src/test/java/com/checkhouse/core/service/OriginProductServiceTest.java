@@ -6,6 +6,7 @@ import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.entity.es.OriginProductDocument;
 import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.OriginProductRepository;
 import org.junit.jupiter.api.*;
@@ -214,7 +215,7 @@ public class OriginProductServiceTest {
         // given
         String keyword = "origin";
         // when
-        List<OriginProductDTO> result = originProductService.searchOriginProducts(
+        List<OriginProductDocument> result = originProductService.searchOriginProducts(
             OriginProductRequest.SearchOriginProductsRequest.builder()
                 .build()
         );
