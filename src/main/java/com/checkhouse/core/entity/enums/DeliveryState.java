@@ -1,5 +1,7 @@
 package com.checkhouse.core.entity.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum DeliveryState {
     //배송
     PRE_DELIVERY, //배송 전
@@ -12,6 +14,11 @@ public enum DeliveryState {
     //발송
     PRE_SEND, //발송 전
     // SENDING, //발송 중
-    SENT, //발송 완료
-;
+    SENT //발송 완료
+    ;
+
+    @JsonCreator
+    public static DeliveryState fromString(String state) {
+        return DeliveryState.valueOf(state.toUpperCase());
+    }
 }
