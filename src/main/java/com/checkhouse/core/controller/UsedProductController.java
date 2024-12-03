@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 
 import com.checkhouse.core.dto.OriginProductDTO;
 import com.checkhouse.core.dto.request.*;
-import com.checkhouse.core.entity.OriginProduct;
+import com.checkhouse.core.entity.*;
+import com.checkhouse.core.repository.mysql.UsedImageRepository;
+import com.checkhouse.core.repository.mysql.UserAddressRepository;
 import com.checkhouse.core.service.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,8 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
+import com.checkhouse.core.dto.AddressDTO;
 import com.checkhouse.core.dto.DeliveryDTO;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.UserAddressDTO;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,11 +37,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.checkhouse.core.entity.enums.UsedProductState;
-import com.checkhouse.core.entity.User;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 
 @Slf4j
@@ -48,10 +53,13 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 public class UsedProductController {
     private final UsedProductService usedProductService;
     private final OriginProductService originProductService;
-    private final DeliveryService deliveryService;
-    private final InspectionService inspectionService;
     private final CollectService collectService;
     private final ImageService imageService;
+    private final AddressService addressService;
+    private final UserService userService;
+    private final UserAddressRepository userAddressRepository;
+    private final UsedImageRepository usedImageRepository;
+
     // 중고 상품 등록
     @Operation(summary = "중고 상품 등록")
     @ApiResponses({
@@ -64,20 +72,33 @@ public class UsedProductController {
         @Valid @RequestBody UsedProductRequest.AddUsedProductRequest req
     ) {
         log.info("[중고 상품 등록] request: {}", req);
-        // 1. 중고 상품 등록
+        // JWT에서 사용자 정보 추출
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        UUID sellerId = userService.getUserInfo(userEmail).userId();
+
+        // 사용자의 주소 목록 조회
+        AddressDTO addressDTO = userAddressRepository.findById(req.userAddressId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_ADDRESS_ID_NOT_FOUND))
+                .getAddress().toDto();
+
+        // 중고 상품 등록
         UsedProductDTO savedProduct = usedProductService.addUsedProduct(req);
 
-        // 2. 배송 정보 생성 - 프론트에서 받은 주소 ID 사용
-        DeliveryDTO delivery = deliveryService.addDelivery(
-            DeliveryRequest.AddDeliveryRequest.builder()
-                .addressId(req.addressId())
-                .build()
-        );
+        // 이미지 추가
+        for (String i : req.usedImageList()) {
+            imageService.addUsedImage(
+                    ImageRequest.AddUsedImageRequest.builder()
+                            .usedProductId(savedProduct.usedProductId())
+                            .imageURL(i)
+                            .build()
+            );
+        }
 
-        // 3. 수거 정보 생성
+        // 수거 정보 생성
         collectService.addCollect(
             CollectRequest.AddCollectRequest.builder()
                 .usedProductId(savedProduct.usedProductId())
+                    .addressId(addressDTO.addressId())
                 .build()
         );
 

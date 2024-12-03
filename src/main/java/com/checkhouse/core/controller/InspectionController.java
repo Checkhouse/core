@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.dto.InspectionDTO;
+import com.checkhouse.core.dto.InspectionImageDTO;
+import com.checkhouse.core.dto.request.ImageRequest;
 import com.checkhouse.core.dto.request.InspectionRequest;
 import com.checkhouse.core.service.InspectionService;
 import com.checkhouse.core.service.ImageService;
@@ -45,43 +47,40 @@ public class InspectionController {
         return BaseResponse.onSuccess(inspectionService.addInspection(req));
     }
 
-    // todo: 검수 이미지 등록
-    // @Operation(summary = "검수 이미지 등록")
-    // @PostMapping("/{inspectionId}/images")
-    // public BaseResponse<InspectionDTO> addInspectionImages(
-    //     @PathVariable UUID inspectionId,
-    //     @Valid @RequestBody InspectionRequest.AddInspectionImagesRequest req
-    // ) {
-    //     return BaseResponse.onSuccess(inspectionService.addInspectionImages(inspectionId, req));
-    // }
-
-    // 검수 노트(설명) 작성
-    @Operation(summary = "검수완료 후 노트 작성")
-    @PatchMapping("/{inspectionId}/description")
-    public BaseResponse<InspectionDTO> updateInspectionDescription(
-        @PathVariable UUID inspectionId,
-        @Valid @RequestBody InspectionRequest.UpdateInspectionDescriptionRequest req
+    // 검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트
+    @Operation(summary = "검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트")
+    @PostMapping("/finish")
+    public BaseResponse<InspectionDTO> addInspectionImages(
+        @Valid @RequestBody InspectionRequest.AddInspectionImagesRequest req
     ) {
-        return BaseResponse.onSuccess(inspectionService.updateInspectionDescription(
+        // 검수 이미지들 등록
+        for (int i = 0; i < req.imageURL().size(); i++) {
+            imageService.addInspectionImage(
+                ImageRequest.AddInspectionImageRequest.builder()
+                    .inspectionId(req.inspectionId())
+                    .imageURL(req.imageURL().get(i))
+                    .usedImageId(req.usedImageId().get(i))
+                    .build()
+            );
+        }
+        
+        // 검수 노트 업데이트
+        inspectionService.updateInspectionDescription(
             InspectionRequest.UpdateInspectionDescriptionRequest.builder()
-                .inspectionId(inspectionId)
+                .inspectionId(req.inspectionId())
                 .description(req.description())
                 .build()
-        ));
-    }
-    // 검수 완료 후 상태 업데이트
-    @Operation(summary = "검수 완료 후 상태 업데이트")
-    @PatchMapping("/{inspectionId}/complete")
-    public BaseResponse<InspectionDTO> updateInspectionState(
-        @PathVariable UUID inspectionId,
-        @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req
-    ) {
-        return BaseResponse.onSuccess(inspectionService.updateInspection(
-            InspectionRequest.UpdateInspectionRequest.builder()
-                .inspectionId(inspectionId)
-                .isDone(req.isDone())
-                .build()
-        ));
+        );
+        
+        // 검수 상태 업데이트
+        return BaseResponse.onSuccess(
+            inspectionService.updateInspection(
+                InspectionRequest.UpdateInspectionRequest.builder()
+                    .inspectionId(req.inspectionId())
+                    .isDone(true)
+                    .build()
+            )
+        );
     }
 
     // 검수 리스트 조회
@@ -90,7 +89,10 @@ public class InspectionController {
     public BaseResponse<List<InspectionDTO>> getInspectionList(
         @RequestParam UUID usedProductId
     ) {
-        InspectionRequest.GetInspectionListRequest req = new InspectionRequest.GetInspectionListRequest(usedProductId);
-        return BaseResponse.onSuccess(inspectionService.getInspectionList(req));
+        return BaseResponse.onSuccess(inspectionService.getInspectionList(
+            InspectionRequest.GetInspectionListRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        ));
     }
 }

@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api/v1/category")
 @RequiredArgsConstructor
-@PreAuthorize("isAuthenticated()")
 public class CategoryController {
     private final CategoryService categoryService;
     //카테고리 등록
@@ -80,7 +79,6 @@ public class CategoryController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping
-    @PreAuthorize("permitAll()")
     public BaseResponse<List<CategoryDTO>> getCategoryList() {
         log.info("[카테고리 조회]");
         return BaseResponse.onSuccess(categoryService.getCategories());

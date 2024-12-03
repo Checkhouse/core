@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.checkhouse.core.entity.es.OriginProductDocument;
+import com.checkhouse.core.repository.es.OriginProductDocumentRepository;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -46,6 +50,7 @@ public class OriginProductController {
     private final OriginProductService originProductService;
     private final ImageService imageService;
     private final CollectService collectService;
+    private final OriginProductDocumentRepository originProductDocumentRepository;
     //원본 상품 등록
     @Operation(summary = "원본 상품 등록")
     @ApiResponses({
@@ -69,6 +74,13 @@ public class OriginProductController {
                 );
             });
         }
+
+        originProductDocumentRepository.save(OriginProductDocument.builder()
+                .originProductId(savedProduct.originProductId().toString())
+                .title(savedProduct.name())
+                .build()
+        );
+
         
         log.info("[원본 상품 등록] request: {}", savedProduct);
         return BaseResponse.onSuccess(savedProduct);
@@ -169,8 +181,9 @@ public class OriginProductController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/search")
-    public BaseResponse<List<OriginProductDTO>> searchOriginProducts(
-        @RequestParam("query") String query) {
+    public BaseResponse<List<OriginProductDocument>> searchOriginProducts(
+        @RequestParam("query") String query
+    ) {
         log.info("[원본 상품 검색] request: {}", query);
         return BaseResponse.onSuccess(originProductService.searchOriginProducts(
             OriginProductRequest.SearchOriginProductsRequest.builder()

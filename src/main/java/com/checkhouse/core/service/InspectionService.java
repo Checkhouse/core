@@ -73,8 +73,6 @@ public class InspectionService {
         inspection.updateInspectionState(true);
         return inspectionRepository.save(inspection).toDto();
     }
-    // 검수 사진 등록(상태 업데이트)
-    // todo: imageservice에서 사진 가져오기
     
     // 검수 리스트 조회(관리자)
     public List<InspectionDTO> getInspectionList(

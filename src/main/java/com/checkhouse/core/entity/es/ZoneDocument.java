@@ -18,5 +18,5 @@ public class ZoneDocument {
     @Id
     private Integer zoneId;
 
-    private List<Integer> areasIds;
+    private List<Integer> areaIds;
 }

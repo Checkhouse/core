@@ -68,6 +68,7 @@ public class HubController {
 
         // 허브 존 할당(실제로는 자동으로 내부에서 지정되어 할당 되어야 함, 현재는 이미 있는 존에 허브를 매핑)
         ZoneDocument zone = hubEsService.searchZone(req.location().getX(), req.location().getY());
+        log.info(zone.toString());
 
         // 허브 저장
         HubDTO savedHub = hubService.addHub(req, address, zone.getZoneId());

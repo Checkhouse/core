@@ -3,14 +3,15 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.request.ImageRequest;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
-import com.checkhouse.core.entity.OriginProduct;
-import com.checkhouse.core.entity.UsedProduct;
-import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.entity.es.UsedProductDocument;
 import com.checkhouse.core.repository.es.UsedProductDocumentRepository;
+import com.checkhouse.core.repository.mysql.AddressRepository;
+import com.checkhouse.core.repository.mysql.UsedImageRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,12 @@ public class UsedProductService {
 
     private final UsedProductRepository usedProductRepository;
     private final UsedProductDocumentRepository usedProductDocumentRepository;
+    private final UsedImageRepository usedImageRepository;
 
     //service
     private final UserService userService;
     private final OriginProductService originProductService;
+    private final AddressRepository addressRepository;
 
     public UsedProductDTO addUsedProduct(UsedProductRequest.AddUsedProductRequest request) {
         try {
@@ -40,7 +43,9 @@ public class UsedProductService {
                     .originProductId(request.originProductId())
                     .build()
             );
+            log.info("originProduct {}", originProduct);
             User user = userService.findUser(request.userId());
+            log.info("user {}", user);
 
             UsedProduct usedProduct = UsedProduct.builder()
                     .originProduct(originProduct)
@@ -51,6 +56,9 @@ public class UsedProductService {
                     .price(request.price())
                     .isNegoAllow(request.isNegoAllow())
                     .build();
+            log.info("usedProduct {}", usedProduct);
+
+
 
             return usedProductRepository.save(usedProduct).toDto();
         } catch(Exception e) {

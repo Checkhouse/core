@@ -9,7 +9,6 @@ public class HubRequest {
 
     @Builder
     public record AddHubRequest(
-            UUID addressId,
             String name,
             String address,
             int zipcode,

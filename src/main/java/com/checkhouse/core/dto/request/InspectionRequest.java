@@ -1,8 +1,10 @@
 package com.checkhouse.core.dto.request;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.lang.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.checkhouse.core.dto.UserDTO;
 
@@ -37,6 +39,14 @@ public class InspectionRequest {
     @Builder
     public record GetInspectionListRequest(
         UUID usedProductId
+    ) {}
+
+    @Builder
+    public record AddInspectionImagesRequest(
+        UUID inspectionId,
+        List<String> imageURL,
+        List<UUID> usedImageId,
+        String description
     ) {}
 
 }

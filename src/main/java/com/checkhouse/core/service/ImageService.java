@@ -139,7 +139,7 @@ public class ImageService {
         usedImageRepository.delete(usedImage);
     }
 
-    InspectionImageDTO addInspectionImage(ImageRequest.AddInspectionImageRequest req) {
+    public InspectionImageDTO addInspectionImage(ImageRequest.AddInspectionImageRequest req) {
         // 검수 ID 유효성 검사
         Inspection inspection = inspectionRepository.findById(req.inspectionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
@@ -182,12 +182,12 @@ public class ImageService {
         return inspectionImage.toDto();
     }
 
-    InspectionImageDTO getInspectionImage(ImageRequest.GetInspectionImageRequest req) {
+    public InspectionImageDTO getInspectionImage(ImageRequest.GetInspectionImageRequest req) {
         InspectionImage inspectionImage = inspectionImageRepository.findById(req.inspectionImageId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND));
         return inspectionImage.toDto();
     }
-    InspectionImageDTO getInspectionImageByUsedImageId(ImageRequest.GetInspectionImageByUsedImageIdRequest req) {
+    public InspectionImageDTO getInspectionImageByUsedImageId(ImageRequest.GetInspectionImageByUsedImageIdRequest req) {
         usedImageRepository.findById(req.usedImageId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_IMAGE_ID_NOT_FOUND));
 
@@ -196,14 +196,14 @@ public class ImageService {
 
         return inspectionImage.toDto();
     }
-    List<InspectionImageDTO> getInspectionImagesByInspectionId(ImageRequest.GetInspectionImagesByInspectionIdRequest req) {
+    public List<InspectionImageDTO> getInspectionImagesByInspectionId(ImageRequest.GetInspectionImagesByInspectionIdRequest req) {
         Inspection inspection = inspectionRepository.findById(req.inspectionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
 
         List<InspectionImage> inspectionImages = inspectionImageRepository.findInspectionImagesByInspectionInspectionId(req.inspectionId());
         return inspectionImages.stream().map(InspectionImage::toDto).toList();
     }
-    void deleteInspectionImage(ImageRequest.DeleteInspectionImageRequest req) {
+    public void deleteInspectionImage(ImageRequest.DeleteInspectionImageRequest req) {
         InspectionImage inspectionImage = inspectionImageRepository.findById(req.inspectionId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_IMAGE_ID_NOT_FOUND));
         inspectionImageRepository.delete(inspectionImage);
