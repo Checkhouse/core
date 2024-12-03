@@ -22,8 +22,7 @@ public class InspectionRequest {
 
     @Builder
     public record UpdateInspectionStateRequest(
-        UUID inspectionId,
-        boolean isDone
+        UUID inspectionId
     ) {}
 
     @Builder

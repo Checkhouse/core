@@ -35,4 +35,9 @@ public class CollectRequest {
         UUID collectId
     ) {}
 
+    @Builder
+    public record GetCollectByUsedProductRequest(
+        UUID usedProductId
+    ) {}
+
 }

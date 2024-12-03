@@ -67,9 +67,11 @@ public class InspectionService {
     ) {
         Inspection inspection = inspectionRepository.findById(req.inspectionId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));
+
         if (inspection.isDone()) {
             throw new GeneralException(ErrorStatus._INSPECTION_ALREADY_DONE);
         }
+
         inspection.updateInspectionState(true);
         return inspectionRepository.save(inspection).toDto();
     }

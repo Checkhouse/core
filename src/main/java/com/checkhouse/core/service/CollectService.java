@@ -73,7 +73,7 @@ public class CollectService {
         return updatedCollect.toDto();
     }
     // 수거 완료
-    // todo 검수 시작시에 호출
+    // 검수 시작시에 호출
     public void updateCollectCompleted(CollectRequest.UpdateCollectCompleted req ) {
         Collect collect = collectRepository.findById(req.collectId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
@@ -105,5 +105,13 @@ public class CollectService {
         return collectRepository.findAll().stream()
             .map(Collect::toDto)
             .collect(Collectors.toList());
+    }
+    //findByUsedProduct
+    public CollectDTO findByUsedProduct(CollectRequest.GetCollectByUsedProductRequest req) {
+        UsedProduct usedProduct = usedProductRepository.findById(req.usedProductId())
+            .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
+        Collect collect = collectRepository.findByUsedProduct(usedProduct)
+            .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
+        return collect.toDto();
     }
 }

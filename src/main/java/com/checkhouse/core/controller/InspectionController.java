@@ -3,9 +3,10 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
-import com.checkhouse.core.dto.ImageDTO;
-import com.checkhouse.core.dto.UsedImageDTO;
+import com.checkhouse.core.dto.*;
+import com.checkhouse.core.dto.request.CollectRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
+import com.checkhouse.core.entity.Collect;
 import com.checkhouse.core.entity.Inspection;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.service.CollectService;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
-import com.checkhouse.core.dto.InspectionDTO;
-import com.checkhouse.core.dto.InspectionImageDTO;
 import com.checkhouse.core.dto.request.ImageRequest;
 import com.checkhouse.core.dto.request.InspectionRequest;
 import com.checkhouse.core.service.InspectionService;
@@ -59,7 +58,19 @@ public class InspectionController {
                         .usedProductId(req.usedProductId())
                         .build()
         );
-        // TODO: Collect 상태 업데이트
+
+        // Collect 상태 업데이트
+        CollectDTO collectDTO = collectService.findByUsedProduct(
+            CollectRequest.GetCollectByUsedProductRequest.builder()
+                .usedProductId(req.usedProductId())
+                .build()
+        );
+        collectService.updateCollectCompleted(
+            CollectRequest.UpdateCollectCompleted.builder()
+                .collectId(collectDTO.collectId())
+                .build()
+        );
+
         return BaseResponse.onSuccess(InspectionRequest.StartInspectionResponse.builder()
                 .inspectionId(inspectionDTO.inspectionId())
                 .usedProductName(inspectionDTO.usedProductDTO().title())
@@ -92,26 +103,25 @@ public class InspectionController {
                 .description(req.description())
                 .build()
         );
-        
+        System.out.println("Before");
         // 검수 상태 업데이트
-        InspectionDTO inspection = inspectionService.updateInspection(
-                InspectionRequest.UpdateInspectionRequest.builder()
+        InspectionDTO inspection = inspectionService.updateInspectionState(
+                InspectionRequest.UpdateInspectionStateRequest.builder()
                         .inspectionId(req.inspectionId())
-                        .isDone(true)
                         .build());
+        System.out.println("After");
+
         usedProductService.updateUsedProductStatus(
                 UsedProductRequest.UpdateUsedProductState.builder()
                         .usedProductId(inspection.usedProductDTO().usedProductId())
                         .status(UsedProductState.ON_SALE)
                         .build());
-        //TODO: ES 검색 상태 변경
 
-        return BaseResponse.onSuccess(inspection);
+        //TODO: ES 검색 상태 변경
         return BaseResponse.onSuccess(
             inspectionService.updateInspectionState(
                 InspectionRequest.UpdateInspectionStateRequest.builder()
                     .inspectionId(req.inspectionId())
-                    .isDone(true)
                     .build()
             )
         );

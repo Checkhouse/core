@@ -237,4 +237,20 @@ public class CollectServiceTest {
         assertThrows(GeneralException.class, () -> collectService.addCollect(req));
         verify(collectRepository).findByUsedProduct(usedProduct1);
     }
+
+    @DisplayName("중고 상품으로 수거 조회")
+    @Test
+    void SUCCESS_getCollectByUsedProduct() {
+        // given
+        when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
+        when(collectRepository.findByUsedProduct(any(UsedProduct.class))).thenReturn(Optional.of(collect1));
+
+        // when
+        CollectRequest.GetCollectByUsedProductRequest req = new CollectRequest.GetCollectByUsedProductRequest(usedProduct1.getUsedProductId());
+        CollectDTO result = collectService.findByUsedProduct(req);
+
+        // then
+        assertEquals(collect1.getCollectId(), result.collectId());
+        verify(collectRepository).findByUsedProduct(usedProduct1);
+    }
 }
