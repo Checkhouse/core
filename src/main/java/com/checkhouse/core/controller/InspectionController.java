@@ -50,8 +50,8 @@ public class InspectionController {
     // 검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트
     @Operation(summary = "검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트")
     @PostMapping("/finish")
-    public BaseResponse<InspectionDTO> addInspectionImages(
-        @Valid @RequestBody InspectionRequest.AddInspectionImagesRequest req
+    public BaseResponse<InspectionDTO> updateInspection(
+        @Valid @RequestBody InspectionRequest.UpdateInspectionRequest req
     ) {
         // 검수 이미지들 등록
         for (int i = 0; i < req.imageURL().size(); i++) {
@@ -74,8 +74,8 @@ public class InspectionController {
         
         // 검수 상태 업데이트
         return BaseResponse.onSuccess(
-            inspectionService.updateInspection(
-                InspectionRequest.UpdateInspectionRequest.builder()
+            inspectionService.updateInspectionState(
+                InspectionRequest.UpdateInspectionStateRequest.builder()
                     .inspectionId(req.inspectionId())
                     .isDone(true)
                     .build()

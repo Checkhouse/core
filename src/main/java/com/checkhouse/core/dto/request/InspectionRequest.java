@@ -20,7 +20,7 @@ public class InspectionRequest {
     ) {}
 
     @Builder
-    public record UpdateInspectionRequest(
+    public record UpdateInspectionStateRequest(
         UUID inspectionId,
         boolean isDone
     ) {}
@@ -42,7 +42,7 @@ public class InspectionRequest {
     ) {}
 
     @Builder
-    public record AddInspectionImagesRequest(
+    public record UpdateInspectionRequest(
         UUID inspectionId,
         List<String> imageURL,
         List<UUID> usedImageId,
