@@ -12,10 +12,11 @@ import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.OriginProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -110,7 +111,7 @@ public class OriginProductService {
     public List<OriginProductDocument> searchOriginProducts(
             OriginProductRequest.SearchOriginProductsRequest request
     ) {
-        return originProductDocumentRepository.findByTitleContainsIgnoreCase(request.query());
+        return originProductDocumentRepository.findByTitleContaining(request.query());
     }
     public void deleteOriginProduct( OriginProductRequest.DeleteOriginProduct request ) {
         originProductRepository.findById(request.originProductId()).ifPresentOrElse(
