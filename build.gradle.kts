@@ -47,6 +47,10 @@ dependencies {
 	// kafka
 	implementation("org.apache.kafka:kafka-streams")
 	implementation("org.springframework.kafka:spring-kafka")
+	testImplementation("org.testcontainers:junit-jupiter")
+	testImplementation("org.testcontainers:elasticsearch")
+	testImplementation("org.testcontainers:kafka")
+	testImplementation("org.testcontainers:mysql")
 
 	// lombok
 	compileOnly("org.projectlombok:lombok")

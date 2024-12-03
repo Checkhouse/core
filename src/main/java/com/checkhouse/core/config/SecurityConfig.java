@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -34,6 +35,7 @@ import static org.springframework.security.web.util.matcher.AntPathRequestMatche
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
@@ -82,6 +84,7 @@ public class SecurityConfig {
                                 .requestMatchers(antMatcher("swagger-resources/**")).permitAll()
                                 .requestMatchers(antMatcher("/api-docs")).permitAll()
                                 .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
+                                .requestMatchers(antMatcher("/api/v1/auth/**")).permitAll()
                                 .anyRequest().authenticated()
         );
 
@@ -96,17 +99,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
-        log.info("[ Allow List ] {}", allowOriginList);
+        
         configuration.setAllowedOrigins(allowOriginList); // 허용할 Origin 추가
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Authorization");
 
-        return new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -116,7 +120,8 @@ public class SecurityConfig {
                         "swagger-ui/**",
                         "/swagger-ui.html",
                         "swagger-resources/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                        "/api/v1/auth/**"
                 );
     }
 }

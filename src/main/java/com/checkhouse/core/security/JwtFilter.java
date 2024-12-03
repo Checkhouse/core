@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,6 +26,14 @@ public class JwtFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtUtil jwtUtil;
     private final RedisService redisService;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String[] excludePath = {"/api/v1/auth/signup", "/api/v1/auth/signin"};
+        // 제외할 url 설정
+        String path = request.getRequestURI();
+        return Arrays.stream(excludePath).anyMatch(path::startsWith);
+    }
 
     @Override
     protected void doFilterInternal(
@@ -36,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String accessToken = request.getHeader("Authorization");
         String refreshToken = request.getHeader("Authorization-refreshToken");
-
+        log.info("[ JwtFilter ] Authentication code: {}",accessToken);
         if (accessToken != null && accessToken.startsWith("Bearer ")) {
             accessToken = accessToken.substring(7); // "Bearer " 이후의 토큰 부분만 추출
         }
@@ -103,6 +112,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 log.warn(e.getMessage());
                 log.warn("filter exception");
             }
+        } else {
+            log.info("authentication code not exist");
         }
 
         filterChain.doFilter(request, response); // Pass the request to the next filter

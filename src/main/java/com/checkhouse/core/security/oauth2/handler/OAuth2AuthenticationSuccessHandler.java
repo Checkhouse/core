@@ -101,6 +101,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                 .email(principal.getUserInfo().getEmail())
                                 .provider(principal.getUserInfo().getProvider().toString())
                                 .providerId(principal.getUserInfo().getId())
+                                .isActive(true)
                                 .role(Role.ROLE_USER)
                                 .build()
                 );

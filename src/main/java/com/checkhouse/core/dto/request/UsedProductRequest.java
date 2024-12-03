@@ -3,6 +3,7 @@ package com.checkhouse.core.dto.request;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import lombok.Builder;
 
+import java.util.List;
 import java.util.UUID;
 public class UsedProductRequest {
 
@@ -13,7 +14,9 @@ public class UsedProductRequest {
             int price,
             boolean isNegoAllow,
             UUID userId,
-            UUID originProductId
+            UUID originProductId,
+            UUID userAddressId,
+            List<String> usedImageList
     ) {}
 
     @Builder
@@ -36,4 +39,30 @@ public class UsedProductRequest {
             UUID usedProductId,
             UsedProductState status
     ) {}
+
+    @Builder
+    public record DeleteUsedProduct(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record GetUsedProductRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record DeleteUsedProductRequest(
+            UUID usedProductId
+    ) {}
+
+    @Builder
+    public record GetUsedProductByStatusRequest(
+            UsedProductState status
+    ) {}
+
+    @Builder
+    public record GetUsedProductByUserRequest(
+            UUID userId
+    ) {}
+    
 }

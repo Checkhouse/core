@@ -15,8 +15,7 @@ public class StoreRequest {
     // Id, address, name, code
     @Builder
     public record AddStoreRequest (
-            UUID storeId,
-            Address address,
+            UUID addressId,
             String name,
             String code
     ){ }
@@ -24,7 +23,7 @@ public class StoreRequest {
     @Builder
     public record UpdateStoreRequest (
             UUID storeId,
-            Address address,
+            UUID addressId,
             String name
     ) { }
     @Builder

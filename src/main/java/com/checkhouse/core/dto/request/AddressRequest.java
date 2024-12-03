@@ -12,8 +12,6 @@ public class AddressRequest {
     @Builder
     public record AddAddressRequest (
             @NotNull
-            UUID addressId,
-            @NotNull
             String name,
             @NotNull
             String address,
@@ -43,7 +41,6 @@ public class AddressRequest {
 
     @Builder
     public record AddUserAddressRequest (
-            @NotNull
             UUID userAddressId,
             @NotNull
             UUID userId,

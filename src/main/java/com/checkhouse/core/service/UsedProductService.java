@@ -3,14 +3,20 @@ package com.checkhouse.core.service;
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.UsedProductDTO;
+import com.checkhouse.core.dto.request.ImageRequest;
+import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
-import com.checkhouse.core.entity.OriginProduct;
-import com.checkhouse.core.entity.UsedProduct;
-import com.checkhouse.core.entity.User;
+import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.entity.es.UsedProductDocument;
+import com.checkhouse.core.repository.es.UsedProductDocumentRepository;
+import com.checkhouse.core.repository.mysql.AddressRepository;
+import com.checkhouse.core.repository.mysql.UsedImageRepository;
 import com.checkhouse.core.repository.mysql.UsedProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,31 +28,41 @@ import java.util.UUID;
 public class UsedProductService {
 
     private final UsedProductRepository usedProductRepository;
+    private final UsedProductDocumentRepository usedProductDocumentRepository;
+    private final UsedImageRepository usedImageRepository;
 
     //service
     private final UserService userService;
     private final OriginProductService originProductService;
+    private final AddressRepository addressRepository;
 
     public UsedProductDTO addUsedProduct(UsedProductRequest.AddUsedProductRequest request) {
-
-        OriginProduct originProduct = originProductService.findOriginProduct(request.originProductId());
-        User user = userService.findUser(request.userId());
-
-        // Logic to add a used product
-        UsedProduct usedProduct = UsedProduct.builder()
-                .originProduct(originProduct)
-                .user(user)
-                .state(UsedProductState.PRE_SALE) // default
-                .title(request.title())
-                .description(request.description())
-                .price(request.price())
-                .isNegoAllow(request.isNegoAllow())
-                .build();
-
         try {
+            OriginProduct originProduct = originProductService.findOriginProduct(
+                OriginProductRequest.GetOriginProductInfoRequest.builder()
+                    .originProductId(request.originProductId())
+                    .build()
+            );
+            log.info("originProduct {}", originProduct);
+            User user = userService.findUser(request.userId());
+            log.info("user {}", user);
+
+            UsedProduct usedProduct = UsedProduct.builder()
+                    .originProduct(originProduct)
+                    .user(user)
+                    .state(UsedProductState.PRE_SALE)
+                    .title(request.title())
+                    .description(request.description())
+                    .price(request.price())
+                    .isNegoAllow(request.isNegoAllow())
+                    .build();
+            log.info("usedProduct {}", usedProduct);
+
+
+
             return usedProductRepository.save(usedProduct).toDto();
-        } catch(RuntimeException e) {
-            throw new RuntimeException("중고 상품 저장 에러");
+        } catch(Exception e) {
+            throw new GeneralException(ErrorStatus._USED_PRODUCT_SAVE_FAILED);
         }
     }
 
@@ -80,42 +96,54 @@ public class UsedProductService {
         return usedProductRepository.save(usedProduct).toDto();
     }
 
-    public UsedProductDTO getUsedProductDetails(UUID productId) {
+    public UsedProductDTO getUsedProductDetails(UsedProductRequest.GetUsedProductRequest request) {
         // Logic to get the details of a used product
-        UsedProduct usedProduct = usedProductRepository.findById(productId)
+        UsedProduct usedProduct = usedProductRepository.findById(request.usedProductId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
 
         return usedProduct.toDto();
     }
 
-    public void cancelAddUsedProduct(UUID productId) {
+    public void cancelAddUsedProduct(UsedProductRequest.DeleteUsedProductRequest request) {
         // Logic to cancel a used product registration
-        UsedProduct usedProduct = usedProductRepository.findById(productId)
+        UsedProduct usedProduct = usedProductRepository.findById(request.usedProductId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
 
         // soft delete
         usedProductRepository.delete(usedProduct);
     }
 
-    public List<UsedProductDTO> getUsedProductsByStatus(String status) {
+    public List<UsedProductDTO> getUsedProductsByStatus(UsedProductRequest.GetUsedProductByStatusRequest request) {
         // Logic to get used products by status
-        List<UsedProduct> products = usedProductRepository.findAllByState(status);
+        List<UsedProduct> products = usedProductRepository.findAllByState(request.status());
 
         return products.stream().map(UsedProduct::toDto).toList();
     }
 
-    public List<UsedProductDTO> getUsedProductsByUser(UUID userId) {
+    public List<UsedProductDTO> getUsedProductsByUser(UsedProductRequest.GetUsedProductByUserRequest request) {
         // Logic to get used products by user
-        User user = userService.findUser(userId);
+        User user = userService.findUser(request.userId());
 
         List<UsedProduct> products = usedProductRepository.findAllByUserId(user.getUserId());
 
         return products.stream().map(UsedProduct::toDto).toList();
     }
 
-    UsedProduct findUsedProduct(UUID productId) {
-        return usedProductRepository.findById(productId)
+    public List<UsedProductDTO> getUsedProductWithOriginId(UUID originId) {
+        return usedProductRepository.findAllByOriginProductOriginProductId(originId).stream().map(UsedProduct::toDto).toList();
+    }
+
+    public UsedProduct findUsedProduct(UsedProductRequest.GetUsedProductRequest request) {
+        return usedProductRepository.findById(request.usedProductId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_NOT_FOUND));
+    }
+
+    public List<UsedProductDocument> searchUsedProduct(String query) {
+        return usedProductDocumentRepository.findByTitleContainsIgnoreCase(query);
+    }
+
+    public Page<UsedProductDocument> searchUsedProduct(String query, Pageable pageable) {
+        return usedProductDocumentRepository.findByTitleContainsIgnoreCase(query, pageable);
     }
 
 }

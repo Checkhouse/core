@@ -19,7 +19,7 @@ import com.checkhouse.core.dto.InspectionDTO;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update inspection t set t.deleted_at = now() where t.inspection_id = :inspection_id")
+@SQLDelete(sql= "update inspection t set t.deleted_at = now() where t.inspection_id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Inspection extends BaseTimeEntity {
     @Id

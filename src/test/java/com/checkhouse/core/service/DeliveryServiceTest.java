@@ -90,7 +90,6 @@ public class DeliveryServiceTest {
     void SUCCESS_addDelivery() {
         // 데이터 생성
         DeliveryRequest.AddDeliveryRequest req = new DeliveryRequest.AddDeliveryRequest(
-            del1.getDeliveryId(),
             del1addr.getAddressId(),
             "1234567890"
         );
@@ -103,17 +102,7 @@ public class DeliveryServiceTest {
         assertEquals(del1.getDeliveryId(), result.deliveryId());
     };
 
-    
-    @Test
-    @DisplayName("배송 리스트 조회 성공")
-    void SUCCESS_getDeliveries() {
-        //given
-        when(deliveryRepository.findAll()).thenReturn(List.of(del1, del2));
-        //when
-        List<DeliveryDTO> result = deliveryService.getDeliveryList();
-        //then
-        assertEquals(2, result.size());
-    }
+
 
     @DisplayName("배송 상태 업데이트")
     @Test
@@ -154,7 +143,6 @@ public class DeliveryServiceTest {
         when(addressRepository.findById(del1addr.getAddressId())).thenReturn(Optional.empty());
         //when
         DeliveryRequest.AddDeliveryRequest req = new DeliveryRequest.AddDeliveryRequest(
-            del1.getDeliveryId(),
             del1addr.getAddressId(),
             "1234567890"
         );

@@ -1,0 +1,219 @@
+package com.checkhouse.core.controller;
+
+import java.util.List;
+import java.util.UUID;
+
+import com.checkhouse.core.dto.AddressDTO;
+import com.checkhouse.core.dto.request.AddressRequest;
+import com.checkhouse.core.entity.es.HubDocument;
+import com.checkhouse.core.entity.es.ZoneDocument;
+import com.checkhouse.core.service.AddressService;
+import com.checkhouse.core.service.HubEsService;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.checkhouse.core.apiPayload.BaseResponse;
+import com.checkhouse.core.dto.HubDTO;
+import com.checkhouse.core.dto.StockDTO;
+import com.checkhouse.core.dto.request.HubRequest;
+import com.checkhouse.core.service.HubService;
+
+@Slf4j
+@Tag(name = "허브", description = "허브 API")
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/hubs")
+public class HubController {
+    private final HubService hubService;
+    private final HubEsService hubEsService;
+    private final AddressService addressService;
+
+    //허브 등록
+    @Operation(summary = "허브 등록")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "등록 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PostMapping
+    public BaseResponse<HubDTO> addHub(
+        @Valid @RequestBody HubRequest.AddHubRequest req
+    ) {
+        // 허브 주소 저장
+        AddressDTO address = addressService.addAddress(
+                AddressRequest.AddAddressRequest.builder()
+                        .name(req.name())
+                        .address(req.address())
+                        .zipcode(req.zipcode())
+                        .phone(req.phone())
+                        .addressDetail(req.addressDetail())
+                        .location(req.location())
+                        .build()
+        );
+
+        // 허브 존 할당(실제로는 자동으로 내부에서 지정되어 할당 되어야 함, 현재는 이미 있는 존에 허브를 매핑)
+        ZoneDocument zone = hubEsService.searchZone(req.location().getX(), req.location().getY());
+        log.info(zone.toString());
+
+        // 허브 저장
+        HubDTO savedHub = hubService.addHub(req, address, zone.getZoneId());
+
+        // es 저장
+        HubDocument hub = hubEsService.addHub(
+                HubRequest.SaveHubEsRequest.builder()
+                        .hubId(savedHub.hubId())
+                        .name(savedHub.name())
+                        .longitude(req.location().getX())
+                        .latitude(req.location().getY())
+                        .address(req.address() + ' ' + req.addressDetail())
+                        .build(),
+                zone.getZoneId()
+        );
+
+        log.info("[허브 등록] request: {}", savedHub);
+        return BaseResponse.onSuccess(savedHub);
+    }
+    //허브 수정
+    @Operation(summary = "허브 수정")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "수정 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @PatchMapping
+    public BaseResponse<HubDTO> updateHub(
+        @Valid @RequestBody HubRequest.UpdateHubRequest req) {
+        HubDTO updatedHub = hubService.updateHub(req);
+        log.info("[허브 수정] request: {}", updatedHub);
+        return BaseResponse.onSuccess(updatedHub);
+    }
+    //허브 삭제
+    @Operation(summary = "허브 삭제")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "삭제 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @DeleteMapping
+    public BaseResponse<Void> deleteHub(
+        @Valid @RequestBody HubRequest.DeleteHubRequest req) {
+        log.info("[허브 삭제] request: {}", req);
+        hubService.deleteHub(req);
+        return BaseResponse.onSuccess(null);
+    }
+    //허브 조회
+    @Operation(summary = "허브 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "조회 성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    })
+    @GetMapping
+    public BaseResponse<List<HubDTO>> getHubs() {
+        log.info("[허브 조회]");
+        return BaseResponse.onSuccess(hubService.getHubs());
+    }
+    // todo: 허브 할당
+    // @Operation(summary = "허브 할당")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "할당 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @PostMapping("/allocate")
+    // public BaseResponse<HubDTO> allocateHub(
+    //     @Valid @RequestBody HubRequest.AllocateHubRequest req) {
+    //     try {
+    //         log.info("[허브 할당] request: {}", req);
+    //         return BaseResponse.onSuccess(hubService.allocateHub(req));
+    //     } catch (Exception e) {
+    //         log.error("[허브 할당] request: {}, error: {}", req, e.getMessage());
+    //         return BaseResponse.onFailure(e.getMessage(), e.getMessage(), null);
+    //     }
+    // }
+
+    // 재고 추가
+    // @Operation(summary = "재고 추가")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "추가 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @PostMapping("/stock")
+    // public BaseResponse<StockDTO> addStock(
+    //     @Valid @RequestBody HubRequest.AddStockRequest req) {
+    //     log.info("[재고 추가] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.addStock(req));
+    // }
+    // // 재고 수정
+    // @Operation(summary = "재고 수정")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "수정 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @PatchMapping("/stock/{stockId}")
+    // public BaseResponse<StockDTO> updateStock(
+    //     @Valid @RequestBody HubRequest.UpdateStockAreaRequest req) {
+    //     log.info("[재고 수정] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.updateStockArea(req));
+    // }
+    // // 재고 조회
+    // @Operation(summary = "재고 조회")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "조회 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @GetMapping("/stock/{usedProductId}")
+    // public BaseResponse<StockDTO> getStock(
+    //     @Valid @RequestBody HubRequest.GetStockByUsedProductIdRequest req) {
+    //     log.info("[재고 조회] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.getStockByUsedProductId(req));
+    // }
+    // // 재고 조회(허브별)
+    // @Operation(summary = "재고 조회(허브별)")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "조회 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @GetMapping("/stock/{hubId}")
+    // public BaseResponse<List<StockDTO>> getStocksByHubId(
+    //     @PathVariable UUID hubId) {
+    //     log.info("[재고 조회(허브별)] hubId: {}", hubId);
+    //     return BaseResponse.onSuccess(hubService.getStocksByHubId(new HubRequest.GetStocksByHubIdRequest(hubId)));
+    // }
+    // // 재고 조회(지역별)
+    // @Operation(summary = "재고 조회(지역별)")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "조회 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @GetMapping("/stock/{area}")
+    // public BaseResponse<List<StockDTO>> getStocksByArea(
+    //     @Valid @RequestBody HubRequest.GetStocksByAreaRequest req) {
+    //     log.info("[재고 조회(지역별)] request: {}", req);
+    //     return BaseResponse.onSuccess(hubService.getStocksByArea(req));
+    // }
+    // // 재고 삭제
+    // @Operation(summary = "재고 삭제")
+    // @ApiResponses({
+    //     @ApiResponse(responseCode = "200", description = "삭제 성공"),
+    //     @ApiResponse(responseCode = "400", description = "잘못된 요청")
+    // })
+    // @DeleteMapping("/stock/{stockId}")
+    // public BaseResponse<Void> deleteStock(
+    //     @Valid @RequestBody HubRequest.DeleteStockRequest req) {
+    //     log.info("[재고 삭제] request: {}", req);
+    //     hubService.deleteStock(req);
+    //     return BaseResponse.onSuccess(null);
+    // }
+}

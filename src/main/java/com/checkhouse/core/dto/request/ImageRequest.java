@@ -6,14 +6,13 @@ import com.checkhouse.core.entity.UsedProduct;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
+import java.util.List;
 import java.util.UUID;
 
 public class ImageRequest {
 
     @Builder
     public record AddImageRequest (
-            @NotNull
-            UUID imageId,
             @NotNull
             String imageURL
     ) {}
@@ -32,8 +31,6 @@ public class ImageRequest {
     //원본 이미지
     @Builder
     public record AddOriginImageRequest (
-            @NotNull
-            UUID originImageId,
             @NotNull
             UUID originProductId,
             @NotNull
@@ -58,8 +55,6 @@ public class ImageRequest {
     @Builder
     public record AddUsedImageRequest (
             @NotNull
-            UUID usedImageId,
-            @NotNull
             UUID usedProductId,
             @NotNull
             String imageURL
@@ -79,6 +74,35 @@ public class ImageRequest {
             UUID usedImageId
     ) {}
 
-    //TODO: 검수이미지 추가
+    @Builder
+    public record AddInspectionImageRequest (
+            @NotNull
+            UUID inspectionId,
+            @NotNull
+            UUID usedImageId,
+            @NotNull
+            String imageURL
+    ) {}
+
+    @Builder
+    public record GetInspectionImageRequest (
+            @NotNull
+            UUID inspectionImageId
+    ) {}
+    @Builder
+    public record GetInspectionImagesByInspectionIdRequest (
+            @NotNull
+            UUID inspectionId
+    ) {}
+    @Builder
+    public record GetInspectionImageByUsedImageIdRequest (
+            @NotNull
+            UUID usedImageId
+    ) {}
+    @Builder
+    public record DeleteInspectionImageRequest (
+            @NotNull
+            UUID inspectionId
+    ) {}
 
 }

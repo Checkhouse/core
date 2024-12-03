@@ -5,12 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.repository.mysql.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,14 +26,13 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.SendDTO;
 import com.checkhouse.core.dto.request.SendRequest;
 import com.checkhouse.core.entity.enums.DeliveryState;
-import com.checkhouse.core.repository.mysql.DeliveryRepository;
-import com.checkhouse.core.repository.mysql.SendRepository;
-import com.checkhouse.core.repository.mysql.TransactionRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class SendServiceTest {
     @Mock
     private SendRepository sendRepository;
+    @Mock
+    private AddressRepository addressRepository;
 
     @InjectMocks
     private SendService sendService;
@@ -40,6 +41,8 @@ public class SendServiceTest {
     private TransactionRepository transactionRepository;
     @Mock
     private DeliveryRepository deliveryRepository;
+    @Mock
+    private UsedProductRepository usedProductRepository;
 
     private User seller;
     private User buyer;
@@ -88,6 +91,7 @@ public class SendServiceTest {
                 .company("애플")
                 .category(
                         Category.builder()
+                                .categoryId(UUID.randomUUID())
                                 .name("category1")
                                 .build()
                 )
@@ -119,32 +123,21 @@ public class SendServiceTest {
     @DisplayName("발송 등록 성공")
     @Test
     void SUCCESS_addSend() {
-        // 데이터 생성
-        UUID deliveryId = delivery1.getDeliveryId();
-        UUID transactionId = transaction1.getTransactionId();
-        UUID sendId = send1.getSendId();
-
-        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
-            .sendId(sendId)
-            .transactionId(transactionId)
-            .deliveryId(deliveryId)
-            .build();
-
-        Delivery updatedDelivery = Delivery.builder()
-            .deliveryId(delivery1.getDeliveryId())
-            .address(delivery1.getAddress())
-            .deliveryState(DeliveryState.SENDING)
-            .build();
-
         // given
-        when(deliveryRepository.findById(deliveryId))
-            .thenReturn(Optional.of(delivery1));
-        when(transactionRepository.findById(transactionId))
+        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
+            .transactionId(transaction1.getTransactionId())
+                .addressId(delivery1.getAddress().getAddressId())
+            .build();
+
+        when(transactionRepository.findById(any(UUID.class)))
             .thenReturn(Optional.of(transaction1));
+        when(usedProductRepository.findById(any(UUID.class)))
+            .thenReturn(Optional.of(usedProduct1));
         when(sendRepository.save(any(Send.class)))
             .thenReturn(send1);
         when(deliveryRepository.save(any(Delivery.class)))
-            .thenReturn(updatedDelivery);
+            .thenReturn(delivery1);
+        when(addressRepository.findById(delivery1.getAddress().getAddressId())).thenReturn(Optional.of(delivery1.getAddress()));
 
         // when
         SendDTO result = sendService.addSend(req);
@@ -175,46 +168,34 @@ public class SendServiceTest {
         assertEquals(send1.toDto(), result);
     }
 
-    @DisplayName("존재하지 않는 배송일 경우 등록 실패")
+    @DisplayName("존재하지 않는 중고 상품의 경우 발송 등록 실패")
     @Test
-    void FAIL_addSend_invalid_delivery() {
-        // 데이터 생성
-        UUID deliveryId = UUID.randomUUID();
-        UUID transactionId = transaction1.getTransactionId();
-        UUID sendId = send1.getSendId();
-
-        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
-            .sendId(sendId)
-            .transactionId(transactionId)
-            .deliveryId(deliveryId)
-            .build();
-
+    void FAIL_addSend_invalid_usedProduct() {
         // given
-        when(deliveryRepository.findById(deliveryId))
-            .thenReturn(Optional.empty());
-
-        // when
-        assertThrows(GeneralException.class, () -> sendService.addSend(req));
+        SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
+            .transactionId(transaction1.getTransactionId())
+                .addressId(delivery1.getAddress().getAddressId())
+            .build();
         
+        when(transactionRepository.findById(any(UUID.class))).thenReturn(Optional.of(transaction1));
+        when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.empty());  // 중고 상품을 찾을 수 없음
+        when(addressRepository.findById(delivery1.getAddress().getAddressId())).thenReturn(Optional.of(delivery1.getAddress()));
+
+        // when & then
+        assertThrows(GeneralException.class, () -> sendService.addSend(req));
     }
 
     @DisplayName("존재하지 않는 거래일 경우 등록 실패")
     @Test
     void FAIL_addSend_not_found() {
         // 데이터 생성
-        UUID deliveryId = delivery1.getDeliveryId();
         UUID transactionId = UUID.randomUUID();
-        UUID sendId = send1.getSendId();
 
         SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
-            .sendId(sendId)
             .transactionId(transactionId)
-            .deliveryId(deliveryId)
             .build();
 
         // given
-        when(deliveryRepository.findById(deliveryId))
-            .thenReturn(Optional.of(delivery1));
         when(transactionRepository.findById(transactionId))
             .thenReturn(Optional.empty());
 
@@ -262,15 +243,14 @@ public class SendServiceTest {
         // given
         SendRequest.AddSendRequest req = SendRequest.AddSendRequest.builder()
             .transactionId(transaction1.getTransactionId())
-            .deliveryId(delivery1.getDeliveryId())
+                .addressId(delivery1.getAddress().getAddressId())
             .build();
 
-        when(deliveryRepository.findById(req.deliveryId()))
-            .thenReturn(Optional.of(delivery1));
         when(transactionRepository.findById(req.transactionId()))
             .thenReturn(Optional.of(transaction1));
-        when(sendRepository.findByTransaction(transaction1))
-            .thenReturn(Optional.of(send1));
+        when(sendRepository.findAllByTransactionTransactionId(transaction1.getTransactionId()))
+            .thenReturn(List.of(send1));  // 이미 발송이 존재함
+        when(addressRepository.findById(delivery1.getAddress().getAddressId())).thenReturn(Optional.of(delivery1.getAddress()));
 
         // when & then
         assertThrows(GeneralException.class, () -> sendService.addSend(req));   

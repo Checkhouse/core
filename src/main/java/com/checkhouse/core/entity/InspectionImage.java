@@ -1,16 +1,21 @@
 package com.checkhouse.core.entity;
 
+import com.checkhouse.core.dto.InspectionImageDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
 @Table(name = "inspection_image")
 @Entity
 @Getter
+@SQLDelete(sql = "UPDATE inspection_image SET deleted_at = NOW() WHERE inspection_image_id = ?")
+@SQLRestriction("deleted_at is null")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InspectionImage extends BaseTimeEntity {
     @Id
@@ -47,12 +52,23 @@ public class InspectionImage extends BaseTimeEntity {
 
     @Builder
     public InspectionImage(
+            UUID inspectionImageId,
             ImageURL image,
             Inspection inspection,
             UsedImage usedImage
     ) {
+        this.inspectionImageId = inspectionImageId;
         this.image = image;
         this.inspection = inspection;
         this.usedImage = usedImage;
+    }
+    
+    public InspectionImageDTO toDto() {
+        return new InspectionImageDTO(
+                inspectionImageId,
+                image.toDto(),
+                inspection.toDto(),
+                usedImage.toDto()
+        );
     }
 }

@@ -18,7 +18,7 @@ import com.checkhouse.core.entity.enums.DeliveryState;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update collect t set t.deleted_at = now() where t.collect_id = :collect_id")
+@SQLDelete(sql= "update collect t set t.deleted_at = now() where t.collect_id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Collect extends BaseTimeEntity {
     @Id

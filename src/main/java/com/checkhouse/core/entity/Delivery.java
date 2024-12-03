@@ -17,7 +17,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update delivery t set t.deleted_at = now() where t.delivery_id = :delivery_id")
+@SQLDelete(sql= "update delivery t set t.deleted_at = now() where t.delivery_id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Delivery extends BaseTimeEntity {
     @Id
@@ -29,7 +29,8 @@ public class Delivery extends BaseTimeEntity {
 
 
     @Column(
-            name="tracking_code"
+            name="tracking_code",
+            nullable = true
     )
     private String trackingCode;
 
@@ -66,11 +67,24 @@ public class Delivery extends BaseTimeEntity {
         this.deliveryState = deliveryState;
     }
 
-    public void UpdateAddress(Address address) {this.address = address;}
-    public void UpdateTrackingCode(String trackingCode) {this.trackingCode = trackingCode;}
-    public void UpdateDeliveryState(DeliveryState deliveryState) {this.deliveryState = deliveryState;}
-
+    
     public DeliveryDTO toDto() {
-        return new DeliveryDTO(deliveryId, trackingCode, deliveryState, address.toDto());
+        return new DeliveryDTO(
+                this.deliveryId,
+                this.trackingCode,
+                this.deliveryState,
+                this.address.toDto()
+        );
     }
+    public void updateAddress(Address address) {
+        this.address = address;
+    }
+    public void updateTrackingCode(String trackingCode) {
+        this.trackingCode = trackingCode;
+    }
+    public void updateDeliveryState(DeliveryState deliveryState) {
+        this.deliveryState = deliveryState;
+    }
+
+
 }

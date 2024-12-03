@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -16,7 +18,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update used_product up set up.deleted_at = now() where up.used_product_id = :usedProductId")
+@SQLDelete(sql= "update used_product up set up.deleted_at = now() where up.used_product_id = ?")
 @SQLRestriction("deleted_at is null")
 public class UsedProduct extends BaseTimeEntity {
     @Id
@@ -65,7 +67,6 @@ public class UsedProduct extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
-
 
     //----------------------------------------------------------------------------
     // todo 관계 매핑 하는 곳

@@ -1,0 +1,98 @@
+package com.checkhouse.core.controller;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.checkhouse.core.apiPayload.BaseResponse;
+import com.checkhouse.core.dto.InspectionDTO;
+import com.checkhouse.core.dto.InspectionImageDTO;
+import com.checkhouse.core.dto.request.ImageRequest;
+import com.checkhouse.core.dto.request.InspectionRequest;
+import com.checkhouse.core.service.InspectionService;
+import com.checkhouse.core.service.ImageService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
+@Slf4j
+@Tag(name = "inspection apis", description = "검수 관련 API")
+@RestController
+@RequestMapping("api/v1/inspection")
+@RequiredArgsConstructor
+public class InspectionController {
+    private final InspectionService inspectionService;
+    private final ImageService imageService;
+
+    // QR 스캔 후 검수 시작
+    @Operation(summary = "검수 등록 (QR 스캔 후)")
+    @PostMapping("/start")
+    public BaseResponse<InspectionDTO> startInspection(
+        @Valid @RequestBody InspectionRequest.AddInspectionRequest req
+    ) {
+        return BaseResponse.onSuccess(inspectionService.addInspection(req));
+    }
+
+    // 검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트
+    @Operation(summary = "검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트")
+    @PostMapping("/finish")
+    public BaseResponse<InspectionDTO> addInspectionImages(
+        @Valid @RequestBody InspectionRequest.AddInspectionImagesRequest req
+    ) {
+        // 검수 이미지들 등록
+        for (int i = 0; i < req.imageURL().size(); i++) {
+            imageService.addInspectionImage(
+                ImageRequest.AddInspectionImageRequest.builder()
+                    .inspectionId(req.inspectionId())
+                    .imageURL(req.imageURL().get(i))
+                    .usedImageId(req.usedImageId().get(i))
+                    .build()
+            );
+        }
+        
+        // 검수 노트 업데이트
+        inspectionService.updateInspectionDescription(
+            InspectionRequest.UpdateInspectionDescriptionRequest.builder()
+                .inspectionId(req.inspectionId())
+                .description(req.description())
+                .build()
+        );
+        
+        // 검수 상태 업데이트
+        return BaseResponse.onSuccess(
+            inspectionService.updateInspection(
+                InspectionRequest.UpdateInspectionRequest.builder()
+                    .inspectionId(req.inspectionId())
+                    .isDone(true)
+                    .build()
+            )
+        );
+    }
+
+    // 검수 리스트 조회
+    @Operation(summary = "검수 리스트 조회")
+    @GetMapping("/list")
+    public BaseResponse<List<InspectionDTO>> getInspectionList(
+        @RequestParam UUID usedProductId
+    ) {
+        return BaseResponse.onSuccess(inspectionService.getInspectionList(
+            InspectionRequest.GetInspectionListRequest.builder()
+                .usedProductId(usedProductId)
+                .build()
+        ));
+    }
+}

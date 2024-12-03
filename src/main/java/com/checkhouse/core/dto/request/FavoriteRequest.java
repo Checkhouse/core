@@ -21,4 +21,7 @@ public class FavoriteRequest {
 
     @Builder
     public record GetUserFavoriteUsed(UUID userId) {}
+
+    @Builder
+    public record GetUsedProductFavoriteCountRequest(UUID usedProductId) {}
 }

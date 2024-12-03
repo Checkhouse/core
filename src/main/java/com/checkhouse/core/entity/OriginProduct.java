@@ -11,16 +11,11 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
-@Table(
-        name = "origin_product",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"name"})
-        }
-)
+@Table(name = "origin_product")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql= "update origin_product og set og.deleted_at = now() where og.origin_product_id = :originProductId")
+@SQLDelete(sql= "update origin_product og set og.deleted_at = now() where og.origin_product_id = ?")
 @SQLRestriction("deleted_at is null")
 public class OriginProduct extends BaseTimeEntity {
     @Id
@@ -31,8 +26,8 @@ public class OriginProduct extends BaseTimeEntity {
 
     @Column(
             name="name",
-            nullable = false,
-            unique = true
+            nullable = false
+        //     unique = true
     )
     private String name;
 
@@ -74,6 +69,7 @@ public class OriginProduct extends BaseTimeEntity {
                 this.originProductId,
                 this.name,
                 this.company,
+
                 this.category.toDto()
         );
     }

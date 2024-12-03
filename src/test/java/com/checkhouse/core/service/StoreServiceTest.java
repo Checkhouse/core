@@ -82,8 +82,7 @@ public class StoreServiceTest {
     void SUCCESS_addStore() {
         // 스토어 정보
         StoreRequest.AddStoreRequest req = new StoreRequest.AddStoreRequest(
-                store1.getStoreId(),
-                store1addr,
+                store1addr.getAddressId(),
                 "정보섬티맥스",
                 "SSUBEST"
 
@@ -167,7 +166,7 @@ public class StoreServiceTest {
         // 스토어 정보
         StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
                 store1.getStoreId(),
-                store2addr,
+                store2addr.getAddressId(),
                 "정보섬1층"
         );
 
@@ -238,8 +237,7 @@ public class StoreServiceTest {
     void FAIL_addStore_invalid_address() {
         // 스토어 정보
         StoreRequest.AddStoreRequest req = new StoreRequest.AddStoreRequest(
-                store1.getStoreId(),
-                store1addr,
+                store1addr.getAddressId(),
                 "정보섬티맥스",
                 "SSUBEST"
 
@@ -268,7 +266,7 @@ public class StoreServiceTest {
         // 스토어 정보
         StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
                 store1.getStoreId(),
-                store1addr,
+                store1addr.getAddressId(),
                 "test"
         );
 
@@ -291,7 +289,7 @@ public class StoreServiceTest {
         UUID invalidId = UUID.randomUUID();
         StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
                 invalidId,
-                store2addr,
+                store2addr.getAddressId(),
                 "정보섬1층"
         );
 
@@ -311,7 +309,7 @@ public class StoreServiceTest {
         // 스토어 정보
         StoreRequest.UpdateStoreRequest req = new StoreRequest.UpdateStoreRequest(
                 store1.getStoreId(),
-                store1addr,
+                store1addr.getAddressId(),
                 "숭실대 CU"
         );
 
