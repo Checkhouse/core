@@ -225,7 +225,7 @@ public class InspectionControllerTest extends BaseIntegrationTest {
                 .build()
         );
 
-        InspectionRequest.AddInspectionImagesRequest request = InspectionRequest.AddInspectionImagesRequest.builder()
+        InspectionRequest.UpdateInspectionRequest request = InspectionRequest.UpdateInspectionRequest.builder()
             .inspectionId(savedInspection.getInspectionId())
             .imageURL(List.of("https://test.com/image1.jpg", "https://test.com/image2.jpg"))
             .usedImageId(List.of(usedImage1.getUsedImageId(), usedImage2.getUsedImageId()))  // 실제 존재하는 ID 사용

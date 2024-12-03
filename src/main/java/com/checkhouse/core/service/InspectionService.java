@@ -62,8 +62,8 @@ public class InspectionService {
         return savedInspection.toDto();
     }
     // 검수 상태 업데이트
-    public InspectionDTO updateInspection(
-            InspectionRequest.UpdateInspectionRequest req
+    public InspectionDTO updateInspectionState(
+            InspectionRequest.UpdateInspectionStateRequest req
     ) {
         Inspection inspection = inspectionRepository.findById(req.inspectionId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._INSPECTION_ID_NOT_FOUND));

@@ -27,7 +27,7 @@ import com.checkhouse.core.dto.InspectionDTO;
 import com.checkhouse.core.dto.UserDTO;
 import com.checkhouse.core.dto.request.InspectionRequest;
 import com.checkhouse.core.dto.request.InspectionRequest.AddInspectionRequest;
-import com.checkhouse.core.dto.request.InspectionRequest.UpdateInspectionRequest;
+import com.checkhouse.core.dto.request.InspectionRequest.UpdateInspectionStateRequest;
 import com.checkhouse.core.entity.Inspection;
 import com.checkhouse.core.entity.UsedProduct;
 import com.checkhouse.core.entity.User;
@@ -206,7 +206,7 @@ public class InspectionServiceTest {
                 .user(user1)
                 .build();
         
-        UpdateInspectionRequest req = UpdateInspectionRequest.builder()
+        UpdateInspectionStateRequest req = UpdateInspectionStateRequest.builder()
                 .inspectionId(completedInspection.getInspectionId())
                 .isDone(true)
                 .build();
@@ -216,8 +216,8 @@ public class InspectionServiceTest {
 
         // when & then
         GeneralException exception = assertThrows(GeneralException.class, 
-            () -> inspectionService.updateInspection(
-                InspectionRequest.UpdateInspectionRequest.builder()
+            () -> inspectionService.updateInspectionState(
+                InspectionRequest.UpdateInspectionStateRequest.builder()
                     .inspectionId(completedInspection.getInspectionId())
                     .isDone(true)
                     .build()
