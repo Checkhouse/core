@@ -167,7 +167,7 @@ public class ImageController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @DeleteMapping("/used/{usedImageId}")
+    @DeleteMapping("/used")
     public BaseResponse<Void> deleteUsedImage(
         @Valid @RequestBody ImageRequest.DeleteUsedImageRequest req) {
         log.info("[중고 상품 이미지 삭제] request: {}", req);

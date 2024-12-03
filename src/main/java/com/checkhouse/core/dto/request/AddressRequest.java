@@ -16,7 +16,7 @@ public class AddressRequest {
             @NotNull
             String address,
             @NotNull
-            int zipcode,
+            String zipcode,
             @NotNull
             String phone,
             String addressDetail,
@@ -29,7 +29,7 @@ public class AddressRequest {
             UUID addressId,
             String name,
             String address,
-            int zipcode,
+            String zipcode,
             String phone,
             String addressDetail,
             Point location
@@ -49,7 +49,7 @@ public class AddressRequest {
             @NotNull
             String address,
             @NotNull
-            int zipcode,
+            String zipcode,
             @NotNull
             String phone,
             String addressDetail,

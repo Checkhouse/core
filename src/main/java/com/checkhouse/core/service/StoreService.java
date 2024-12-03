@@ -28,18 +28,33 @@ public class StoreService {
         storeRepository.findStoreByName(req.name()).ifPresent(store -> {
             throw new GeneralException(ErrorStatus._STORE_ALREADY_EXISTS);
         });
-        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
-                () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
-        );
-        Store savedStore = storeRepository.save(
-                Store.builder()
-                        .address(addr)
-                        .name(req.name())
-                        .code(req.code())
-                        .build()
-        );
 
-        return savedStore.toDto();
+        try {
+            // 주소 생성 및 저장
+            Address savedAddress = addressRepository.save(
+                    Address.builder()
+                            .address(req.address())
+                            .addressDetail(req.addressDetail())
+                            .location(req.location())
+                            .zipcode(req.zipcode())
+                            .phone(req.phone())
+                            .name(req.name())  // 스토어 이름을 주소 이름으로 사용
+                            .build()
+            );
+
+            // 스토어 생성 및 저장
+            Store savedStore = storeRepository.save(
+                    Store.builder()
+                            .address(savedAddress)
+                            .name(req.name())
+                            .code(req.code())
+                            .build()
+            );
+
+            return savedStore.toDto();
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND);
+        }
     }
     //스토어 조회
     public StoreDTO getStore(StoreRequest.GetStoreRequest req) {
@@ -53,21 +68,7 @@ public class StoreService {
                 .map(Store::toDto)
                 .toList();
     }
-    //스토어 정보 수정
-    public StoreDTO updateStore(StoreRequest.UpdateStoreRequest req) {
-        Store store = storeRepository.findById(req.storeId())
-                .orElseThrow(() -> new GeneralException(ErrorStatus._STORE_ID_NOT_FOUND));
-        storeRepository.findStoreByName(req.name()).ifPresent((a) -> {
-            throw new GeneralException(ErrorStatus._STORE_ALREADY_EXISTS);
-        });
-        Address addr = addressRepository.findById(req.addressId()).orElseThrow(
-                () -> new GeneralException(ErrorStatus._ADDRESS_ID_NOT_FOUND)
-        );
-        store.updateName(req.name());
-        store.updateAddress(addr);
-
-        return store.toDto();
-    }
+    
     //스토어 코드 수정
     public StoreDTO updateStoreCode(StoreRequest.UpdateStoreCodeRequest req) {
         Store store = storeRepository.findById(req.storeId())

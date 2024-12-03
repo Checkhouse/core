@@ -90,7 +90,7 @@ public class CollectServiceTest {
             .deliveryId(UUID.randomUUID())
             .address(Address.builder()
                     .addressId(UUID.randomUUID())
-                .zipcode(12345)
+                .zipcode("12345")
                 .address("서울시 강남구")
                 .build())
             .build();
@@ -111,7 +111,7 @@ public class CollectServiceTest {
         delivery2 = Delivery.builder()
             .deliveryId(UUID.randomUUID())
             .address(Address.builder()
-                .zipcode(54321)
+                .zipcode("54321")
                 .address("서울시 서초구")
                 .build())
             .build();
