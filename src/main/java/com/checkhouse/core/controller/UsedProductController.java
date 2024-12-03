@@ -43,6 +43,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
+import com.checkhouse.core.dto.UsedProductWithImageDTO;
 
 @Slf4j
 @Tag(name = "used-product apis", description = "중고 상품 관련 API - 중고 상품 등록, 수정, 삭제, 조회")
@@ -229,26 +230,29 @@ public class UsedProductController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/origin/{originProductId}")
-    public BaseResponse<Map<String, Object>> getUsedProductWithOriginId(
-        @RequestParam UUID originProductId) {
+    public BaseResponse<List<UsedProductWithImageDTO>> getUsedProductWithOriginId(
+        @PathVariable UUID originProductId) {
         log.info("[ 원본 상품 별 중고 상품 조회 ]");
-        OriginProduct originProduct = originProductService.findOriginProduct(OriginProductRequest.GetOriginProductInfoRequest.builder().originProductId(originProductId).build());
+        
+        OriginProduct originProduct = originProductService.findOriginProduct(
+            OriginProductRequest.GetOriginProductInfoRequest.builder()
+                .originProductId(originProductId)
+                .build()
+        );
+
         List<UsedProductDTO> products = usedProductService.getUsedProductWithOriginId(originProduct.getOriginProductId());
-        // 각 상품별 이미지 조회
-        Map<UUID, List<String>> productImages = new HashMap<>();
-        products.forEach(product -> {
-            List<String> imageUrls = imageService.getUsedImagesByUsedId(
-                new ImageRequest.GetUsedImagesByUsedIdRequest(product.usedProductId())
-        ).stream()
-                .map(usedImage -> usedImage.image().imageURL())
-                .collect(Collectors.toList());
-            productImages.put(product.usedProductId(), imageUrls);
-        });
-    
-        Map<String, Object> response = new HashMap<>();
-        response.put("products", products);
-        response.put("images", productImages);
-    
+        
+        List<UsedProductWithImageDTO> response = products.stream()
+            .map(product -> UsedProductWithImageDTO.of(
+                product,
+                imageService.getUsedImagesByUsedId(
+                    new ImageRequest.GetUsedImagesByUsedIdRequest(product.usedProductId())
+                ).stream()
+                    .map(usedImage -> usedImage.image().imageURL())
+                    .collect(Collectors.toList())
+            ))
+            .collect(Collectors.toList());
+
         return BaseResponse.onSuccess(response);
     }
 }
