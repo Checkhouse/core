@@ -5,7 +5,10 @@ import java.util.UUID;
 
 import com.checkhouse.core.dto.ImageDTO;
 import com.checkhouse.core.dto.UsedImageDTO;
+import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.Inspection;
+import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.service.UsedProductService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,6 +43,7 @@ import jakarta.validation.Valid;
 public class InspectionController {
     private final InspectionService inspectionService;
     private final ImageService imageService;
+    private final UsedProductService usedProductService;
 
     // QR 스캔 후 검수 시작
     @Operation(summary = "검수 등록 (QR 스캔 후)")
@@ -88,14 +92,19 @@ public class InspectionController {
         );
         
         // 검수 상태 업데이트
-        return BaseResponse.onSuccess(
-            inspectionService.updateInspection(
+        InspectionDTO inspection = inspectionService.updateInspection(
                 InspectionRequest.UpdateInspectionRequest.builder()
-                    .inspectionId(req.inspectionId())
-                    .isDone(true)
-                    .build()
-            )
-        );
+                        .inspectionId(req.inspectionId())
+                        .isDone(true)
+                        .build());
+        usedProductService.updateUsedProductStatus(
+                UsedProductRequest.UpdateUsedProductState.builder()
+                        .usedProductId(inspection.usedProductDTO().usedProductId())
+                        .status(UsedProductState.ON_SALE)
+                        .build());
+        //TODO: ES 검색 상태 변경
+
+        return BaseResponse.onSuccess(inspection);
     }
 
     // 검수 리스트 조회
