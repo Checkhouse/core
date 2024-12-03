@@ -19,7 +19,6 @@ public class OriginProductDocument {
 
     private String originProductId;
 
-    @Field(type = FieldType.Text, analyzer = "nori")
     private String title;
 
     public static OriginProductDocument from(OriginProduct origin) {

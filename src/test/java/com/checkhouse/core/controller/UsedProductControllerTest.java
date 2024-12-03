@@ -1,4 +1,6 @@
 package com.checkhouse.core.controller;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
@@ -165,7 +167,9 @@ class UsedProductControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("중고 상품 등록 성공")
     void addUsedProduct_success() throws Exception {
-
+        List<String> imgs = new ArrayList<>();
+        imgs.add(        "https://www.notateslaapp.com/images/news/2023/tesla-crash-4.jpg");
+        imgs.add(        "https://www.notateslaapp.com/images/news/2023/tesla-crash-5.jpg");
         UsedProductRequest.AddUsedProductRequest request = UsedProductRequest.AddUsedProductRequest.builder()
             .title("테스트 중고 상품")
             .description("테스트 중고 상품 설명")
@@ -173,6 +177,8 @@ class UsedProductControllerTest extends BaseIntegrationTest {
             .isNegoAllow(true)
             .originProductId(savedOriginProduct.getOriginProductId())
             .userId(savedUser.getUserId())
+                .userAddressId(savedUserAddress.getUserAddressId())
+                .usedImageList(imgs)
             .build();
 
         mockMvc.perform(
