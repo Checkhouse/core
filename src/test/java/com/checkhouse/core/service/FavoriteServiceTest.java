@@ -6,6 +6,7 @@ import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
+import com.checkhouse.core.dto.response.FavoriteCountResponse;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.entity.enums.Role;
 import com.checkhouse.core.entity.enums.UsedProductState;
@@ -326,10 +327,10 @@ public class FavoriteServiceTest {
         when(favoriteOriginRepository.countByOriginProductOriginProductId(any())).thenReturn(5);
 
         // When
-        int favoriteCount = favoriteService.getOriginProductFavoriteCount(mockedOriginProduct.getOriginProductId());
+        FavoriteCountResponse favoriteCount = favoriteService.getOriginProductFavoriteCount(mockedOriginProduct.getOriginProductId());
 
         // Then
-        Assertions.assertEquals(5, favoriteCount);
+        Assertions.assertEquals(5, favoriteCount.count());
         verify(originProductService, times(1)).findOriginProduct(
             OriginProductRequest.GetOriginProductInfoRequest.builder()
                 .originProductId(mockedOriginProduct.getOriginProductId())
@@ -350,14 +351,14 @@ public class FavoriteServiceTest {
         when(favoriteUsedRepository.countByUsedProductUsedProductId(mockedUsedProduct.getUsedProductId())).thenReturn(10);
 
         // When
-        int favoriteCount = favoriteService.getUsedProductFavoriteCount(
+        FavoriteCountResponse favoriteCount = favoriteService.getUsedProductFavoriteCount(
             FavoriteRequest.GetUsedProductFavoriteCountRequest.builder()
                 .usedProductId(mockedUsedProduct.getUsedProductId())
                 .build()
         );
 
         // Then
-        Assertions.assertEquals(10, favoriteCount);
+        Assertions.assertEquals(10, favoriteCount.count());
         verify(usedProductService, times(1)).findUsedProduct(
             UsedProductRequest.GetUsedProductRequest.builder()
                 .usedProductId(mockedUsedProduct.getUsedProductId())

@@ -6,12 +6,14 @@ import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.dto.request.UsedProductRequest;
+import com.checkhouse.core.dto.response.FavoriteCountResponse;
 import com.checkhouse.core.entity.*;
 import com.checkhouse.core.repository.mysql.FavoriteOriginRepository;
 import com.checkhouse.core.repository.mysql.FavoriteUsedRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -53,6 +55,7 @@ public class FavoriteService {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
     }
+    @Transactional
     public void removeFavoriteOrigin(FavoriteRequest.RemoveFromFavoriteRequest request) {
         // 검증
         originProductService.findOriginProduct(
@@ -81,13 +84,16 @@ public class FavoriteService {
                 )).toList();
     }
 
-    public int getOriginProductFavoriteCount(UUID originProductId) {
+    public FavoriteCountResponse getOriginProductFavoriteCount(UUID originProductId) {
         originProductService.findOriginProduct(
             OriginProductRequest.GetOriginProductInfoRequest.builder()
                 .originProductId(originProductId)
                 .build()
         );
-        return favoriteOriginRepository.countByOriginProductOriginProductId(originProductId);
+        int count = favoriteOriginRepository.countByOriginProductOriginProductId(originProductId);
+        return FavoriteCountResponse.builder()
+            .count(count)
+            .build();
     }
 
     public FavoriteDTO addFavoriteUsed(FavoriteRequest.AddUsedProductLikeRequest request) {
@@ -116,6 +122,7 @@ public class FavoriteService {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
     }
+    @Transactional
     public void removeFavoriteUsed(FavoriteRequest.RemoveUsedProductLikeRequest request) {
         // 검증
         usedProductService.findUsedProduct(
@@ -127,7 +134,6 @@ public class FavoriteService {
 
         if(favoriteUsedRepository.existsByUsedProductUsedProductIdAndUserUserId(request.usedProductId(), request.userId())) {
             favoriteUsedRepository.deleteByUsedProductUsedProductIdAndUserUserId(request.usedProductId(), request.userId());
-
         } else {
             throw new GeneralException(ErrorStatus._FAVORITE_NOT_FOUND);
         }
@@ -145,13 +151,15 @@ public class FavoriteService {
                 )).toList();
     }
 
-    public int getUsedProductFavoriteCount(FavoriteRequest.GetUsedProductFavoriteCountRequest request) {
+    public FavoriteCountResponse getUsedProductFavoriteCount(FavoriteRequest.GetUsedProductFavoriteCountRequest request) {
         usedProductService.findUsedProduct(
             UsedProductRequest.GetUsedProductRequest.builder()
                 .usedProductId(request.usedProductId())
                 .build()
         );
-
-        return favoriteUsedRepository.countByUsedProductUsedProductId(request.usedProductId());
+        int count = favoriteUsedRepository.countByUsedProductUsedProductId(request.usedProductId());
+        return FavoriteCountResponse.builder()
+            .count(count)
+            .build();
     }
 }
