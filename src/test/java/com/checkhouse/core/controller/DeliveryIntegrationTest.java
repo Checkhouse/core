@@ -40,7 +40,7 @@ public class DeliveryIntegrationTest extends BaseIntegrationTest {
 				.address("서울시 강남구 역삼동")
 				.addressDetail("123번지 456호")
 				.location(new Point(234, 234))
-				.zipcode(12345)
+				.zipcode("12345")
 				.phone("010-1234-5678")
 				.name("test user")
 				.build();
@@ -51,7 +51,7 @@ public class DeliveryIntegrationTest extends BaseIntegrationTest {
 				.name("홍길동")
 				.address("서울특별시 동작구 상도로 369")
 				.location(new Point(0, 0))
-				.zipcode(6978)
+				.zipcode("6978")
 				.phone("01012345678")
 				.addressDetail("정보과학관 지하 1층")
 				.build();
