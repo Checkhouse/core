@@ -252,5 +252,16 @@ public class InspectionControllerTest extends BaseIntegrationTest {
                 .param("usedProductId", savedUsedProduct.getUsedProductId().toString())
         ).andExpect(status().isOk());
    }
+
+   // 검수 삭제 성공
+   @Test
+   @DisplayName("검수 삭제 성공")
+   void deleteInspectionSuccess() throws Exception {
+        createInspection();
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete(baseUrl + "/" + savedInspection.getInspectionId())
+        ).andExpect(status().isOk());
+   }
    
 }
