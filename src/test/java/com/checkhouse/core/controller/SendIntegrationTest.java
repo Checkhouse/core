@@ -53,10 +53,7 @@ public class SendIntegrationTest extends BaseIntegrationTest {
 	private UserRepository userRepository;
 	@Autowired
 	private UsedProductRepository usedProductRepository;
-	@Autowired
-	private ImageRepository imageRepository;
-	@Autowired
-	private UsedImageRepository usedImageRepository;
+
 	@Autowired
 	private CategoryRepository categoryRepository;
 	@Autowired
@@ -181,8 +178,6 @@ public class SendIntegrationTest extends BaseIntegrationTest {
 		deliveryRepository.deleteAll();
 		addressRepository.deleteAll();
 		transactionRepository.deleteAll();
-		usedImageRepository.deleteAll();
-		imageRepository.deleteAll();
 		usedProductRepository.deleteAll();
 		originProductRepository.deleteAll();
 		categoryRepository.deleteAll();

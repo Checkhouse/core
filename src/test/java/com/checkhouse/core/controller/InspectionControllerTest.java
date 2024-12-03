@@ -149,7 +149,7 @@ public class InspectionControllerTest extends BaseIntegrationTest {
     }
 
     @AfterEach
-    void cleanUp() {
+    void cleanup() {
         collectRepository.deleteAll();
         deliveryRepository.deleteAll();
 

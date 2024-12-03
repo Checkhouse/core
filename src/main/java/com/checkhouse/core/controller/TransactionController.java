@@ -104,7 +104,6 @@ public class TransactionController {
 		.collect(Collectors.toList()));
 	}
 	private PurchasedProductDTO convertToDTO(TransactionDTO transaction) {
-		// UsedImageRepository를 통해 이미지를 수집
 		List<UsedImageDTO> images = usedImageRepository.findUsedImagesByUsedProductUsedProductId(transaction.usedProduct().usedProductId())
 				.stream()
 				.map(UsedImage::toDto)

@@ -49,7 +49,7 @@ public class UserIntegrationTest extends BaseIntegrationTest {
 
     }
     @AfterEach
-    void cleanUp() {
+    void cleanup() {
         userRepository.deleteAll();
     }
     @Test

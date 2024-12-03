@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.UUID;
 
@@ -183,7 +185,8 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
 		mockMvc.perform(
 			MockMvcRequestBuilders.get(baseUrl + "?transactionId=" + savedTransaction.getTransactionId())
 				.contentType(MediaType.APPLICATION_JSON)
-		).andExpect(status().isOk());
+		).andExpect(status().isOk())
+				.andDo(print());
 	}
 
 	@Test
@@ -197,7 +200,8 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
 			MockMvcRequestBuilders.patch(baseUrl)
 				.content(objectMapper.writeValueAsString(request))
 				.contentType(MediaType.APPLICATION_JSON)
-		).andExpect(status().isOk());
+		).andExpect(status().isOk())
+				.andDo(print());
 	}
 
 	@Test
@@ -206,6 +210,7 @@ public class TransactionIntegrationTest extends BaseIntegrationTest {
 		mockMvc.perform(
 			MockMvcRequestBuilders.get(baseUrl + "/purchased?userId=" + savedBuyer.getUserId())
 				.contentType(MediaType.APPLICATION_JSON)
-		).andExpect(status().isOk());
+		).andExpect(status().isOk())
+				.andDo(print());
 	}
 }

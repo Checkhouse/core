@@ -103,13 +103,11 @@ public class InspectionController {
                 .description(req.description())
                 .build()
         );
-        System.out.println("Before");
         // 검수 상태 업데이트
         InspectionDTO inspection = inspectionService.updateInspectionState(
                 InspectionRequest.UpdateInspectionStateRequest.builder()
                         .inspectionId(req.inspectionId())
                         .build());
-        System.out.println("After");
 
         usedProductService.updateUsedProductStatus(
                 UsedProductRequest.UpdateUsedProductState.builder()
@@ -118,13 +116,8 @@ public class InspectionController {
                         .build());
 
         //TODO: ES 검색 상태 변경
-        return BaseResponse.onSuccess(
-            inspectionService.updateInspectionState(
-                InspectionRequest.UpdateInspectionStateRequest.builder()
-                    .inspectionId(req.inspectionId())
-                    .build()
-            )
-        );
+
+        return BaseResponse.onSuccess(inspection);
     }
 
     // 검수 리스트 조회

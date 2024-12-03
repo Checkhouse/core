@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.data.geo.Point;
 
-import com.checkhouse.core.controller.PickupController;
 import com.checkhouse.core.integration.BaseIntegrationTest;
 import com.checkhouse.core.entity.Pickup;
 import com.checkhouse.core.entity.Transaction;
@@ -167,7 +166,7 @@ public class PickupIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@AfterEach
-	void cleanUp() {
+	void cleanup() {
 		pickupRepository.deleteAll();
 		transactionRepository.deleteAll();
 		storeRepository.deleteAll();
