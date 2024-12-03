@@ -74,7 +74,7 @@ public class AddressService {
                 req.name() != null ? req.name() : modifiedAddress.getName(),
                 req.address() != null ? req.address() : modifiedAddress.getAddress(),
                 req.addressDetail() != null ? req.addressDetail() : modifiedAddress.getAddressDetail(),
-                req.zipcode() != 0 ? req.zipcode() : modifiedAddress.getZipcode(), // 0으로 초기화된 int 처리
+                req.zipcode() != null ? req.zipcode() : modifiedAddress.getZipcode(),
                 req.location() != null ? req.location() : modifiedAddress.getLocation(),
                 req.phone() != null ? req.phone() : modifiedAddress.getPhone()
         );

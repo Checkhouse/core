@@ -118,7 +118,7 @@ public class FavoriteControllerTest extends BaseIntegrationTest {
             .address("서울시 강남구 역삼동")
             .addressDetail("123번지 456호")
             .location(new Point(234, 234))
-            .zipcode(12345)
+            .zipcode("12345")
             .phone("010-1234-5678")
             .name("test user")
             .build();

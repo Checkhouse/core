@@ -143,7 +143,7 @@ public class PickupIntegrationTest extends BaseIntegrationTest {
 		Address storeaddr = Address.builder()
                 .name("홍길동")
                 .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
+                .zipcode("6978")
                 .phone("01012345678")
                 .addressDetail("정보과학관 지하 1층")
 				.location(new Point(127.0323305, 37.5149802))

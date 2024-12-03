@@ -11,7 +11,7 @@ public class HubRequest {
     public record AddHubRequest(
             String name,
             String address,
-            int zipcode,
+            String zipcode,
             String phone,
             String addressDetail,
             Point location

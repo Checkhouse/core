@@ -56,7 +56,7 @@ public class DeliveryServiceTest {
             .addressId(UUID.randomUUID())
             .name("test1")
             .address("test주소1")
-            .zipcode(12345)
+            .zipcode("12345")
             .phone("01012345678")
             .build();
     
@@ -64,7 +64,7 @@ public class DeliveryServiceTest {
             .addressId(UUID.randomUUID())
             .name("test2")
             .address("test주소2")
-            .zipcode(12346)
+            .zipcode("12346")
             .phone("01012345678")
             .build();
 

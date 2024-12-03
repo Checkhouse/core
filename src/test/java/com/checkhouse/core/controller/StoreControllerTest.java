@@ -110,7 +110,7 @@ public class StoreControllerTest extends BaseIntegrationTest {
             .address("서울시 강남구 역삼동")
             .addressDetail("123번지 456호")
             .location(new Point(234, 234))
-            .zipcode(12345)
+            .zipcode("12345")
             .phone("010-1234-5678")
             .name("test user")
             .build();
@@ -171,7 +171,7 @@ public class StoreControllerTest extends BaseIntegrationTest {
             .name("새로운 테스트 스토어")
             .address("서울시 강남구 역삼동 2")
             .addressDetail("789번지 101호")
-            .zipcode(12346)
+            .zipcode("12346")
             .phone("010-9876-5432")
             .location(new Point(235, 235))
             .code("test code")

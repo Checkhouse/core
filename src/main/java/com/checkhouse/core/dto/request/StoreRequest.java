@@ -23,7 +23,7 @@ public class StoreRequest {
             @NotNull
             String address,
             @NotNull
-            int zipcode,
+            String zipcode,
             @NotNull
             String phone,
             String addressDetail,

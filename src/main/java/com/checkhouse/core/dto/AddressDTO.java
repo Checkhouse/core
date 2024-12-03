@@ -8,7 +8,7 @@ public record AddressDTO(
         UUID addressId,
         String name,
         String address,
-        int zipcode,
+        String zipcode,
         String phone,
 
         String addressDetail,

@@ -47,7 +47,7 @@ public class Address extends BaseTimeEntity {
             name="zipcode",
             nullable = false
     )
-    private int zipcode;
+    private String zipcode;
 
     @Column(
             name="phone",
@@ -66,7 +66,7 @@ public class Address extends BaseTimeEntity {
             String address,
             String addressDetail,
             Point location,
-            int zipcode,
+            String zipcode,
             String phone
     ) {
         this.addressId = addressId;
@@ -81,7 +81,7 @@ public class Address extends BaseTimeEntity {
             String name,
             String address,
             String addressDetail,
-            int zipcode,
+            String zipcode,
             Point location,
             String phone
     ) {
