@@ -26,6 +26,7 @@ import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.ImageDTO;
 import com.checkhouse.core.dto.OriginImageDTO;
 import com.checkhouse.core.dto.OriginProductDTO;
+import com.checkhouse.core.dto.OriginProductWithImagesDTO;
 import com.checkhouse.core.dto.request.ImageRequest;
 import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.entity.enums.DeliveryState;
@@ -129,24 +130,19 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping("/origin")
-    public BaseResponse<Map<String, Object>> getOriginProductInfo(
+    @GetMapping
+    public BaseResponse<OriginProductWithImagesDTO> getOriginProductInfo(
         @RequestParam UUID originProductId) {
-        OriginProductRequest.GetOriginProductInfoRequest req = new OriginProductRequest.GetOriginProductInfoRequest(originProductId);
-        // 1. 상품 정보 조회
-        OriginProductDTO product = originProductService.getOriginProductInfo(req);
+        OriginProductRequest.GetOriginProductInfoRequest req = 
+            new OriginProductRequest.GetOriginProductInfoRequest(originProductId);
         
-        // 2. 이미지 정보 조회
+        // 상품 정보와 이미지 정보 조회
+        OriginProductDTO product = originProductService.getOriginProductInfo(req);
         List<OriginImageDTO> images = imageService.getOriginImagesByOriginId(
             new ImageRequest.GetOriginImagesByOriginIdRequest(originProductId)
         );
         
-        Map<String, Object> response = new HashMap<>();
-        response.put("product", product);
-        response.put("images", images);
-        
-        log.info("[원본 상품 정보 조회] originProductId: {}", originProductId);
-        return BaseResponse.onSuccess(response);
+        return BaseResponse.onSuccess(OriginProductWithImagesDTO.of(product, images));
     }
     //원본 상품 목록 조회
     @Operation(summary = "원본 상품 목록 조회")
