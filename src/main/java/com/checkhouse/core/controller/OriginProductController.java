@@ -130,7 +130,7 @@ public class OriginProductController {
         @ApiResponse(responseCode = "200", description = "조회 성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
-    @GetMapping
+    @GetMapping("/origin")
     public BaseResponse<OriginProductWithImagesDTO> getOriginProductInfo(
         @RequestParam UUID originProductId) {
         OriginProductRequest.GetOriginProductInfoRequest req = 
