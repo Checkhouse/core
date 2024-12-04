@@ -6,7 +6,7 @@ import com.checkhouse.core.entity.enums.UsedProductState;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
+import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +28,8 @@ public interface UsedProductRepository extends JpaRepository<UsedProduct, UUID> 
     @Query("select up from UsedProduct up where up.user.userId = :userId and up.title like %:query% and up.deletedDate is null")
     List<UsedProduct> findByUserIdAndTitleContaining(UUID userId, String query);
 
-    List<UsedProduct> findAllByOriginProductOriginProductId(UUID originiId);
+    // ON_SALE 인 경우만 조회
+    @Query("select up from  UsedProduct up where up.originProduct.originProductId = :originId and up.state = com.checkhouse.core.entity.enums.UsedProductState.ON_SALE")
+    List<UsedProduct> findAllByOriginProductOriginProductId(@Param("originId") UUID originId);
 
 }
