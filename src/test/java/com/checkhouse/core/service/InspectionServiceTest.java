@@ -208,7 +208,6 @@ public class InspectionServiceTest {
         
         UpdateInspectionStateRequest req = UpdateInspectionStateRequest.builder()
                 .inspectionId(completedInspection.getInspectionId())
-                .isDone(true)
                 .build();
 
         when(inspectionRepository.findById(completedInspection.getInspectionId()))
@@ -219,7 +218,6 @@ public class InspectionServiceTest {
             () -> inspectionService.updateInspectionState(
                 InspectionRequest.UpdateInspectionStateRequest.builder()
                     .inspectionId(completedInspection.getInspectionId())
-                    .isDone(true)
                     .build()
             ));
         assertEquals(ErrorStatus._INSPECTION_ALREADY_DONE.getCode(), exception.getErrorReason().getCode());

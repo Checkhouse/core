@@ -15,6 +15,7 @@ import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.apiPayload.code.status.SuccessStatus;
 import com.checkhouse.core.dto.FavoriteDTO;
 import com.checkhouse.core.dto.request.FavoriteRequest;
+import com.checkhouse.core.dto.response.FavoriteCountResponse;
 import com.checkhouse.core.service.FavoriteService;
 
 import lombok.RequiredArgsConstructor;
@@ -121,7 +122,7 @@ public class FavoriteController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/origin/count")
-    public BaseResponse<Integer> getOriginProductFavoriteCount(
+    public BaseResponse<FavoriteCountResponse> getOriginProductFavoriteCount(
         @RequestParam UUID originProductId) {
         log.info("[origin favorite 개수 조회] request: {}", originProductId);
         return BaseResponse.onSuccess(favoriteService.getOriginProductFavoriteCount(originProductId));
@@ -133,7 +134,7 @@ public class FavoriteController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @GetMapping("/used/count")
-    public BaseResponse<Integer> getUsedProductFavoriteCount(
+    public BaseResponse<FavoriteCountResponse> getUsedProductFavoriteCount(
         @RequestParam UUID usedId) {
         log.info("[used favorite 개수 조회] request: {}", usedId);
         return BaseResponse.onSuccess(favoriteService.getUsedProductFavoriteCount(

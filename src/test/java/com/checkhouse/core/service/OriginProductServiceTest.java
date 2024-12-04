@@ -7,6 +7,7 @@ import com.checkhouse.core.dto.request.OriginProductRequest;
 import com.checkhouse.core.entity.Category;
 import com.checkhouse.core.entity.OriginProduct;
 import com.checkhouse.core.entity.es.OriginProductDocument;
+import com.checkhouse.core.repository.es.OriginProductDocumentRepository;
 import com.checkhouse.core.repository.mysql.CategoryRepository;
 import com.checkhouse.core.repository.mysql.OriginProductRepository;
 import org.junit.jupiter.api.*;
@@ -33,7 +34,8 @@ public class OriginProductServiceTest {
     private OriginProductRepository originProductRepository;
     @Mock
     private CategoryRepository categoryRepository;
-
+    @Mock
+    private OriginProductDocumentRepository originProductDocumentRepository;
 
     @InjectMocks
     private OriginProductService originProductService;
@@ -214,14 +216,20 @@ public class OriginProductServiceTest {
     void SUCCESS_searchOriginProduct() {
         // given
         String keyword = "origin";
+        OriginProductDocument document = OriginProductDocument.from(mockedOriginProduct);
+        when(originProductDocumentRepository.findByTitleContaining(keyword))
+            .thenReturn(List.of(document));
+
         // when
         List<OriginProductDocument> result = originProductService.searchOriginProducts(
             OriginProductRequest.SearchOriginProductsRequest.builder()
+                .query(keyword)
                 .build()
         );
 
-        System.out.println("do noting");
-
+        // then
+        assertEquals(1, result.size());
+        verify(originProductDocumentRepository, times(1)).findByTitleContaining(keyword);
     }
 
     @DisplayName("중복된 이름의 원본 상품일 경우 저장 실패")

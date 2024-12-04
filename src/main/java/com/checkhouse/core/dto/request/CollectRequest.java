@@ -21,6 +21,11 @@ public class CollectRequest {
     ) {}
 
     @Builder
+    public record UpdateCollectCompleted(
+            UUID collectId
+    ) {}
+
+    @Builder
     public record DeleteCollectRequest(
         UUID collectId
     ) {}
@@ -28,6 +33,11 @@ public class CollectRequest {
     @Builder
     public record GetCollectStateRequest(
         UUID collectId
+    ) {}
+
+    @Builder
+    public record GetCollectByUsedProductRequest(
+        UUID usedProductId
     ) {}
 
 }

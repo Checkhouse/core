@@ -2,6 +2,7 @@ package com.checkhouse.core.security;
 
 import com.checkhouse.core.apiPayload.code.status.ErrorStatus;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
+import com.checkhouse.core.dto.Token;
 import com.checkhouse.core.service.RedisService;
 import com.checkhouse.core.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        String[] excludePath = {"/api/v1/auth/signup", "/api/v1/auth/signin"};
+        String[] excludePath = {"/api/v1/auth/signup", "/api/v1/auth/signin", "/api/vi/pickup-update"};
         // 제외할 url 설정
         String path = request.getRequestURI();
         return Arrays.stream(excludePath).anyMatch(path::startsWith);
@@ -83,19 +84,19 @@ public class JwtFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 // todo 재발급 과정
                 // 엑세스 토큰이 만료된 경우, 해당 엑세스 토큰의 리프레시 토큰을 조회
+                String userEmail = jwtUtil.getUserEmail(accessToken);
+                String rfk = redisService.getRefreshTokensWithUserEmail(userEmail);
                 // 리프레시 토큰이 살아있을 경우, 엑세스 토큰과 리프레시 토큰 다시 발급
 
                 // 리프레시 토큰이 만료된 경우, 해당 엑세스 토큰과 리프레시 토큰 모두 삭제 후 재로그인 진행 요청
-                String userEmail = jwtUtil.getUserEmail(accessToken);
+
 
                 // validate rft
-                if (jwtUtil.validateToken(refreshToken)) {
+                if (jwtUtil.validateToken(rfk)) {
                     // Reissue act
-                    String newACT = jwtUtil.reIssueAccessToken(accessToken);
-                    String userKakaoId = jwtUtil.getUserEmail(newACT);
-
+                    Token refreshedToken = redisService.saveTokens(userEmail);
                     // Create userDetails if the user and token match
-                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(userKakaoId);
+                    UserDetails userDetails = customUserDetailsService.loadUserByUsername(userEmail);
 
                     if (userDetails != null) {
                         // Create an authentication token with UserDetails, Password, and Role
@@ -103,9 +104,15 @@ public class JwtFilter extends OncePerRequestFilter {
                                 userDetails, null, userDetails.getAuthorities()
                         );
 
-                        response.setHeader("Authorization", newACT);
+                        response.setHeader("Authorization", refreshedToken.accessToken());
                         // Set the authentication in the current request's Security Context
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                        log.info("[ authentication Success ] {} ", userDetails.getUsername());
+
+
+                        // todo 토큰을 다시
+                        response.setHeader("Authorization", "Bearer " + refreshedToken.accessToken());
                     }
                 }
             } catch (Exception e) {

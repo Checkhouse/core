@@ -4,13 +4,16 @@ import com.checkhouse.core.apiPayload.BaseResponse;
 import com.checkhouse.core.apiPayload.exception.GeneralException;
 import com.checkhouse.core.dto.PurchasedProductDTO;
 import com.checkhouse.core.dto.UsedImageDTO;
+import com.checkhouse.core.dto.request.UsedProductRequest;
 import com.checkhouse.core.entity.Transaction;
 import com.checkhouse.core.entity.UsedImage;
+import com.checkhouse.core.entity.enums.UsedProductState;
 import com.checkhouse.core.repository.mysql.UsedImageRepository;
 import com.checkhouse.core.service.TransactionService;
 import com.checkhouse.core.dto.TransactionDTO;
 import com.checkhouse.core.dto.request.TransactionRequest;
 
+import com.checkhouse.core.service.UsedProductService;
 import com.checkhouse.core.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,8 +42,9 @@ public class TransactionController {
     private final TransactionService transactionService;
 	private final UsedImageRepository usedImageRepository;
 	private final UserService userService;
+	private final UsedProductService usedProductService;
 
-    @Operation(summary = "거래 등록")
+	@Operation(summary = "거래 등록")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "등록 성공")
     })
@@ -51,6 +55,11 @@ public class TransactionController {
 	{
 		log.info("[거래 등록] request: {}", req);
 		TransactionDTO transaction = transactionService.addTransaction(req);
+		// 중고물품 판매 완료로 상태 변경
+		usedProductService.updateUsedProductStatus(new UsedProductRequest.UpdateUsedProductState(
+				req.usedProductId(),
+				UsedProductState.POST_SALE
+		));
 		return BaseResponse.onSuccess(transaction);
     }
 
@@ -104,7 +113,6 @@ public class TransactionController {
 		.collect(Collectors.toList()));
 	}
 	private PurchasedProductDTO convertToDTO(TransactionDTO transaction) {
-		// UsedImageRepository를 통해 이미지를 수집
 		List<UsedImageDTO> images = usedImageRepository.findUsedImagesByUsedProductUsedProductId(transaction.usedProduct().usedProductId())
 				.stream()
 				.map(UsedImage::toDto)

@@ -40,8 +40,7 @@ public class DeliveryController {
     //배송 등록
     @Operation(summary = "배송 등록")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "등록 성공")
     })
     @PostMapping
     public BaseResponse<DeliveryDTO> addDelivery(
@@ -52,8 +51,7 @@ public class DeliveryController {
     //배송 상태 업데이트
     @Operation(summary = "배송 상태 업데이트")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "업데이트 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "업데이트 성공")
     })
     @PatchMapping
     public BaseResponse<DeliveryDTO> updateDeliveryState(
@@ -65,8 +63,7 @@ public class DeliveryController {
     //송장 번호 등록
     @Operation(summary = "송장 번호 등록")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "등록 성공")
     })
     @PostMapping("/tracking-code")
     public BaseResponse<DeliveryDTO> registerTrackingCode(
@@ -77,8 +74,7 @@ public class DeliveryController {
     //배송 삭제
     @Operation(summary = "배송 삭제")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "삭제 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "삭제 성공")
     })
     @DeleteMapping
     public BaseResponse<Void> deleteDelivery(

@@ -37,7 +37,7 @@ public class DeliveryService {
         Delivery savedDelivery = deliveryRepository.save(
             Delivery.builder()
                 .address(address)
-                .trackingCode(req.trackingCode())
+                .trackingCode(null)
                 .deliveryState(DeliveryState.PRE_DELIVERY)
                 .build()
         );

@@ -75,10 +75,6 @@ public class SendService {
         //존재하지 않는 발송 정보가 있을 수 있으므로 예외처리
         Send send = sendRepository.findById(req.sendId())
             .orElseThrow(() -> new GeneralException(ErrorStatus._SEND_ID_NOT_FOUND));
-        //존재하지 않는 발송 상태가 있을 수 있으므로 예외처리
-        if(!req.deliveryState().equals(DeliveryState.PRE_DELIVERY) && !req.deliveryState().equals(DeliveryState.SENDING)) {
-            throw new GeneralException(ErrorStatus._SEND_STATE_CHANGE_FAILED);
-        }
         //발송 상태 수정
         send.updateSendState(req.deliveryState());
         SendDTO updatedSend = sendRepository.save(send).toDto();

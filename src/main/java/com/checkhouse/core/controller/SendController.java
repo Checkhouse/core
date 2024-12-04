@@ -39,8 +39,7 @@ public class SendController {
     //발송 등록
     @Operation(summary = "발송 등록")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "등록 성공")
     })
     @PostMapping
     public BaseResponse<SendDTO> addSend(
@@ -56,7 +55,6 @@ public class SendController {
     @Operation(summary = "발송 상태 업데이트")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "업데이트 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @PatchMapping
     public BaseResponse<SendDTO> updateSendState(
@@ -67,8 +65,7 @@ public class SendController {
     //발송 삭제
     @Operation(summary = "발송 삭제")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "삭제 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "삭제 성공")
     })
     @DeleteMapping
     public BaseResponse<Void> deleteSend(
@@ -79,8 +76,7 @@ public class SendController {
     //발송 리스트 조회
     @Operation(summary = "발송 리스트 조회")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping
     public BaseResponse<List<SendDTO>> getSendList() {

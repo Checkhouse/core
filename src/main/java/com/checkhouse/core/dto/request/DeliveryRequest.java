@@ -24,7 +24,6 @@ public class DeliveryRequest {
     @Builder
     public record RegisterTrackingCodeRequest(
             UUID deliveryId,
-            @Nullable
             String trackingCode
     ) {}
 

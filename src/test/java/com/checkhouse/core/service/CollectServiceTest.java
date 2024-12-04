@@ -90,7 +90,7 @@ public class CollectServiceTest {
             .deliveryId(UUID.randomUUID())
             .address(Address.builder()
                     .addressId(UUID.randomUUID())
-                .zipcode(12345)
+                .zipcode("12345")
                 .address("서울시 강남구")
                 .build())
             .build();
@@ -99,7 +99,7 @@ public class CollectServiceTest {
             .collectId(UUID.randomUUID())
             .usedProduct(usedProduct1)
             .delivery(delivery1)
-            .state(DeliveryState.COLLECTING)
+            .state(DeliveryState.PRE_COLLECT)
             .build();
 
         usedProduct2 = UsedProduct.builder()
@@ -111,7 +111,7 @@ public class CollectServiceTest {
         delivery2 = Delivery.builder()
             .deliveryId(UUID.randomUUID())
             .address(Address.builder()
-                .zipcode(54321)
+                .zipcode("54321")
                 .address("서울시 서초구")
                 .build())
             .build();
@@ -129,7 +129,7 @@ public class CollectServiceTest {
         Delivery updatedDelivery = Delivery.builder()
             .deliveryId(delivery1.getDeliveryId())
             .address(delivery1.getAddress())
-            .deliveryState(DeliveryState.COLLECTING)
+            .deliveryState(DeliveryState.PRE_COLLECT)
             .build();
 
         when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
@@ -151,7 +151,7 @@ public class CollectServiceTest {
     void SUCCESS_updateCollectState() {
         // given
         UUID collectId = collect1.getCollectId();
-        DeliveryState newState = DeliveryState.COLLECTING;
+        DeliveryState newState = DeliveryState.PRE_COLLECT;
         
         UpdateCollectRequest req = UpdateCollectRequest.builder()
             .collectId(collectId)
@@ -235,6 +235,22 @@ public class CollectServiceTest {
 
         // when & then
         assertThrows(GeneralException.class, () -> collectService.addCollect(req));
+        verify(collectRepository).findByUsedProduct(usedProduct1);
+    }
+
+    @DisplayName("중고 상품으로 수거 조회")
+    @Test
+    void SUCCESS_getCollectByUsedProduct() {
+        // given
+        when(usedProductRepository.findById(any(UUID.class))).thenReturn(Optional.of(usedProduct1));
+        when(collectRepository.findByUsedProduct(any(UsedProduct.class))).thenReturn(Optional.of(collect1));
+
+        // when
+        CollectRequest.GetCollectByUsedProductRequest req = new CollectRequest.GetCollectByUsedProductRequest(usedProduct1.getUsedProductId());
+        CollectDTO result = collectService.findByUsedProduct(req);
+
+        // then
+        assertEquals(collect1.getCollectId(), result.collectId());
         verify(collectRepository).findByUsedProduct(usedProduct1);
     }
 }

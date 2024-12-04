@@ -49,8 +49,7 @@ public class CollectService {
 
         //새로운 배송 정보 생성
         Delivery delivery = Delivery.builder()
-            .deliveryId(UUID.randomUUID())
-            .deliveryState(DeliveryState.COLLECTING)
+            .deliveryState(DeliveryState.PRE_DELIVERY)
             .address(address)
             .build();
         delivery = deliveryRepository.save(delivery);
@@ -59,7 +58,7 @@ public class CollectService {
         Collect collect = Collect.builder()
             .delivery(delivery)
             .usedProduct(usedProduct)
-                .state(DeliveryState.COLLECTING)
+                .state(DeliveryState.PRE_COLLECT)
             .build();
         Collect savedCollect = collectRepository.save(collect);
         return savedCollect.toDto();
@@ -73,6 +72,16 @@ public class CollectService {
         Collect updatedCollect = collectRepository.save(collect);
         return updatedCollect.toDto();
     }
+    // 수거 완료
+    // 검수 시작시에 호출
+    public void updateCollectCompleted(CollectRequest.UpdateCollectCompleted req ) {
+        Collect collect = collectRepository.findById(req.collectId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
+        collect.updateCollectState(DeliveryState.COLLECTED);
+        Delivery delivery = collect.getDelivery();
+        delivery.updateDeliveryState(DeliveryState.DELIVERED);
+    }
+
     //수거 상태 조회
     public DeliveryState getCollectState(
             CollectRequest.GetCollectStateRequest req
@@ -96,5 +105,13 @@ public class CollectService {
         return collectRepository.findAll().stream()
             .map(Collect::toDto)
             .collect(Collectors.toList());
+    }
+    //findByUsedProduct
+    public CollectDTO findByUsedProduct(CollectRequest.GetCollectByUsedProductRequest req) {
+        UsedProduct usedProduct = usedProductRepository.findById(req.usedProductId())
+            .orElseThrow(() -> new GeneralException(ErrorStatus._USED_PRODUCT_ID_NOT_FOUND));
+        Collect collect = collectRepository.findByUsedProduct(usedProduct)
+            .orElseThrow(() -> new GeneralException(ErrorStatus._COLLECT_ID_NOT_FOUND));
+        return collect.toDto();
     }
 }

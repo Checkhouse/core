@@ -29,7 +29,7 @@ public class Send extends BaseTimeEntity {
         name="state"
         )
     @Enumerated(EnumType.STRING)
-    private DeliveryState state = DeliveryState.SENDING;
+    private DeliveryState state = DeliveryState.PRE_SEND;
 
 
     //Foreign key

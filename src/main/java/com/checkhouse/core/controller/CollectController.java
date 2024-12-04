@@ -30,8 +30,7 @@ public class CollectController {
     //수거 등록
     @Operation(summary = "수거 등록")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "등록 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "등록 성공")
     })
     @PostMapping
     public BaseResponse<CollectDTO> addCollect(
@@ -43,8 +42,7 @@ public class CollectController {
     //수거 상태 업데이트
     @Operation(summary = "수거 상태 업데이트")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "수정 성공")
     })
     @PatchMapping
     public BaseResponse<CollectDTO> updateCollectState(
@@ -57,8 +55,7 @@ public class CollectController {
     //수거 리스트 조회
     @Operation(summary = "수거 리스트 조회")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping
     public BaseResponse<List<CollectDTO>> getCollectList() {
@@ -69,8 +66,7 @@ public class CollectController {
     //수거 삭제
     @Operation(summary = "수거 삭제")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "삭제 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "삭제 성공")
     })
     @DeleteMapping
     public BaseResponse<Void> deleteCollect(
@@ -82,8 +78,7 @@ public class CollectController {
     // 수거 상태 조회
     @Operation(summary = "수거 상태 조회")
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "조회 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
+        @ApiResponse(responseCode = "200", description = "조회 성공")
     })
     @GetMapping("/state")
     public BaseResponse<DeliveryState> getCollectState(

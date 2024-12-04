@@ -62,18 +62,6 @@ public class StoreController {
         log.info("[스토어 리스트 조회]");
         return BaseResponse.onSuccess(storeService.getStores());
     }
-    //스토어 정보 수정
-    @Operation(summary = "스토어 정보 수정")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "수정 성공"),
-        @ApiResponse(responseCode = "400", description = "잘못된 요청")
-    })
-    @PatchMapping
-    public BaseResponse<StoreDTO> updateStore(
-        @Valid @RequestBody StoreRequest.UpdateStoreRequest req) {
-        log.info("[스토어 정보 수정] request: {}", req);
-        return BaseResponse.onSuccess(storeService.updateStore(req));
-    }
     //스토어 코드 수정
     @Operation(summary = "스토어 코드 수정")
     @ApiResponses({
@@ -93,10 +81,12 @@ public class StoreController {
         @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @DeleteMapping
-    public BaseResponse<Void> deleteStore(
-        @Valid @RequestBody StoreRequest.DeleteStoreRequest req) {
-        log.info("[스토어 삭제] request: {}", req);
-        storeService.deleteStore(req);
+    public BaseResponse<Void> deleteStore(@RequestParam UUID storeId) {
+        storeService.deleteStore(
+            StoreRequest.DeleteStoreRequest.builder()
+                .storeId(storeId)
+                .build()
+        );
         return BaseResponse.onSuccess(null);
     }
 }

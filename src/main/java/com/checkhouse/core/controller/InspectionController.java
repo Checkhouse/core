@@ -3,6 +3,14 @@ package com.checkhouse.core.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.checkhouse.core.dto.*;
+import com.checkhouse.core.dto.request.CollectRequest;
+import com.checkhouse.core.dto.request.UsedProductRequest;
+import com.checkhouse.core.entity.Collect;
+import com.checkhouse.core.entity.Inspection;
+import com.checkhouse.core.entity.enums.UsedProductState;
+import com.checkhouse.core.service.CollectService;
+import com.checkhouse.core.service.UsedProductService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.checkhouse.core.apiPayload.BaseResponse;
-import com.checkhouse.core.dto.InspectionDTO;
-import com.checkhouse.core.dto.InspectionImageDTO;
 import com.checkhouse.core.dto.request.ImageRequest;
 import com.checkhouse.core.dto.request.InspectionRequest;
 import com.checkhouse.core.service.InspectionService;
@@ -37,14 +43,40 @@ import jakarta.validation.Valid;
 public class InspectionController {
     private final InspectionService inspectionService;
     private final ImageService imageService;
+    private final UsedProductService usedProductService;
+    private final CollectService collectService;
 
     // QR 스캔 후 검수 시작
     @Operation(summary = "검수 등록 (QR 스캔 후)")
     @PostMapping("/start")
-    public BaseResponse<InspectionDTO> startInspection(
+    public BaseResponse<InspectionRequest.StartInspectionResponse> startInspection(
         @Valid @RequestBody InspectionRequest.AddInspectionRequest req
     ) {
-        return BaseResponse.onSuccess(inspectionService.addInspection(req));
+        InspectionDTO inspectionDTO = inspectionService.addInspection(req);
+        List<UsedImageDTO> imagelist = imageService.getUsedImagesByUsedId(
+                ImageRequest.GetUsedImagesByUsedIdRequest.builder()
+                        .usedProductId(req.usedProductId())
+                        .build()
+        );
+
+        // Collect 상태 업데이트
+        CollectDTO collectDTO = collectService.findByUsedProduct(
+            CollectRequest.GetCollectByUsedProductRequest.builder()
+                .usedProductId(req.usedProductId())
+                .build()
+        );
+        collectService.updateCollectCompleted(
+            CollectRequest.UpdateCollectCompleted.builder()
+                .collectId(collectDTO.collectId())
+                .build()
+        );
+
+        return BaseResponse.onSuccess(InspectionRequest.StartInspectionResponse.builder()
+                .inspectionId(inspectionDTO.inspectionId())
+                .usedProductName(inspectionDTO.usedProductDTO().title())
+                .usedProductDescription(inspectionDTO.usedProductDTO().description())
+                .usedImages(imagelist)
+                .build());
     }
 
     // 검수 완료 후 사진 등록, 상태 업데이트, 노트 업데이트
@@ -71,16 +103,21 @@ public class InspectionController {
                 .description(req.description())
                 .build()
         );
-        
         // 검수 상태 업데이트
-        return BaseResponse.onSuccess(
-            inspectionService.updateInspectionState(
+        InspectionDTO inspection = inspectionService.updateInspectionState(
                 InspectionRequest.UpdateInspectionStateRequest.builder()
-                    .inspectionId(req.inspectionId())
-                    .isDone(true)
-                    .build()
-            )
-        );
+                        .inspectionId(req.inspectionId())
+                        .build());
+
+        usedProductService.updateUsedProductStatus(
+                UsedProductRequest.UpdateUsedProductState.builder()
+                        .usedProductId(inspection.usedProductDTO().usedProductId())
+                        .status(UsedProductState.ON_SALE)
+                        .build());
+
+        //TODO: ES 검색 상태 변경
+
+        return BaseResponse.onSuccess(inspection);
     }
 
     // 검수 리스트 조회

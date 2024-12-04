@@ -3,7 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.checkhouse.core.entity.enums.UsedProductState.PRE_SALE;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.AfterEach;
@@ -90,7 +92,9 @@ class UsedProductControllerTest extends BaseIntegrationTest {
 
     @Autowired
     private HubRepository hubRepository;
+
     private Hub savedHub;
+    private UsedProduct savedPreSaleUsedProduct;
 
     @BeforeEach
     void setup() {
@@ -122,7 +126,7 @@ class UsedProductControllerTest extends BaseIntegrationTest {
             .address("서울시 강남구 역삼동")
             .addressDetail("123번지 456호")
             .location(new Point(234, 234))
-            .zipcode(12345)
+            .zipcode("12345")
             .phone("010-1234-5678")
             .name("test user")
             .build();
@@ -140,6 +144,17 @@ class UsedProductControllerTest extends BaseIntegrationTest {
             .hub(savedHub)
             .build();
         savedUserAddress = userAddressRepository.saveAndFlush(userAddress);
+
+        UsedProduct PRE_SALE_usedProduct = UsedProduct.builder()
+                .user(savedUser)
+                .originProduct(savedOriginProduct)
+                .title("판매 전 상품")
+                .description("검수 전인 상품 입니다.")
+                .price(10000)
+                .isNegoAllow(true)
+                .state(PRE_SALE)
+                .build();
+        savedPreSaleUsedProduct = usedProductRepository.save(PRE_SALE_usedProduct);
 
         UsedProduct usedProduct = UsedProduct.builder()
             .user(savedUser)
@@ -234,10 +249,12 @@ class UsedProductControllerTest extends BaseIntegrationTest {
     @Test
     @DisplayName("원본 상품별 중고 상품 목록 조회 성공")
     void getUsedProductWithOriginIdSuccess() throws Exception {
+        // 하나만 조회 되어야함
         mockMvc.perform(
             MockMvcRequestBuilders.get(baseUrl + "/origin/" + savedOriginProduct.getOriginProductId())
                 .param("originProductId", savedOriginProduct.getOriginProductId().toString())
-        ).andExpect(status().isOk());
+        ).andExpect(status().isOk())
+                .andDo(print());
     }
 
     @Test

@@ -63,7 +63,7 @@ public class AddressServiceTest {
                 .addressId(UUID.randomUUID())
                 .name("한글이름")
                 .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
+                .zipcode("6978")
                 .phone("01097063979")
                 .addressDetail("정보과학관 지하 1층")
                 .location(new Point(0, 0))
@@ -72,7 +72,7 @@ public class AddressServiceTest {
                 .addressId(UUID.randomUUID())
                 .name("이름입니다")
                 .address("서울특별시 동작구 상도1동")
-                .zipcode(12345)
+                .zipcode("12345")
                 .phone("01023456789")
                 .addressDetail("2220호")
                 .location(new Point(0, 0))
@@ -127,7 +127,7 @@ public class AddressServiceTest {
         assertNotNull(result);
         assertEquals("한글이름", result.name());
         assertEquals("서울특별시 동작구 상도로 369", result.address());
-        assertEquals(6978, result.zipcode());
+        assertEquals("6978", result.zipcode());
         assertEquals("01097063979", result.phone());
 
 
@@ -169,7 +169,7 @@ public class AddressServiceTest {
                         .phone("01012345678")
                         .address("서울특별시 동작구 상도로 45길")
                         .addressDetail("어딘가 횡단보도 앞")
-                        .zipcode(12345)
+                        .zipcode("12345")
                         .phone("01012345678")
                         .build();
         when(addressRepository.findById(any(UUID.class))).thenReturn(Optional.of(commonAddress));
@@ -180,7 +180,7 @@ public class AddressServiceTest {
         assertEquals("서울특별시 동작구 상도로 45길", result.address());
         assertEquals("홍길동", result.name());
         assertEquals("01012345678", result.phone());
-        assertEquals(12345, result.zipcode());
+        assertEquals("12345", result.zipcode());
         assertEquals("어딘가 횡단보도 앞", result.addressDetail());
 
         verify(addressRepository, times(1)).findById(addressId);

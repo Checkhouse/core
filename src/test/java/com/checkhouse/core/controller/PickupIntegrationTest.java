@@ -10,7 +10,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.data.geo.Point;
 
-import com.checkhouse.core.controller.PickupController;
 import com.checkhouse.core.integration.BaseIntegrationTest;
 import com.checkhouse.core.entity.Pickup;
 import com.checkhouse.core.entity.Transaction;
@@ -143,7 +142,7 @@ public class PickupIntegrationTest extends BaseIntegrationTest {
 		Address storeaddr = Address.builder()
                 .name("홍길동")
                 .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
+                .zipcode("6978")
                 .phone("01012345678")
                 .addressDetail("정보과학관 지하 1층")
 				.location(new Point(127.0323305, 37.5149802))
@@ -167,7 +166,7 @@ public class PickupIntegrationTest extends BaseIntegrationTest {
 	}
 
 	@AfterEach
-	void cleanUp() {
+	void cleanup() {
 		pickupRepository.deleteAll();
 		transactionRepository.deleteAll();
 		storeRepository.deleteAll();

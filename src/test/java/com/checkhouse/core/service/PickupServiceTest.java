@@ -110,7 +110,7 @@ public class PickupServiceTest {
                 .addressId(UUID.randomUUID())
                 .name("홍길동")
                 .address("서울특별시 동작구 상도로 369")
-                .zipcode(6978)
+                .zipcode("6978")
                 .phone("01012345678")
                 .addressDetail("정보과학관 지하 1층")
                 .build();
